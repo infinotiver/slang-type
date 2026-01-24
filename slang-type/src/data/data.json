@@ -1,58 +1,8 @@
-[
-  {
-    "id": "english-1",
-    "text": "Visiting the zoo is always an exciting adventure. From the moment you step through the gates, the sounds of animals fill the air, creating a lively atmosphere. You can wander through various exhibits, marveling at the majestic lions lounging in the sun or the playful monkeys swinging from branch to branch. Each enclosure offers a glimpse into the lives of these incredible creatures, making it easy to lose track of time. Whether you're watching the graceful movements of the giraffes or the vibrant colors of tropical birds, a day at the zoo is a delightful way to connect with nature and learn about wildlife conservation."
-  },
-  {
-    "id": "english-2",
-    "text": "Albert Einstein was a brilliant physicist known for his groundbreaking theories, especially the theory of relativity. He was born in Germany in 1879 and later moved to Switzerland, where he developed many of his ideas. Einstein's work changed how we understand space, time, and gravity, making him one of the most famous scientists in history."
-  },
-  {
-    "id": "english-3",
-    "text": "At the 3:00 AM meeting, the rubber duck in the bathtub formally proposed that all bath salts be replaced with shredded tax documents. The toothbrush agreed, citing a 'significant drop in dental hygeine productivity' and demanding more salsa in the soap dispenser. Meanwhile, the faucet continued to recite Shakespearean sonnets, while the shower curtain insisted on singing karaoke to a tune that sounded remarkably like a lawnmower. The final consensus was to appoint a very confused toaster as the new CEO."
-  },
-  {
-    "id": "english-4",
-    "text": "If a banana wears a wristwatch, it cannot tell time, but it can teach economics to a herd of wildebeest. A nearby stapler, feeling quite neglected, began to hum jazz standards while attempting to reorganize the alphabet. Due to unforeseen circumstances, the sky turned a vibrant shade of lime green, causing the clouds to rain down tiny, polite umbrellas. The squirrel, having watched this from a nearby, upside-down oak tree, simply tipped its top hat and said, 'Precisely why the moon is made of cheddar"
-  },
-  {
-    "id": "slang-1",
-    "text": "Bruh that vibe was lit then we were all like no cap on how fire the beat was and everyone was vibing hard 67."
-  },
-  {
-    "id": "slang-2",
-    "text": "I told him go get the bread but he was too shook and said bro this is too sus it ain’t Gucci at all."
-  },
-  {
-    "id": "slang-3",
-    "text": "She flexed her drip in the new fit and the squad was like facts periodt we all saw that glow up coming."
-  },
-  {
-    "id": "slang-4",
-    "text": "Lowkey I’m amped for the party but highkey I might dip early if it gets too wack or if I’m too tired."
-  },
-  {
-    "id": "slang-5",
-    "text": "No lie I’m big mad that I lost the game but I gotta keep it real and bounce to get some rest tonight."
-  },
-  {
-    "id": "slang-6",
-    "text": "They were straight up bussin with the food and even the playlist slapped so hard everyone was hype."
-  },
-  {
-    "id": "slang-7",
-    "text": "After the movie I was like that was epic but then we all said bro that plot twist hit different fr."
-  },
-  {
-    "id": "slang-8",
-    "text": "She said let’s catch some Z’s then ghosted the group chat and left us saying bruh where she at."
-  },
-  {
-    "id": "slang-9",
-    "text": "Man said look at this fit it’s gnarly then we all agreed that drip was crazy clean and fire."
-  },
-  {
-    "id": "slang-10",
-    "text": "I’m not even gonna lie that challenge was tough AF yet we still tried and gave it our all fam."
-  }
-]
+{
+  "slang": [
+    "bruh", "vibe", "lit", "no", "cap", "fire", "beat", "vibing", "hard", "shook", "too", "sus", "aint", "gucci", "flexed", "drip", "fit", "squad", "facts", "periodt", "glow", "up", "lowkey", "amped", "party", "highkey", "dip", "early", "wack", "tired", "lie", "big", "mad", "lost", "game", "gotta", "keep", "real", "bounce", "rest", "tonight", "straight", "bussin", "food", "playlist", "slapped", "hard", "hype", "movie", "epic", "plot", "twist", "hit", "different", "fr", "said", "catch", "zs", "ghosted", "group", "chat", "left", "saying", "where", "she", "at", "man", "look", "fit", "gnarly", "agreed", "crazy", "clean", "fire", "not", "even", "gonna", "challenge", "tough", "af", "yet", "still", "tried", "gave", "all", "fam", "67"
+  ],
+  "english": [
+    "visiting", "zoo", "always", "exciting", "adventure", "moment", "step", "gates", "sounds", "animals", "fill", "air", "creating", "lively", "atmosphere", "wander", "various", "exhibits", "marveling", "majestic", "lions", "lounging", "sun", "playful", "monkeys", "swinging", "branch", "branch", "enclosure", "offers", "glimpse", "lives", "incredible", "creatures", "making", "easy", "lose", "track", "time", "watching", "graceful", "movements", "giraffes", "vibrant", "colors", "tropical", "birds", "day", "zoo", "delightful", "way", "connect", "nature", "learn", "wildlife", "conservation", "albert", "einstein", "was", "brilliant", "physicist", "known", "groundbreaking", "theories", "especially", "theory", "relativity", "born", "germany", "later", "moved", "switzerland", "developed", "many", "ideas", "work", "changed", "understand", "space", "time", "gravity", "making", "one", "most", "famous", "scientists", "history", "meeting", "rubber", "duck", "bathtub", "formally", "proposed", "all", "bath", "salts", "replaced", "shredded", "tax", "documents", "toothbrush", "agreed", "citing", "significant", "drop", "dental", "hygeine", "productivity", "demanding", "more", "salsa", "soap", "dispenser", "meanwhile", "faucet", "continued", "recite", "shakespearean", "sonnets", "while", "shower", "curtain", "insisted", "singing", "karaoke", "tune", "sounded", "remarkably", "like", "lawnmower", "final", "consensus", "appoint", "very", "confused", "toaster", "new", "ceo", "banana", "wears", "wristwatch", "cannot", "tell", "time", "teach", "economics", "herd", "wildebeest", "nearby", "stapler", "feeling", "quite", "neglected", "began", "hum", "jazz", "standards", "attempting", "reorganize", "alphabet", "due", "unforeseen", "circumstances", "sky", "turned", "vibrant", "shade", "lime", "green", "causing", "clouds", "rain", "down", "tiny", "polite", "umbrellas", "squirrel", "having", "watched", "from", "nearby", "upside", "down", "oak", "tree", "simply", "tipped", "top", "hat", "said", "precisely", "why", "moon", "made", "cheddar"
+  ]
+}
