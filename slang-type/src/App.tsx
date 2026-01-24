@@ -126,6 +126,16 @@ function App() {
           }}
         />
       </main>
+
+      {/* FOOTER */}
+      <footer className="border-t border-secondary/40 px-8 py-4">
+        <div className="flex justify-between items-center text-xs font-mono text-foreground/50">
+          <span>slangtype</span>
+          <span>
+            made with love by <a href="https://github.com/infinotiver">infinotiver</a>
+          </span>
+        </div>
+      </footer>
     </div>
   );
 }

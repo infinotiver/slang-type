@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { TbHistory, TbSettings } from "react-icons/tb";
+import { TbHistory, TbSettings, TbInfoCircle } from "react-icons/tb";
 import SettingsModal from "./SettingsModal";
 import HistoryModal from "./HistoryModal";
+import CreditsModal from "./CreditsModal";
 import type { Theme, DisplayMode, StatsDisplay } from "../../types";
 import type { TypingAttempt } from "../../types";
 
@@ -27,6 +28,7 @@ export default function Header({
 }: HeaderProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isCreditsOpen, setIsCreditsOpen] = useState(false);
 
   return (
     <>
@@ -35,7 +37,7 @@ export default function Header({
           <h1 className="text-xl font-bold font-mono tracking-wider">
             <span className="text-highlight">slang</span>type{" "}
           </h1>
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 text-sm font-mono">
               <span className="text-foreground/70">best</span>
               <span className="text-highlight font-bold text-base">
@@ -49,6 +51,14 @@ export default function Header({
               title="history"
             >
               <TbHistory size={20} />
+            </button>
+            <button
+              onClick={() => setIsCreditsOpen(true)}
+              className="p-2 text-foreground hover:text-highlight transition-colors"
+              aria-label="credits"
+              title="credits"
+            >
+              <TbInfoCircle size={20} />
             </button>
             <button
               onClick={() => setIsSettingsOpen(true)}
@@ -77,6 +87,10 @@ export default function Header({
         onClose={() => setIsHistoryOpen(false)}
         attempts={attempts}
       />
+      <CreditsModal
+        isOpen={isCreditsOpen}
+        onClose={() => setIsCreditsOpen(false)}
+      />
     </>
   );
-}
+}  
