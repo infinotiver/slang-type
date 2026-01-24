@@ -1,4 +1,5 @@
 import type { StatsAndControlsProps } from "../../types";
+import Button from "./Button";
 
 interface StatsAndControlsExtendedProps extends StatsAndControlsProps {
   elapsed?: number;
@@ -67,18 +68,15 @@ export default function StatsAndControls({
         {/* Language Controls */}
         <div className="flex items-center gap-2">
           {controlsOptions.map((lang) => (
-            <button
+            <Button
               key={lang.label}
               onClick={() => onLanguageChange(lang.label)}
-              className={`px-4 py-2 text-sm font-mono tracking-wide rounded transition-colors border ${
-                language === lang.label
-                  ? "border-highlight text-highlight font-semibold"
-                  : "border-secondary text-foreground hover:border-highlight hover:text-highlight"
-              } ${lang.disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+              variant={language === lang.label ? "primary" : "secondary"}
+              className={language === lang.label ? "font-semibold" : ""}
               disabled={lang.disabled}
             >
               {lang.label}
-            </button>
+            </Button>
           ))}
         </div>
 
@@ -88,17 +86,14 @@ export default function StatsAndControls({
         {/* Duration Controls */}
         <div className="flex items-center gap-2">
           {["15s", "30s", "60s", "120s", "inf"].map((m) => (
-            <button
+            <Button
               key={m}
               onClick={() => onModeChange(m)}
-              className={`px-4 py-2 text-sm font-mono rounded tracking-wide transition-colors border ${
-                mode === m
-                  ? "border-highlight text-highlight font-semibold"
-                  : "border-secondary text-foreground hover:border-highlight hover:text-highlight"
-              }`}
+              variant={mode === m ? "primary" : "secondary"}
+              className={mode === m ? "font-semibold" : ""}
             >
               {m}
-            </button>
+            </Button>
           ))}
         </div>
       </div>

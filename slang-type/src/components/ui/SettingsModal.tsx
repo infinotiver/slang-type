@@ -1,4 +1,5 @@
 import type { SettingsModalProps, Theme, DisplayMode } from "../../types";
+import Button from "./Button";
 
 export default function SettingsModal({
   isOpen,
@@ -35,7 +36,7 @@ export default function SettingsModal({
 
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
-        <div className="bg-background border border-secondary rounded-lg p-8 w-96 shadow-lg pointer-events-auto">
+        <div className="bg-background border border-secondary rounded-lg p-8 w-100 shadow-lg pointer-events-auto">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-lg font-bold font-mono">settings</h2>
             <button
@@ -54,17 +55,14 @@ export default function SettingsModal({
             </label>
             <div className="flex flex-wrap gap-3">
               {themes.map((t) => (
-                <button
+                <Button
                   key={t}
                   onClick={() => onThemeChange(t)}
-                  className={`px-4 py-2 font-mono text-sm rounded transition-colors border ${
-                    theme === t
-                      ? "border-highlight bg-secondary text-highlight font-semibold"
-                      : "border-secondary text-foreground hover:border-highlight hover:text-highlight"
-                  }`}
+                  variant={theme === t ? "primary" : "secondary"}
+                  className={theme === t ? "font-semibold" : ""}
                 >
                   {t}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -76,17 +74,14 @@ export default function SettingsModal({
             </label>
             <div className="flex flex-wrap gap-3">
               {displayModes.map((mode) => (
-                <button
+                <Button
                   key={mode.value}
                   onClick={() => onDisplayModeChange?.(mode.value)}
-                  className={`px-4 py-2 font-mono text-sm rounded transition-colors border ${
-                    displayMode === mode.value
-                      ? "border-highlight bg-secondary text-highlight font-semibold"
-                      : "border-secondary text-foreground hover:border-highlight hover:text-highlight"
-                  }`}
+                  variant={displayMode === mode.value ? "primary" : "secondary"}
+                  className={displayMode === mode.value ? "font-semibold" : ""}
                 >
                   {mode.label}
-                </button>
+                </Button>
               ))}
             </div>
           </div>

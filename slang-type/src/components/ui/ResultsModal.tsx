@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import Button from "./Button";
 
 interface ResultsModalProps {
   wpm: number;
@@ -298,12 +299,9 @@ export default function ResultsModal({
 
           {/* Action Button */}
           <div className="flex justify-center">
-            <button
-              onClick={onReset}
-              className="px-8 py-3 border-2 border-highlight text-highlight font-mono text-sm tracking-wider hover:bg-highlight hover:text-background transition-all rounded"
-            >
+            <Button onClick={onReset} variant="primary">
               try_again
-            </button>
+            </Button>
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { useRef, useMemo } from "react";
 import ResultsModal from "../ui/ResultsModal";
+import Button from "../ui/Button";
 import type { DisplayMode } from "../../types";
 
 interface UseTypingEngineReturn {
@@ -46,8 +47,8 @@ export default function TypingArea({
 }: TypingAreaProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // NORMAL MODE: Split text into lines (approximate based on ~80 chars per line)
-  const CHARS_PER_LINE = 50;
+  // NORMAL MODE: Split text into lines (approximate based on ~60 chars per line)
+  const CHARS_PER_LINE = 60;
   const lines = useMemo(() => {
     const result = [];
     for (let i = 0; i < targetText.length; i += CHARS_PER_LINE) {
@@ -179,9 +180,9 @@ export default function TypingArea({
 
       <div className="w-full text-center relative flex flex-col items-center">
         {/* Text display - conditional based on displayMode */}
-        <div className="mb-4 relative w-full">
+        <div className="mb-4 relative w-full max-w-5xl">
           {displayMode === "normal" && (
-            <div className="text-2xl leading-relaxed tracking-normal text-center whitespace-pre-wrap">
+            <div className="text-2xl leading-relaxed tracking-normal text-center ">
               {visibleLines.map((line, lineIdx) => (
                 <span key={lineStart + lineIdx}>
                   {line.split("").map((char, charIdx) => {
@@ -290,12 +291,9 @@ export default function TypingArea({
           {/* Start or Resume overlay - only show if truly paused or before start */}
           {engine.paused && !engine.isComplete && (
             <div className="absolute inset-0 backdrop-blur-sm bg-black/10 flex flex-col items-center justify-center rounded">
-              <button
-                onClick={handleStartClick}
-                className="px-6 py-2 border-2 border-highlight text-highlight font-mono text-sm tracking-wider hover:bg-highlight/20 transition-all"
-              >
+              <Button onClick={handleStartClick} variant="primary">
                 resume
-              </button>
+              </Button>
             </div>
           )}
 
@@ -305,12 +303,9 @@ export default function TypingArea({
             !engine.isComplete &&
             engine.cursor === 0 && (
               <div className="absolute inset-0 backdrop-blur-sm bg-black/10 flex flex-col items-center justify-center rounded">
-                <button
-                  onClick={handleStartClick}
-                  className="px-6 py-2 border-2 border-highlight text-highlight font-mono text-sm tracking-wider hover:bg-highlight/20 transition-all"
-                >
-                  start_typing
-                </button>
+                <Button onClick={handleStartClick} variant="primary">
+                  click here to start typing
+                </Button>
               </div>
             )}
         </div>
