@@ -91,7 +91,7 @@ function App() {
       />
 
       {/* STATS & CONTROLS */}
-      <div className="px-12 py-2 flex justify-center items-center">
+      <div className="px-4 sm:px-8 md:px-12 py-2 flex justify-center items-center">
         <StatsAndControls
           wpm={engine.wpm}
           accuracy={engine.accuracy}
@@ -107,7 +107,7 @@ function App() {
       </div>
 
       {/* TYPING AREA */}
-      <main className="flex-1 flex flex-col items-center justify-center px-12 py-2">
+      <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-8 md:px-12 py-2">
         <TypingArea
           targetText={passageText}
           engine={engine}
@@ -128,11 +128,17 @@ function App() {
       </main>
 
       {/* FOOTER */}
-      <footer className="border-t border-secondary/40 px-8 py-4">
-        <div className="flex justify-between items-center text-xs font-mono text-foreground/50">
+      <footer className="border-t border-secondary/40 px-4 sm:px-8 py-3 sm:py-4">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-xs font-mono text-foreground/50">
           <span>slangtype</span>
           <span>
-            made with love by <a href="https://github.com/infinotiver">infinotiver</a>
+            made with love by{" "}
+            <a
+              href="https://github.com/infinotiver"
+              className="hover:text-highlight transition-colors"
+            >
+              infinotiver
+            </a>
           </span>
         </div>
       </footer>

@@ -92,13 +92,15 @@ export default function HistoryModal({
         />
 
         {/* Modal */}
-        <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
-          <div className="bg-background border border-secondary rounded-lg p-8 w-200 shadow-lg pointer-events-auto max-h-[80vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-8">
-              <h2 className="text-lg font-bold font-mono">attempt details</h2>
+        <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none p-4">
+          <div className="bg-background border border-secondary rounded-lg p-6 sm:p-8 w-full max-w-2xl shadow-lg pointer-events-auto max-h-[90vh] sm:max-h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6 sm:mb-8">
+              <h2 className="text-base sm:text-lg font-bold font-mono">
+                attempt details
+              </h2>
               <button
                 onClick={() => setSelectedAttempt(null)}
-                className="text-foreground hover:text-highlight transition-colors text-lg font-mono p-1"
+                className="text-foreground hover:text-highlight transition-colors active:scale-95 p-1"
                 aria-label="back"
               >
                 ←
@@ -230,13 +232,15 @@ export default function HistoryModal({
       <div className="fixed inset-0 backdrop-blur-sm z-40" onClick={onClose} />
 
       {/* Modal */}
-      <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
-        <div className="bg-background border border-secondary rounded-lg p-8 w-200 shadow-lg pointer-events-auto max-h-[80vh] overflow-y-auto">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-lg font-bold font-mono">history</h2>
+      <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none p-4">
+        <div className="bg-background border border-secondary rounded-lg p-6 sm:p-8 w-full max-w-2xl shadow-lg pointer-events-auto max-h-[90vh] sm:max-h-[80vh] overflow-y-auto">
+          <div className="flex justify-between items-center mb-6 sm:mb-8">
+            <h2 className="text-base sm:text-lg font-bold font-mono">
+              history
+            </h2>
             <button
               onClick={onClose}
-              className="text-foreground hover:text-highlight transition-colors text-lg font-mono p-1"
+              className="text-foreground hover:text-highlight transition-colors active:scale-95 p-1"
               aria-label="close"
             >
               ✕

@@ -207,13 +207,17 @@ export default function TypingArea({
         onFocus={handleFocus}
         className="absolute opacity-0 w-0 h-0 pointer-events-none"
         autoFocus
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck="false"
+        autoComplete="off"
       />
 
       <div className="w-full text-center relative flex flex-col items-center">
         {/* Text display - conditional based on displayMode */}
-        <div className="mb-4 relative w-full max-w-5xl">
+        <div className="mb-3 sm:mb-4 relative w-full max-w-4xl sm:max-w-5xl px-2 sm:px-0">
           {displayMode === "normal" && (
-            <div className="text-2xl leading-relaxed tracking-normal text-center ">
+            <div className="text-lg sm:text-xl md:text-2xl leading-relaxed tracking-normal text-center">
               {visibleLines.map((line, lineIdx) => (
                 <span key={lineStart + lineIdx}>
                   {line.split("").map((char, charIdx) => {
@@ -239,7 +243,7 @@ export default function TypingArea({
           )}
 
           {displayMode === "tape-word" && (
-            <div className="text-2xl leading-relaxed tracking-normal text-center whitespace-nowrap overflow-hidden">
+            <div className="text-lg sm:text-xl md:text-2xl leading-relaxed tracking-normal text-center whitespace-nowrap overflow-hidden">
               {visibleWords.map((word, wordIdx) => {
                 const globalWordIdx = tapeWordStart + wordIdx;
                 const wordCharStart = wordPositions[globalWordIdx];
@@ -300,7 +304,7 @@ export default function TypingArea({
           )}
 
           {displayMode === "tape-char" && (
-            <div className="text-2xl leading-relaxed tracking-normal text-center whitespace-pre-wrap">
+            <div className="text-lg sm:text-xl md:text-2xl leading-relaxed tracking-normal text-center whitespace-pre-wrap">
               {tapeCharText.split("").map((char, charIdx) => {
                 const globalIdx = tapeCharStart + charIdx;
                 return (
