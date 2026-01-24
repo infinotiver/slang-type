@@ -33,44 +33,44 @@ export default function StatsAndControls({
   ];
 
   return (
-    <div className="flex items-center justify-center gap-16 font-mono">
+    <div className="flex items-center justify-center gap-12 font-mono">
       {/* STATS PANEL - WPM, Accuracy, Real-time Timer */}
-      <div className="flex items-center gap-10 px-8 py-4 h-20">
-        <div className="flex flex-col items-start gap-1">
-          <span className="text-xs text-foreground tracking-wider font-light">
+      <div className="flex items-center gap-8 h-20">
+        <div className="flex flex-col items-start gap-2">
+          <span className="text-xs text-foreground/70 tracking-wider font-light">
             wpm
           </span>
-          <span className="text-lg font-bold text-foreground">{wpm}</span>
+          <span className="text-xl font-bold text-foreground">{wpm}</span>
         </div>
-        <div className="w-px h-12 bg-secondary"></div>
-        <div className="flex flex-col items-start gap-1">
-          <span className="text-xs text-foreground tracking-wider font-light">
+        <div className="w-px h-14 bg-secondary/40"></div>
+        <div className="flex flex-col items-start gap-2">
+          <span className="text-xs text-foreground/70 tracking-wider font-light">
             acc
           </span>
-          <span className="text-lg font-bold text-foreground">
+          <span className="text-xl font-bold text-foreground">
             {Math.round(accuracy)}%
           </span>
         </div>
-        <div className="w-px h-12 bg-secondary"></div>
-        <div className="flex flex-col items-start gap-1">
-          <span className="text-xs text-foreground tracking-wider font-light">
+        <div className="w-px h-14 bg-secondary/40"></div>
+        <div className="flex flex-col items-start gap-2">
+          <span className="text-xs text-foreground/70 tracking-wider font-light">
             time
           </span>
-          <span className="text-lg font-bold text-highlight">
+          <span className="text-xl font-bold text-highlight">
             {formatTime(remaining)}
           </span>
         </div>
       </div>
 
       {/* CONTROLS PANEL - Language and duration buttons */}
-      <div className="flex items-center gap-8 px-6 py-4 h-20">
+      <div className="flex items-center gap-8 h-20">
         {/* Language Controls */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {controlsOptions.map((lang) => (
             <button
               key={lang.label}
               onClick={() => onLanguageChange(lang.label)}
-              className={`px-3 py-1.5 text-sm font-mono tracking-wide rounded transition-colors border ${
+              className={`px-4 py-2 text-sm font-mono tracking-wide rounded transition-colors border ${
                 language === lang.label
                   ? "border-highlight text-highlight font-semibold"
                   : "border-secondary text-foreground hover:border-highlight hover:text-highlight"
@@ -83,15 +83,15 @@ export default function StatsAndControls({
         </div>
 
         {/* Divider */}
-        <div className="w-px h-12 bg-secondary"></div>
+        <div className="w-px h-14 bg-secondary/40"></div>
 
         {/* Duration Controls */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {["15s", "30s", "60s", "120s", "inf"].map((m) => (
             <button
               key={m}
               onClick={() => onModeChange(m)}
-              className={`px-3 py-1.5 text-sm font-mono rounded tracking-wide transition-colors border ${
+              className={`px-4 py-2 text-sm font-mono rounded tracking-wide transition-colors border ${
                 mode === m
                   ? "border-highlight text-highlight font-semibold"
                   : "border-secondary text-foreground hover:border-highlight hover:text-highlight"

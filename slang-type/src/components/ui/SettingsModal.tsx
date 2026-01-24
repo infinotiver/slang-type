@@ -36,19 +36,20 @@ export default function SettingsModal({
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
         <div className="bg-background border border-secondary rounded-lg p-8 w-96 shadow-lg pointer-events-auto">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold font-mono">settings</h2>
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-lg font-bold font-mono">settings</h2>
             <button
               onClick={onClose}
-              className="text-foreground hover:text-highlight transition-colors text-xl font-mono"
+              className="text-foreground hover:text-highlight transition-colors text-lg font-mono p-1"
+              aria-label="close"
             >
               ✕
             </button>
           </div>
 
           {/* Theme Setting */}
-          <div className="mb-6">
-            <label className="block text-sm font-mono text-foreground mb-3 tracking-wider">
+          <div className="mb-8">
+            <label className="block text-sm font-mono text-foreground/70 mb-4 tracking-wider">
               theme
             </label>
             <div className="flex flex-wrap gap-3">
@@ -56,7 +57,7 @@ export default function SettingsModal({
                 <button
                   key={t}
                   onClick={() => onThemeChange(t)}
-                  className={`px-3 py-2 font-mono text-sm rounded transition-colors border ${
+                  className={`px-4 py-2 font-mono text-sm rounded transition-colors border ${
                     theme === t
                       ? "border-highlight bg-secondary text-highlight font-semibold"
                       : "border-secondary text-foreground hover:border-highlight hover:text-highlight"
@@ -69,8 +70,8 @@ export default function SettingsModal({
           </div>
 
           {/* Display Mode Setting */}
-          <div className="mb-6">
-            <label className="block text-sm font-mono text-foreground mb-3 tracking-wider">
+          <div>
+            <label className="block text-sm font-mono text-foreground/70 mb-4 tracking-wider">
               display mode
             </label>
             <div className="flex flex-wrap gap-3">
@@ -78,7 +79,7 @@ export default function SettingsModal({
                 <button
                   key={mode.value}
                   onClick={() => onDisplayModeChange?.(mode.value)}
-                  className={`px-3 py-2 font-mono text-sm rounded transition-colors border ${
+                  className={`px-4 py-2 font-mono text-sm rounded transition-colors border ${
                     displayMode === mode.value
                       ? "border-highlight bg-secondary text-highlight font-semibold"
                       : "border-secondary text-foreground hover:border-highlight hover:text-highlight"

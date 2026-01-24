@@ -18,21 +18,20 @@ export default function Header({
 
   return (
     <>
-      <header className="px-12 py-6">
+      <header className="px-8 py-6">
         <div className="flex justify-between items-center">
           <h1 className="text-xl font-bold font-mono tracking-wider">
             <span className="text-highlight">slang</span>type{" "}
           </h1>
-          <div className="flex items-center gap-6">
-            <div className="flex items-center text-md space-x-2">
-              <div className="text-foreground flex items-center justify-center space-x-1">
-                best
-              </div>
-              <div className="text-highlight font-bold">0</div>
+          <div className="flex items-center gap-8">
+            <div className="flex items-center gap-2 text-sm font-mono">
+              <span className="text-foreground/70">best</span>
+              <span className="text-highlight font-bold text-base">0</span>
             </div>
             <button
               onClick={() => setIsSettingsOpen(true)}
-              className="p-2 text-foreground hover:text-accent transition-colors flex items-center justify-center"
+              className="p-2 text-foreground hover:text-highlight transition-colors"
+              aria-label="settings"
             >
               <TbSettings size={20} />
             </button>

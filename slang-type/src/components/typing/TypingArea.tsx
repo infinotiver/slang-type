@@ -179,7 +179,7 @@ export default function TypingArea({
 
       <div className="w-full text-center relative flex flex-col items-center">
         {/* Text display - conditional based on displayMode */}
-        <div className="mb-4 relative w-full max-w-5xl">
+        <div className="mb-4 relative w-full">
           {displayMode === "normal" && (
             <div className="text-2xl leading-relaxed tracking-normal text-center whitespace-pre-wrap">
               {visibleLines.map((line, lineIdx) => (
