@@ -1,7 +1,4 @@
-import type {
-  StatsAndControlsProps,
-  StatsDisplay,
-} from "../../types";
+import type { StatsAndControlsProps, StatsDisplay } from "../../types";
 import Button from "./Button";
 
 interface StatsAndControlsExtendedProps extends StatsAndControlsProps {
@@ -24,11 +21,49 @@ export default function StatsAndControls({
 }: StatsAndControlsExtendedProps) {
   // Mini mode: return just the values with minimal styling
   if (display === "mini") {
+    const controlsOptions = [
+      { label: "slang", disabled: slangDisabled },
+      { label: "english", disabled: false },
+      { label: "code", disabled: true },
+    ];
+
     return (
-      <div className="flex items-center justify-center gap-4 font-mono text-sm">
-        <span>{wpm} wpm</span>
-        <span>·</span>
-        <span>{Math.round(accuracy)}%</span>
+      <div className="flex flex-col items-center gap-3 font-mono text-xs text-foreground/70">
+        <div className="flex items-center justify-center gap-4 text-foreground">
+          <span className="font-bold">{wpm}</span>
+          <span>·</span>
+          <span className="font-bold">{Math.round(accuracy)}%</span>
+        </div>
+        <div className="flex items-center gap-2">
+          {controlsOptions.map((lang, idx) => (
+            <span key={lang.label}>
+              {idx > 0 && <span className="mx-1">/</span>}
+              <button
+                onClick={() => onLanguageChange(lang.label)}
+                className={`hover:text-highlight transition-colors ${
+                  language === lang.label ? "text-highlight font-semibold" : ""
+                } ${lang.disabled ? "opacity-40 cursor-not-allowed" : ""}`}
+                disabled={lang.disabled}
+              >
+                {lang.label}
+              </button>
+            </span>
+          ))}
+          <span className="mx-2 text-foreground/40">·</span>
+          {["15s", "30s", "60s", "120s", "inf"].map((m, idx) => (
+            <span key={m}>
+              {idx > 0 && <span className="mx-1">/</span>}
+              <button
+                onClick={() => onModeChange(m)}
+                className={`hover:text-highlight transition-colors ${
+                  mode === m ? "text-highlight font-semibold" : ""
+                }`}
+              >
+                {m}
+              </button>
+            </span>
+          ))}
+        </div>
       </div>
     );
   }

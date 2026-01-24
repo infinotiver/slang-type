@@ -1,7 +1,8 @@
 import { useRef, useMemo } from "react";
 import ResultsModal from "../ui/ResultsModal";
 import Button from "../ui/Button";
-import type { DisplayMode } from "../../types";
+import type { DisplayMode, Mode, Language } from "../../types";
+import type { TypingAttempt } from "../../App";
 
 interface UseTypingEngineReturn {
   cursor: number;
@@ -27,6 +28,10 @@ interface TypingAreaProps {
   targetText: string;
   engine: UseTypingEngineReturn;
   displayMode: DisplayMode;
+  mode: Mode;
+  language: Language;
+  highScore: number;
+  onAttemptComplete?: (attempt: TypingAttempt) => void;
   timer?: {
     running: boolean;
     elapsed: number;
@@ -44,6 +49,10 @@ export default function TypingArea({
   targetText,
   engine,
   displayMode,
+  mode,
+  language,
+  highScore,
+  onAttemptComplete,
 }: TypingAreaProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -150,6 +159,26 @@ export default function TypingArea({
 
   // Show results
   if (engine.isComplete) {
+    const handleResultsClose = () => {
+      // Save attempt to history
+      if (onAttemptComplete) {
+        const attempt: TypingAttempt = {
+          id: `${Date.now()}-${Math.random()}`,
+          timestamp: Date.now(),
+          wpm: engine.wpm,
+          accuracy: engine.accuracy,
+          errors: engine.errors,
+          elapsed: engine.elapsed,
+          mode,
+          language,
+          totalTyped: engine.totalTyped,
+          correctChars: engine.correctChars,
+        };
+        onAttemptComplete(attempt);
+      }
+      engine.reset();
+    };
+
     return (
       <ResultsModal
         wpm={engine.wpm}
@@ -159,8 +188,10 @@ export default function TypingArea({
         totalTyped={engine.totalTyped}
         correctChars={engine.correctChars}
         charStatus={engine.status}
+        isNewHighScore={engine.wpm > highScore}
+        isBaseline={highScore === 0}
         targetText={targetText}
-        onReset={engine.reset}
+        onReset={handleResultsClose}
       />
     );
   }

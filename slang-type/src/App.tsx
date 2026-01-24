@@ -4,9 +4,17 @@ import Header from "./components/ui/Header";
 import StatsAndControls from "./components/ui/StatsAndControls";
 import TypingArea from "./components/typing/TypingArea";
 import { generatePhrase } from "./utils/textGenerator";
-import type { Language, Mode, Theme, DisplayMode, StatsDisplay } from "./types";
+import type {
+  Language,
+  Mode,
+  Theme,
+  DisplayMode,
+  StatsDisplay,
+  TypingAttempt,
+} from "./types";
 import useTypingEngine from "./hooks/useTypingEngine";
 import useTimer from "./hooks/useTimer";
+import useLocalStorage from "./hooks/useLocalStorage";
 
 function App() {
   const [language, setLanguage] = useState<Language>("slang");
@@ -14,6 +22,16 @@ function App() {
   const [theme, setTheme] = useState<Theme>("dark");
   const [displayMode, setDisplayMode] = useState<DisplayMode>("normal");
   const [statsDisplay, setStatsDisplay] = useState<StatsDisplay>("normal");
+
+  // Initialize localStorage for high score and attempts
+  const [highScore, setHighScore] = useLocalStorage<number>(
+    "slangtype_highscore",
+    0,
+  );
+  const [attempts, setAttempts] = useLocalStorage<TypingAttempt[]>(
+    "slangtype_attempts",
+    [],
+  );
 
   // Generate passage text based on language and mode
   const passageText = useMemo(() => {
@@ -68,6 +86,8 @@ function App() {
         onDisplayModeChange={setDisplayMode}
         statsDisplay={statsDisplay}
         onStatsDisplayChange={setStatsDisplay}
+        highScore={highScore}
+        attempts={attempts}
       />
 
       {/* STATS & CONTROLS */}
@@ -93,6 +113,17 @@ function App() {
           engine={engine}
           timer={timer}
           displayMode={displayMode}
+          mode={mode}
+          language={language}
+          highScore={highScore}
+          onAttemptComplete={(attempt) => {
+            // Update high score
+            if (attempt.wpm > highScore) {
+              setHighScore(attempt.wpm);
+            }
+            // Save attempt to history
+            setAttempts([...attempts, attempt]);
+          }}
         />
       </main>
     </div>

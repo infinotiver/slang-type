@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import {
   ComposedChart,
   Line,
@@ -20,6 +20,8 @@ interface ResultsModalProps {
   correctChars: number;
   charStatus: Record<number, "pending" | "correct" | "incorrect">;
   targetText: string;
+  isNewHighScore?: boolean;
+  isBaseline?: boolean;
   onReset: () => void;
 }
 
@@ -29,8 +31,47 @@ export default function ResultsModal({
   totalTyped,
   correctChars,
   charStatus,
+  isNewHighScore = false,
+  isBaseline = false,
   onReset,
 }: ResultsModalProps) {
+  // Create confetti effect
+  const createConfetti = () => {
+    const confettiCount = 50;
+    for (let i = 0; i < confettiCount; i++) {
+      const confetti = document.createElement("div");
+      confetti.className = "fixed pointer-events-none font-bold text-2xl";
+      confetti.textContent = Math.random() > 0.5 ? "🎉" : "✨";
+      confetti.style.left = Math.random() * window.innerWidth + "px";
+      confetti.style.top = "-10px";
+      confetti.style.animation = `fall ${2 + Math.random()}s linear forwards`;
+      confetti.style.setProperty("--rotate", Math.random() * 360 + "deg");
+      document.body.appendChild(confetti);
+
+      setTimeout(() => confetti.remove(), 2500);
+    }
+
+    // Add CSS animation
+    if (!document.getElementById("confetti-styles")) {
+      const style = document.createElement("style");
+      style.id = "confetti-styles";
+      style.textContent = `
+        @keyframes fall {
+          to {
+            transform: translateY(100vh) rotate(var(--rotate));
+            opacity: 0;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  };
+
+  useEffect(() => {
+    if (isNewHighScore || isBaseline) {
+      createConfetti();
+    }
+  }, [isNewHighScore, isBaseline]);
   const accuracy_pct = Math.round(accuracy);
   const minutesElapsed = elapsed / 60;
   // Adjusted WPM: based on only correct characters (standard metric)
@@ -127,7 +168,19 @@ export default function ResultsModal({
       <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
         <div className="bg-background border border-secondary rounded-lg p-8 max-w-5xl max-h-[90vh] overflow-y-auto shadow-lg pointer-events-auto">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-lg font-bold font-mono">test_results</h2>
+            <div>
+              <h2 className="text-lg font-bold font-mono">test_results</h2>
+              {isBaseline && (
+                <div className="text-sm font-mono text-green-400 mt-2">
+                  baseline established!
+                </div>
+              )}
+              {isNewHighScore && !isBaseline && (
+                <div className="text-sm font-mono text-yellow-400 mt-2 animate-pulse">
+                  high score smashed! 🎯
+                </div>
+              )}
+            </div>
             <button
               onClick={onReset}
               className="text-foreground hover:text-highlight transition-colors text-lg font-mono p-1"

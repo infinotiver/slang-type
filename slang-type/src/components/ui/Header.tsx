@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { TbSettings } from "react-icons/tb";
+import { TbHistory, TbSettings } from "react-icons/tb";
 import SettingsModal from "./SettingsModal";
+import HistoryModal from "./HistoryModal";
 import type { Theme, DisplayMode, StatsDisplay } from "../../types";
+import type { TypingAttempt } from "../../App";
 
 interface HeaderProps {
   theme: Theme;
@@ -10,6 +12,8 @@ interface HeaderProps {
   onDisplayModeChange: (mode: DisplayMode) => void;
   statsDisplay: StatsDisplay;
   onStatsDisplayChange: (display: StatsDisplay) => void;
+  highScore: number;
+  attempts: TypingAttempt[];
 }
 export default function Header({
   theme,
@@ -18,8 +22,11 @@ export default function Header({
   onDisplayModeChange,
   statsDisplay,
   onStatsDisplayChange,
+  highScore,
+  attempts,
 }: HeaderProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
   return (
     <>
@@ -31,12 +38,23 @@ export default function Header({
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2 text-sm font-mono">
               <span className="text-foreground/70">best</span>
-              <span className="text-highlight font-bold text-base">0</span>
+              <span className="text-highlight font-bold text-base">
+                {highScore}
+              </span>
             </div>
+            <button
+              onClick={() => setIsHistoryOpen(true)}
+              className="p-2 text-foreground hover:text-highlight transition-colors"
+              aria-label="history"
+              title="history"
+            >
+              <TbHistory size={20} />
+            </button>
             <button
               onClick={() => setIsSettingsOpen(true)}
               className="p-2 text-foreground hover:text-highlight transition-colors"
               aria-label="settings"
+              title="settings"
             >
               <TbSettings size={20} />
             </button>
@@ -53,6 +71,11 @@ export default function Header({
         onDisplayModeChange={onDisplayModeChange}
         statsDisplay={statsDisplay}
         onStatsDisplayChange={onStatsDisplayChange}
+      />
+      <HistoryModal
+        isOpen={isHistoryOpen}
+        onClose={() => setIsHistoryOpen(false)}
+        attempts={attempts}
       />
     </>
   );
