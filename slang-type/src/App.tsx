@@ -72,9 +72,6 @@ function App() {
     setMode(newMode as Mode);
     engine.stop(); // Stop current test
     engine.reset();
-    if (newMode === "inf" && language === "slang") {
-      setLanguage("english");
-    }
   };
 
   return (
@@ -97,7 +94,7 @@ function App() {
           accuracy={engine.accuracy}
           language={language}
           mode={mode}
-          slangDisabled={mode === "inf"}
+          slangDisabled={false}
           onLanguageChange={handleLanguageChange}
           onModeChange={handleModeChange}
           elapsed={engine.elapsed}
