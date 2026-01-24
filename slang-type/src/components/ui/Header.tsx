@@ -3,7 +3,7 @@ import { TbHistory, TbSettings } from "react-icons/tb";
 import SettingsModal from "./SettingsModal";
 import HistoryModal from "./HistoryModal";
 import type { Theme, DisplayMode, StatsDisplay } from "../../types";
-import type { TypingAttempt } from "../../App";
+import type { TypingAttempt } from "../../types";
 
 interface HeaderProps {
   theme: Theme;

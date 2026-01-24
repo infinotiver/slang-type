@@ -5,44 +5,13 @@ interface TokenizedData {
   english: string[];
 }
 
-interface RawItem {
-  id: string;
-  text: string;
-}
-
-function tokenize(text: string): string[] {
-  return text
-    .toLowerCase()
-    .replace(/[^\w\s]/g, "")
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
-}
-
-const tokenizedData: TokenizedData = {
-  slang: [],
-  english: [],
-};
-
-(data as RawItem[]).forEach((item) => {
-  const words = tokenize(item.text);
-
-  if (item.id.startsWith("slang")) {
-    tokenizedData.slang.push(...words);
-  }
-
-  if (item.id.startsWith("english")) {
-    tokenizedData.english.push(...words);
-  }
-});
-
 export function generatePhrase(
-  type: keyof TokenizedData,
+  type: "slang" | "english" | "code",
   targetWords: number,
 ): string {
-  const words = tokenizedData[type];
+  const words = data[type as keyof TokenizedData];
 
-  if (!words.length || targetWords <= 0) {
+  if (!words || !words.length || targetWords <= 0) {
     return "";
   }
 

@@ -2,7 +2,7 @@ import { useRef, useMemo } from "react";
 import ResultsModal from "../ui/ResultsModal";
 import Button from "../ui/Button";
 import type { DisplayMode, Mode, Language } from "../../types";
-import type { TypingAttempt } from "../../App";
+import type { TypingAttempt } from "../../types";
 
 interface UseTypingEngineReturn {
   cursor: number;
