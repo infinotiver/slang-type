@@ -4,7 +4,7 @@ import Header from "./components/ui/Header";
 import StatsAndControls from "./components/ui/StatsAndControls";
 import TypingArea from "./components/typing/TypingArea";
 import { generatePhrase } from "./utils/textGenerator";
-import type { Language, Mode, Theme, DisplayMode } from "./types";
+import type { Language, Mode, Theme, DisplayMode, StatsDisplay } from "./types";
 import useTypingEngine from "./hooks/useTypingEngine";
 import useTimer from "./hooks/useTimer";
 
@@ -13,6 +13,7 @@ function App() {
   const [mode, setMode] = useState<Mode>("30s");
   const [theme, setTheme] = useState<Theme>("dark");
   const [displayMode, setDisplayMode] = useState<DisplayMode>("normal");
+  const [statsDisplay, setStatsDisplay] = useState<StatsDisplay>("normal");
 
   // Generate passage text based on language and mode
   const passageText = useMemo(() => {
@@ -65,6 +66,8 @@ function App() {
         onThemeChange={setTheme}
         displayMode={displayMode}
         onDisplayModeChange={setDisplayMode}
+        statsDisplay={statsDisplay}
+        onStatsDisplayChange={setStatsDisplay}
       />
 
       {/* STATS & CONTROLS */}
@@ -79,6 +82,7 @@ function App() {
           onModeChange={handleModeChange}
           elapsed={engine.elapsed}
           duration={durationSeconds || 0}
+          display={statsDisplay}
         />
       </div>
 

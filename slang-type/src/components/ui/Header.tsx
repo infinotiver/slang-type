@@ -1,18 +1,23 @@
 import { useState } from "react";
 import { TbSettings } from "react-icons/tb";
 import SettingsModal from "./SettingsModal";
-import type { Theme, DisplayMode } from "../../types";
+import type { Theme, DisplayMode, StatsDisplay } from "../../types";
+
 interface HeaderProps {
   theme: Theme;
   onThemeChange: (theme: Theme) => void;
   displayMode: DisplayMode;
   onDisplayModeChange: (mode: DisplayMode) => void;
+  statsDisplay: StatsDisplay;
+  onStatsDisplayChange: (display: StatsDisplay) => void;
 }
 export default function Header({
   theme,
   onThemeChange,
   displayMode,
   onDisplayModeChange,
+  statsDisplay,
+  onStatsDisplayChange,
 }: HeaderProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
@@ -46,6 +51,8 @@ export default function Header({
         onThemeChange={onThemeChange}
         displayMode={displayMode}
         onDisplayModeChange={onDisplayModeChange}
+        statsDisplay={statsDisplay}
+        onStatsDisplayChange={onStatsDisplayChange}
       />
     </>
   );

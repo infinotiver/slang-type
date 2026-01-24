@@ -1,4 +1,9 @@
-import type { SettingsModalProps, Theme, DisplayMode } from "../../types";
+import type {
+  SettingsModalProps,
+  Theme,
+  DisplayMode,
+  StatsDisplay,
+} from "../../types";
 import Button from "./Button";
 
 export default function SettingsModal({
@@ -8,9 +13,13 @@ export default function SettingsModal({
   onThemeChange,
   displayMode = "normal",
   onDisplayModeChange,
+  statsDisplay = "normal",
+  onStatsDisplayChange,
 }: SettingsModalProps & {
   displayMode?: DisplayMode;
   onDisplayModeChange?: (mode: DisplayMode) => void;
+  statsDisplay?: StatsDisplay;
+  onStatsDisplayChange?: (display: StatsDisplay) => void;
 }) {
   if (!isOpen) return null;
 
@@ -28,6 +37,10 @@ export default function SettingsModal({
     { label: "tape-word", value: "tape-word" },
     { label: "tape-char", value: "tape-char" },
   ];
+  const statsDisplayModes: { label: string; value: StatsDisplay }[] = [
+    { label: "normal", value: "normal" },
+    { label: "mini", value: "mini" },
+  ];
 
   return (
     <>
@@ -36,7 +49,7 @@ export default function SettingsModal({
 
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
-        <div className="bg-background border border-secondary rounded-lg p-8 w-100 shadow-lg pointer-events-auto">
+        <div className="bg-background border border-secondary rounded-lg p-8 w-200 shadow-lg pointer-events-auto">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-lg font-bold font-mono">settings</h2>
             <button
@@ -68,7 +81,7 @@ export default function SettingsModal({
           </div>
 
           {/* Display Mode Setting */}
-          <div>
+          <div className="mb-8">
             <label className="block text-sm font-mono text-foreground/70 mb-4 tracking-wider">
               display mode
             </label>
@@ -79,6 +92,27 @@ export default function SettingsModal({
                   onClick={() => onDisplayModeChange?.(mode.value)}
                   variant={displayMode === mode.value ? "primary" : "secondary"}
                   className={displayMode === mode.value ? "font-semibold" : ""}
+                >
+                  {mode.label}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* Stats Display Setting */}
+          <div>
+            <label className="block text-sm font-mono text-foreground/70 mb-4 tracking-wider">
+              stats display
+            </label>
+            <div className="flex flex-wrap gap-3">
+              {statsDisplayModes.map((mode) => (
+                <Button
+                  key={mode.value}
+                  onClick={() => onStatsDisplayChange?.(mode.value)}
+                  variant={
+                    statsDisplay === mode.value ? "primary" : "secondary"
+                  }
+                  className={statsDisplay === mode.value ? "font-semibold" : ""}
                 >
                   {mode.label}
                 </Button>

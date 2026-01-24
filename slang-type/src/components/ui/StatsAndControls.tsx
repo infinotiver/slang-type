@@ -1,9 +1,13 @@
-import type { StatsAndControlsProps } from "../../types";
+import type {
+  StatsAndControlsProps,
+  StatsDisplay,
+} from "../../types";
 import Button from "./Button";
 
 interface StatsAndControlsExtendedProps extends StatsAndControlsProps {
   elapsed?: number;
   duration?: number;
+  display?: StatsDisplay;
 }
 
 export default function StatsAndControls({
@@ -16,7 +20,19 @@ export default function StatsAndControls({
   onModeChange,
   elapsed = 0,
   duration = 0,
+  display = "normal",
 }: StatsAndControlsExtendedProps) {
+  // Mini mode: return just the values with minimal styling
+  if (display === "mini") {
+    return (
+      <div className="flex items-center justify-center gap-4 font-mono text-sm">
+        <span>{wpm} wpm</span>
+        <span>·</span>
+        <span>{Math.round(accuracy)}%</span>
+      </div>
+    );
+  }
+
   // Calculate remaining time for countdown display
   const remaining = Math.max(0, duration - elapsed);
 
@@ -80,7 +96,6 @@ export default function StatsAndControls({
           ))}
         </div>
 
-        {/* Divider */}
         <div className="w-px h-14 bg-secondary/40"></div>
 
         {/* Duration Controls */}
