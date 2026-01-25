@@ -1,4 +1,12 @@
-import { TbX } from "react-icons/tb";
+import {
+  TbX,
+  TbBrandReact,
+  TbBrandTypescript,
+  TbBrandTailwind,
+  TbBrandVite,
+  TbPalette,
+  TbChartLine,
+} from "react-icons/tb";
 
 interface CreditsModalProps {
   isOpen: boolean;
@@ -7,6 +15,15 @@ interface CreditsModalProps {
 
 export default function CreditsModal({ isOpen, onClose }: CreditsModalProps) {
   if (!isOpen) return null;
+
+  const technologies = [
+    { name: "React 19", description: "UI library", icon: TbBrandReact },
+    { name: "TypeScript", description: "type safety", icon: TbBrandTypescript },
+    { name: "Tailwind CSS", description: "styling", icon: TbBrandTailwind },
+    { name: "Vite", description: "build tool", icon: TbBrandVite },
+    { name: "Tabler Icons", description: "icon set", icon: TbPalette },
+    { name: "Recharts", description: "data visualization", icon: TbChartLine },
+  ];
 
   return (
     <>
@@ -29,29 +46,47 @@ export default function CreditsModal({ isOpen, onClose }: CreditsModalProps) {
             </button>
           </div>
 
-          <div className="space-y-4 sm:space-y-6 text-xs sm:text-sm font-mono">
-            <div>
-              <h3 className="text-highlight font-bold mb-2">built with</h3>
-              <ul className="text-foreground/80 space-y-1">
-                <li>• React 19 - UI library</li>
-                <li>• TypeScript - type safety</li>
-                <li>• Tailwind CSS - styling</li>
-                <li>• Vite - build tool</li>
-                <li>• Tabler Icons - icon set</li>
-                <li>• Recharts - data visualization</li>
-              </ul>
+          <div className="space-y-3">
+            <div className="pb-2 border-b border-secondary/40">
+              <div className="flex items-center gap-1">
+                <p className="text-foreground text-sm font-mono font-bold">
+                  made by{" "}
+                  <a
+                    href="https://github.com/infinotiver"
+                    className="text-highlight hover:underline transition-colors"
+                  >
+                    infinotiver
+                  </a>
+                </p>
+              </div>
             </div>
 
-            <div className="pt-4 border-t border-secondary/40">
-              <p className="text-foreground/60 text-xs">
-                made with love by{" "}
-                <a
-                  href="https://github.com/infinotiver"
-                  className="hover:text-highlight transition-colors"
-                >
-                  infinotiver
-                </a>
-              </p>
+            <div>
+              <h3 className="text-highlight font-bold mb-2 font-mono text-xs">
+                built with
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {technologies.map((tech) => {
+                  const Icon = tech.icon;
+                  return (
+                    <div
+                      key={tech.name}
+                      className="flex items-center gap-2 p-2 rounded border border-secondary/30 hover:border-highlight/50 transition-all"
+                    >
+                      <Icon
+                        size={18}
+                        className="text-highlight flex-shrink-0"
+                      />
+                      <div className="font-mono text-xs">
+                        <p className="text-foreground">{tech.name}</p>
+                        <p className="text-foreground/60 text-xs">
+                          {tech.description}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
