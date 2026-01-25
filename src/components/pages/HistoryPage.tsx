@@ -1,6 +1,15 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { TbArrowLeft } from "react-icons/tb";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import type { TypingAttempt } from "../../types";
 
@@ -93,6 +102,15 @@ export default function HistoryPage() {
     };
     return labels[lang] || lang;
   };
+
+  // Chart data: WPM progression over attempts
+  const wpmProgressionData = useMemo(() => {
+    return allAttempts.map((attempt, idx) => ({
+      name: idx + 1,
+      wpm: attempt.wpm,
+      accuracy: Math.round(attempt.accuracy),
+    }));
+  }, [allAttempts]);
 
   // Show detail view for selected attempt
   if (selectedAttempt) {
@@ -276,85 +294,192 @@ export default function HistoryPage() {
         {attempts.length > 0 ? (
           <div className="max-w-4xl mx-auto">
             {/* Key Stats - Focused View */}
-            <div className="mb-8 p-6 border border-secondary/40 rounded bg-secondary/10">
-              <h2 className="text-xs font-mono text-foreground/70 mb-4 tracking-wider uppercase">
-                performance overview
-              </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+            <div className="mb-6 p-4 border border-secondary/40 rounded bg-secondary/10">
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                 <div>
-                  <div className="text-xs text-foreground/60 mb-2">best wpm</div>
-                  <div className="text-3xl font-bold text-highlight">
+                  <div className="text-xs text-foreground/60">best wpm</div>
+                  <div className="text-2xl font-bold text-highlight">
                     {stats.bestWpm}
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs text-foreground/60 mb-2">avg wpm</div>
-                  <div className="text-3xl font-bold text-foreground">
+                  <div className="text-xs text-foreground/60">avg wpm</div>
+                  <div className="text-2xl font-bold text-foreground">
                     {stats.avgWpm}
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs text-foreground/60 mb-2">best acc</div>
-                  <div className="text-3xl font-bold text-foreground">
+                  <div className="text-xs text-foreground/60">best acc</div>
+                  <div className="text-2xl font-bold text-foreground">
                     {Math.round(stats.bestAccuracy)}%
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs text-foreground/60 mb-2">attempts</div>
-                  <div className="text-3xl font-bold text-foreground">
+                  <div className="text-xs text-foreground/60">total time</div>
+                  <div className="text-2xl font-bold text-foreground">
+                    {formatTime(stats.totalTime)}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-foreground/60">attempts</div>
+                  <div className="text-2xl font-bold text-foreground">
                     {stats.totalAttempts}
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Breakdown by Language & Mode */}
-            <div className="mb-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* By Language */}
+            {/* Charts Section */}
+            <div className="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* WPM Progression */}
               <div>
-                <h2 className="text-xs font-mono text-foreground/70 mb-4 tracking-wider uppercase">
+                <h2 className="text-xs font-mono text-foreground/70 mb-2 tracking-wider uppercase">
+                  wpm progression
+                </h2>
+                <div className="border border-secondary/30 rounded p-2 bg-secondary/5">
+                  {wpmProgressionData.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={200}>
+                      <LineChart data={wpmProgressionData}>
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          stroke="rgb(75, 85, 99)"
+                          opacity={0.3}
+                        />
+                        <XAxis
+                          dataKey="name"
+                          stroke="rgb(107, 114, 128)"
+                          style={{ fontSize: "11px" }}
+                        />
+                        <YAxis
+                          stroke="rgb(107, 114, 128)"
+                          style={{ fontSize: "11px" }}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: "rgb(31, 41, 55)",
+                            border: "1px solid rgb(75, 85, 99)",
+                            borderRadius: "4px",
+                            fontSize: "11px",
+                          }}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="wpm"
+                          stroke="#10b981"
+                          strokeWidth={2}
+                          dot={false}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="h-32 flex items-center justify-center text-xs text-foreground/40">
+                      no data
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Accuracy Trend */}
+              <div>
+                <h2 className="text-xs font-mono text-foreground/70 mb-2 tracking-wider uppercase">
+                  accuracy trend
+                </h2>
+                <div className="border border-secondary/30 rounded p-2 bg-secondary/5">
+                  {wpmProgressionData.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={200}>
+                      <LineChart data={wpmProgressionData}>
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          stroke="rgb(75, 85, 99)"
+                          opacity={0.3}
+                        />
+                        <XAxis
+                          dataKey="name"
+                          stroke="rgb(107, 114, 128)"
+                          style={{ fontSize: "11px" }}
+                        />
+                        <YAxis
+                          stroke="rgb(107, 114, 128)"
+                          style={{ fontSize: "11px" }}
+                          domain={[0, 100]}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: "rgb(31, 41, 55)",
+                            border: "1px solid rgb(75, 85, 99)",
+                            borderRadius: "4px",
+                            fontSize: "11px",
+                          }}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="accuracy"
+                          stroke="#f59e0b"
+                          strokeWidth={2}
+                          dot={false}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="h-32 flex items-center justify-center text-xs text-foreground/40">
+                      no data
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Breakdown by Language & Mode - Grid Cards */}
+            <div className="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* By Language - Grid Cards */}
+              <div>
+                <h2 className="text-xs font-mono text-foreground/70 mb-2 tracking-wider uppercase">
                   by language
                 </h2>
-                <div className="space-y-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {Object.entries(statsByLanguage).map(([lang, attempt]) => (
                     <div
                       key={lang}
-                      className="p-3 border border-secondary/30 rounded hover:bg-secondary/20 transition-colors"
+                      className="p-3 border border-secondary/30 rounded bg-secondary/5 hover:bg-secondary/10 hover:border-highlight transition-colors"
                     >
-                      <div className="flex items-center justify-between">
-                        <div className="text-sm font-semibold text-foreground capitalize">
-                          {getLanguageLabel(lang)}
-                        </div>
-                        {attempt ? (
-                          <div className="flex gap-4 text-sm">
-                            <div>
-                              <span className="text-foreground/50">wpm: </span>
-                              <span className="font-bold text-highlight">
-                                {attempt.wpm}
-                              </span>
-                            </div>
-                            <div>
-                              <span className="text-foreground/50">acc: </span>
-                              <span className="font-semibold">
-                                {Math.round(attempt.accuracy)}%
-                              </span>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-xs text-foreground/40">—</div>
-                        )}
+                      <div className="text-xs font-semibold text-foreground/70 mb-2 capitalize">
+                        {getLanguageLabel(lang)}
                       </div>
+                      {attempt ? (
+                        <div className="space-y-1">
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-foreground/50 text-xs">
+                              wpm
+                            </span>
+                            <span className="text-lg font-bold text-highlight">
+                              {attempt.wpm}
+                            </span>
+                          </div>
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-foreground/50 text-xs">
+                              acc
+                            </span>
+                            <span className="text-sm font-semibold">
+                              {Math.round(attempt.accuracy)}%
+                            </span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-foreground/30 text-xs">
+                          no attempts
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* By Mode */}
+              {/* By Mode - Grid Cards */}
               <div>
-                <h2 className="text-xs font-mono text-foreground/70 mb-4 tracking-wider uppercase">
+                <h2 className="text-xs font-mono text-foreground/70 mb-2 tracking-wider uppercase">
                   by mode
                 </h2>
-                <div className="space-y-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {Object.entries(statsByMode)
                     .sort(([modeA], [modeB]) => {
                       const orderMap: Record<string, number> = {
@@ -363,36 +488,42 @@ export default function HistoryPage() {
                         "60s": 2,
                         "120s": 3,
                       };
-                      return (orderMap[modeA] ?? 999) - (orderMap[modeB] ?? 999);
+                      return (
+                        (orderMap[modeA] ?? 999) - (orderMap[modeB] ?? 999)
+                      );
                     })
                     .map(([mode, attempt]) => (
                       <div
                         key={mode}
-                        className="p-3 border border-secondary/30 rounded hover:bg-secondary/20 transition-colors"
+                        className="p-3 border border-secondary/30 rounded bg-secondary/5 hover:bg-secondary/10 hover:border-highlight transition-colors"
                       >
-                        <div className="flex items-center justify-between">
-                          <div className="text-sm font-semibold text-foreground">
-                            {mode}
-                          </div>
-                          {attempt ? (
-                            <div className="flex gap-4 text-sm">
-                              <div>
-                                <span className="text-foreground/50">wpm: </span>
-                                <span className="font-bold text-highlight">
-                                  {attempt.wpm}
-                                </span>
-                              </div>
-                              <div>
-                                <span className="text-foreground/50">acc: </span>
-                                <span className="font-semibold">
-                                  {Math.round(attempt.accuracy)}%
-                                </span>
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="text-xs text-foreground/40">—</div>
-                          )}
+                        <div className="text-xs font-semibold text-foreground/70 mb-2">
+                          {mode}
                         </div>
+                        {attempt ? (
+                          <div className="space-y-1">
+                            <div className="flex items-baseline gap-1">
+                              <span className="text-foreground/50 text-xs">
+                                wpm
+                              </span>
+                              <span className="text-lg font-bold text-highlight">
+                                {attempt.wpm}
+                              </span>
+                            </div>
+                            <div className="flex items-baseline gap-1">
+                              <span className="text-foreground/50 text-xs">
+                                acc
+                              </span>
+                              <span className="text-sm font-semibold">
+                                {Math.round(attempt.accuracy)}%
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="text-foreground/30 text-xs">
+                            no attempts
+                          </div>
+                        )}
                       </div>
                     ))}
                 </div>
@@ -401,10 +532,10 @@ export default function HistoryPage() {
 
             {/* All Attempts */}
             <div>
-              <h2 className="text-xs font-mono text-foreground/70 mb-4 tracking-wider uppercase">
+              <h2 className="text-xs font-mono text-foreground/70 mb-2 tracking-wider uppercase">
                 attempts ({allAttempts.length})
               </h2>
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 {allAttempts.map((attempt) => (
                   <button
                     key={attempt.id}
