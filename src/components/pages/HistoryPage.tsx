@@ -13,6 +13,7 @@ export default function HistoryPage() {
 
   const stats = {
     totalAttempts: attempts.length,
+    totalCharsTyped: attempts.reduce((sum, a) => sum + a.totalTyped, 0),
     bestWpm: attempts.length > 0 ? Math.max(...attempts.map((a) => a.wpm)) : 0,
     avgWpm:
       attempts.length > 0
@@ -30,6 +31,37 @@ export default function HistoryPage() {
         : 0,
     totalTime: attempts.reduce((sum, a) => sum + a.elapsed, 0),
   };
+
+  // Best stats by language
+  const statsByLanguage = {
+    slang: attempts
+      .filter((a) => a.language === "slang")
+      .reduce(
+        (best, a) => (!best || a.wpm > best.wpm ? a : best),
+        null as TypingAttempt | null,
+      ),
+    english: attempts
+      .filter((a) => a.language === "english")
+      .reduce(
+        (best, a) => (!best || a.wpm > best.wpm ? a : best),
+        null as TypingAttempt | null,
+      ),
+    code: attempts
+      .filter((a) => a.language === "code")
+      .reduce(
+        (best, a) => (!best || a.wpm > best.wpm ? a : best),
+        null as TypingAttempt | null,
+      ),
+  };
+
+  // Best stats by mode (timed duration)
+  const statsByMode: Record<string, TypingAttempt | null> = {};
+  attempts.forEach((a) => {
+    const mode = a.mode;
+    if (!statsByMode[mode] || a.wpm > statsByMode[mode]!.wpm) {
+      statsByMode[mode] = a;
+    }
+  });
 
   const allAttempts = [...attempts].reverse();
 
@@ -243,93 +275,160 @@ export default function HistoryPage() {
       <main className="flex-1 px-4 sm:px-8 md:px-12 py-8">
         {attempts.length > 0 ? (
           <div className="max-w-4xl mx-auto">
-            {/* Statistics Overview */}
-            <div className="mb-12">
-              <h2 className="text-sm font-mono text-foreground/70 mb-6 tracking-wider">
-                overall stats
+            {/* Key Stats - Focused View */}
+            <div className="mb-8 p-6 border border-secondary/40 rounded bg-secondary/10">
+              <h2 className="text-xs font-mono text-foreground/70 mb-4 tracking-wider uppercase">
+                performance overview
               </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
-                <div className="p-6 border border-secondary/40 rounded">
-                  <div className="text-xs text-foreground/70 tracking-wider font-light">
-                    total attempts
-                  </div>
-                  <div className="text-2xl sm:text-3xl font-bold text-highlight mt-3">
-                    {stats.totalAttempts}
-                  </div>
-                </div>
-                <div className="p-6 border border-secondary/40 rounded">
-                  <div className="text-xs text-foreground/70 tracking-wider font-light">
-                    best wpm
-                  </div>
-                  <div className="text-2xl sm:text-3xl font-bold text-highlight mt-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                <div>
+                  <div className="text-xs text-foreground/60 mb-2">best wpm</div>
+                  <div className="text-3xl font-bold text-highlight">
                     {stats.bestWpm}
                   </div>
                 </div>
-                <div className="p-6 border border-secondary/40 rounded">
-                  <div className="text-xs text-foreground/70 tracking-wider font-light">
-                    avg wpm
-                  </div>
-                  <div className="text-2xl sm:text-3xl font-bold text-foreground mt-3">
+                <div>
+                  <div className="text-xs text-foreground/60 mb-2">avg wpm</div>
+                  <div className="text-3xl font-bold text-foreground">
                     {stats.avgWpm}
                   </div>
                 </div>
-                <div className="p-6 border border-secondary/40 rounded">
-                  <div className="text-xs text-foreground/70 tracking-wider font-light">
-                    best accuracy
-                  </div>
-                  <div className="text-2xl sm:text-3xl font-bold text-foreground mt-3">
+                <div>
+                  <div className="text-xs text-foreground/60 mb-2">best acc</div>
+                  <div className="text-3xl font-bold text-foreground">
                     {Math.round(stats.bestAccuracy)}%
                   </div>
                 </div>
-                <div className="p-6 border border-secondary/40 rounded">
-                  <div className="text-xs text-foreground/70 tracking-wider font-light">
-                    avg accuracy
-                  </div>
-                  <div className="text-2xl sm:text-3xl font-bold text-foreground mt-3">
-                    {stats.avgAccuracy}%
+                <div>
+                  <div className="text-xs text-foreground/60 mb-2">attempts</div>
+                  <div className="text-3xl font-bold text-foreground">
+                    {stats.totalAttempts}
                   </div>
                 </div>
-                <div className="p-6 border border-secondary/40 rounded">
-                  <div className="text-xs text-foreground/70 tracking-wider font-light">
-                    total time
-                  </div>
-                  <div className="text-2xl sm:text-3xl font-bold text-foreground mt-3">
-                    {formatTime(stats.totalTime)}
-                  </div>
+              </div>
+            </div>
+
+            {/* Breakdown by Language & Mode */}
+            <div className="mb-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* By Language */}
+              <div>
+                <h2 className="text-xs font-mono text-foreground/70 mb-4 tracking-wider uppercase">
+                  by language
+                </h2>
+                <div className="space-y-2">
+                  {Object.entries(statsByLanguage).map(([lang, attempt]) => (
+                    <div
+                      key={lang}
+                      className="p-3 border border-secondary/30 rounded hover:bg-secondary/20 transition-colors"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm font-semibold text-foreground capitalize">
+                          {getLanguageLabel(lang)}
+                        </div>
+                        {attempt ? (
+                          <div className="flex gap-4 text-sm">
+                            <div>
+                              <span className="text-foreground/50">wpm: </span>
+                              <span className="font-bold text-highlight">
+                                {attempt.wpm}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="text-foreground/50">acc: </span>
+                              <span className="font-semibold">
+                                {Math.round(attempt.accuracy)}%
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="text-xs text-foreground/40">—</div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* By Mode */}
+              <div>
+                <h2 className="text-xs font-mono text-foreground/70 mb-4 tracking-wider uppercase">
+                  by mode
+                </h2>
+                <div className="space-y-2">
+                  {Object.entries(statsByMode)
+                    .sort(([modeA], [modeB]) => {
+                      const orderMap: Record<string, number> = {
+                        "15s": 0,
+                        "30s": 1,
+                        "60s": 2,
+                        "120s": 3,
+                      };
+                      return (orderMap[modeA] ?? 999) - (orderMap[modeB] ?? 999);
+                    })
+                    .map(([mode, attempt]) => (
+                      <div
+                        key={mode}
+                        className="p-3 border border-secondary/30 rounded hover:bg-secondary/20 transition-colors"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="text-sm font-semibold text-foreground">
+                            {mode}
+                          </div>
+                          {attempt ? (
+                            <div className="flex gap-4 text-sm">
+                              <div>
+                                <span className="text-foreground/50">wpm: </span>
+                                <span className="font-bold text-highlight">
+                                  {attempt.wpm}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-foreground/50">acc: </span>
+                                <span className="font-semibold">
+                                  {Math.round(attempt.accuracy)}%
+                                </span>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="text-xs text-foreground/40">—</div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
                 </div>
               </div>
             </div>
 
             {/* All Attempts */}
             <div>
-              <h2 className="text-sm font-mono text-foreground/70 mb-6 tracking-wider">
-                all attempts ({allAttempts.length})
+              <h2 className="text-xs font-mono text-foreground/70 mb-4 tracking-wider uppercase">
+                attempts ({allAttempts.length})
               </h2>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 {allAttempts.map((attempt) => (
                   <button
                     key={attempt.id}
                     onClick={() => setSelectedAttempt(attempt)}
-                    className="w-full flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 px-4 bg-secondary/20 rounded border border-secondary/40 hover:border-highlight hover:bg-secondary/30 transition-colors text-left text-xs font-mono gap-3 sm:gap-0"
+                    className="w-full flex items-center justify-between py-2 px-3 bg-secondary/15 rounded border border-secondary/30 hover:border-highlight hover:bg-secondary/25 transition-colors text-left text-xs font-mono"
                   >
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <div className="text-foreground/70">
                         {formatDate(attempt.timestamp)}
                       </div>
-                      <div className="text-foreground/50 text-xs mt-1">
-                        {getLanguageLabel(attempt.language)} / {attempt.mode}
+                      <div className="text-foreground/50 text-xs">
+                        {getLanguageLabel(attempt.language)} • {attempt.mode}
                       </div>
                     </div>
-                    <div className="flex gap-6 sm:gap-8 text-right">
+                    <div className="flex gap-4 ml-4 text-right whitespace-nowrap">
                       <div>
-                        <span className="text-foreground/70">wpm: </span>
+                        <span className="text-foreground/50">wpm </span>
                         <span className="text-highlight font-semibold">
                           {attempt.wpm}
                         </span>
                       </div>
                       <div>
-                        <span className="text-foreground/70">acc: </span>
-                        <span className="text-foreground font-semibold">
+                        <span className="text-foreground/50">acc </span>
+                        <span className="font-semibold">
                           {Math.round(attempt.accuracy)}%
                         </span>
                       </div>
