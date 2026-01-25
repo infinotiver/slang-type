@@ -1,73 +1,112 @@
-# React + TypeScript + Vite
+# SlangType
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern typing speed test application with support for multiple languages and modes. Test your typing speed with slang, English, or code, across various time challenges and infinite mode.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Multiple Languages**: Test with slang, English, or code snippets
+- **Various Modes**: 15s, 30s, 60s, 120s, and infinite mode
+- **Display Modes**: Normal, tape-word, and tape-char visualization styles
+- **Statistics Tracking**: WPM, accuracy, errors, and detailed performance metrics
+- **History**: View all typing attempts with detailed analytics
+- **Themes**: Dark, light, latte, frappe, mocha, nord, and gruvbox themes
+- **Responsive Design**: Fully optimized for mobile and desktop
+- **Local Persistence**: Your history and settings are saved locally
+- **Performance Charts**: Visual representation of WPM progression
 
-## React Compiler
+## Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Prerequisites
 
-## Expanding the ESLint configuration
+- Node.js 18+
+- pnpm (or npm/yarn)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Installation
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+```bash
+# Clone the repository
+git clone infinotiver/slang-type
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+# Install dependencies
+pnpm install
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Start development server
+pnpm dev
+
+# Build for production
+pnpm build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Usage
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. Select your preferred language (slang, English, or code)
+2. Choose a test mode (15s, 30s, 60s, 120s, or inf)
+3. Click "click here to start typing" to begin
+4. Type the displayed text as accurately and quickly as possible
+5. View your results including WPM, accuracy, and error rate
+6. Access your typing history from the header
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Settings
+
+- **Theme**: Customize the color scheme
+- **Display Mode**: Choose how text is displayed (normal, tape-word, tape-char)
+- **Stats Display**: Toggle between normal and mini stats view
+
+## Technologies
+
+- **React 19** - UI library
+- **TypeScript** - Type-safe development
+- **Tailwind CSS** - Styling and responsive design
+- **Vite** - Build tool and dev server
+- **Tabler Icons** - Icon library
+- **Recharts** - Data visualization for performance charts
+
+## Project Structure
+
 ```
+src/
+├── components/
+│   ├── typing/
+│   │   └── TypingArea.tsx
+│   └── ui/
+│       ├── ModalBase.tsx
+│       ├── Button.tsx
+│       ├── ButtonGroup.tsx
+│       ├── StatItem.tsx
+│       ├── Header.tsx
+│       ├── StatsAndControls.tsx
+│       ├── SettingsModal.tsx
+│       ├── HistoryModal.tsx
+│       ├── CreditsModal.tsx
+│       └── ResultsModal.tsx
+├── hooks/
+│   ├── useTypingEngine.ts
+│   ├── useTimer.ts
+│   └── useLocalStorage.ts
+├── utils/
+│   ├── calculateStats.ts
+│   └── textGenerator.ts
+├── types/
+│   └── index.ts
+├── data/
+│   └── data.json
+├── App.tsx
+├── main.tsx
+└── index.css
+```
+
+## Development
+
+### Architecture
+
+The app uses a modular component structure with custom hooks for state management:
+
+- **useTypingEngine** - Core typing logic and character tracking
+- **useTimer** - Countdown timer for test modes
+- **useLocalStorage** - Persistent state management
+
+Modal components are built on the reusable **ModalBase** component to reduce code duplication.
+
+## Credits
+
+Made with ❤️ by [infinotiver](https://github.com/infinotiver)
