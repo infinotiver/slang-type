@@ -1,4 +1,5 @@
 import { useMemo, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   ComposedChart,
   Line,
@@ -9,32 +10,64 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import Button from "./Button";
+import {
+  calculateResultStats,
+  generateWpmProgressionData,
+  countCharStatuses,
+  chartTooltipStyle,
+} from "../../utils/resultsCalculations";
+import Button from "../ui/Button";
+import type { Language, Mode, TypingAttempt } from "../../types";
 
-interface ResultsModalProps {
-  wpm: number;
-  accuracy: number;
-  errors: number;
-  elapsed: number;
-  totalTyped: number;
-  correctChars: number;
-  charStatus: Record<number, "pending" | "correct" | "incorrect">;
-  targetText: string;
-  isNewHighScore?: boolean;
-  isBaseline?: boolean;
-  onReset: () => void;
+interface ResultsLocationState {
+  results: {
+    wpm: number;
+    accuracy: number;
+    errors: number;
+    elapsed: number;
+    totalTyped: number;
+    correctChars: number;
+    charStatus: Record<number, "pending" | "correct" | "incorrect">;
+    targetText: string;
+    mode: Mode;
+    language: Language;
+    isNewHighScore: boolean;
+    isBaseline: boolean;
+  };
+  highScore: number;
 }
 
-export default function ResultsModal({
-  accuracy,
-  elapsed,
-  totalTyped,
-  correctChars,
-  charStatus,
-  isNewHighScore = false,
-  isBaseline = false,
-  onReset,
-}: ResultsModalProps) {
+export default function ResultsPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const state = location.state as ResultsLocationState;
+
+  const {
+    wpm,
+    accuracy,
+    errors,
+    elapsed,
+    totalTyped,
+    correctChars,
+    charStatus,
+    mode,
+    language,
+    isNewHighScore,
+    isBaseline,
+  } = state?.results || {
+    wpm: 0,
+    accuracy: 0,
+    errors: 0,
+    elapsed: 0,
+    totalTyped: 0,
+    correctChars: 0,
+    charStatus: {},
+    mode: "30s",
+    language: "slang",
+    isNewHighScore: false,
+    isBaseline: false,
+  };
+
   // Create confetti effect
   const createConfetti = () => {
     const confettiCount = 50;
@@ -72,122 +105,64 @@ export default function ResultsModal({
       createConfetti();
     }
   }, [isNewHighScore, isBaseline]);
-  const accuracy_pct = Math.round(accuracy);
-  const minutesElapsed = elapsed / 60;
-  // Adjusted WPM: based on only correct characters (standard metric)
-  const adjustedWpm =
-    correctChars > 0 ? Math.round(correctChars / 5 / minutesElapsed) : 0;
-  const incorrectChars = totalTyped - correctChars;
-  const errorRate =
-    totalTyped > 0 ? ((incorrectChars / totalTyped) * 100).toFixed(1) : "0.0";
 
-  // WPM Progression with Error Rate
-  const wpmProgressionData = useMemo(() => {
-    const data = [];
-    const interval = Math.max(1, Math.floor(elapsed / 15));
-    for (let second = interval; second <= elapsed; second += interval) {
-      let charCount = 0;
-      let correctCount = 0;
-      for (let i = 0; i < totalTyped; i++) {
-        if (charStatus[i]) {
-          charCount++;
-          if (charStatus[i] === "correct") correctCount++;
-        }
-      }
-      const estimatedTotal = Math.round((charCount / elapsed) * second);
-      const estimatedCorrect = Math.round((correctCount / elapsed) * second);
-      const estimatedIncorrect = estimatedTotal - estimatedCorrect;
-      const adj_wpm =
-        estimatedCorrect > 0
-          ? Math.round(estimatedCorrect / 5 / (second / 60))
-          : 0;
-      const errorRate =
-        estimatedTotal > 0
-          ? Math.round((estimatedIncorrect / estimatedTotal) * 100)
-          : 0;
-      data.push({
-        time: second,
-        adjustedWpm: Math.max(0, adj_wpm),
-        errorRate: errorRate,
-      });
-    }
-    return data.length > 0
-      ? data
-      : [{ time: elapsed, adjustedWpm, errorRate: parseInt(errorRate) }];
-  }, [elapsed, charStatus, adjustedWpm, totalTyped, errorRate]);
-
-  // Detailed statistics
+  // Use utility functions to calculate stats
   const stats = useMemo(() => {
-    const statusCounts = {
-      correct: 0,
-      incorrect: 0,
-      pending: 0,
-    };
-    Object.values(charStatus).forEach((status) => {
-      statusCounts[status]++;
-    });
+    return calculateResultStats(
+      elapsed,
+      totalTyped,
+      correctChars,
+      accuracy,
+      charStatus,
+    );
+  }, [elapsed, totalTyped, correctChars, accuracy, charStatus]);
 
-    const timePerChar =
-      totalTyped > 0 ? (elapsed / totalTyped).toFixed(2) : "0.00";
-    const charsPerSecond = (totalTyped / elapsed).toFixed(2);
+  // Generate chart data
+  const chartData = useMemo(() => {
+    return generateWpmProgressionData(
+      elapsed,
+      totalTyped,
+      correctChars,
+      charStatus,
+      accuracy,
+    );
+  }, [elapsed, totalTyped, correctChars, charStatus, accuracy]);
 
-    return {
-      statusCounts,
-      timePerChar,
-      charsPerSecond,
-    };
-  }, [charStatus, totalTyped, elapsed]);
+  // Count character statuses
+  const statusCounts = useMemo(() => {
+    return countCharStatuses(charStatus);
+  }, [charStatus]);
 
-  const chartTooltip = {
-    contentStyle: {
-      backgroundColor: "rgb(31, 41, 55)",
-      border: "1px solid rgb(75, 85, 99)",
-      borderRadius: "6px",
-      color: "rgb(243, 244, 246)",
-    },
-  };
+  useEffect(() => {
+    if (isNewHighScore || isBaseline) {
+      createConfetti();
+    }
+  }, [isNewHighScore, isBaseline]);
 
-  // Calculate raw WPM for chart
-  const rawWpm =
-    totalTyped > 0 ? Math.round(totalTyped / 5 / minutesElapsed) : 0;
-
-  // Update WPM progression data to include raw WPM
-  const wpmProgressionDataWithRaw = useMemo(() => {
-    return wpmProgressionData.map((point) => ({
-      ...point,
-      rawWpm: Math.round((point.time / elapsed) * rawWpm),
-    }));
-  }, [wpmProgressionData, rawWpm, elapsed]);
+  if (!state || !state.results) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <p className="text-foreground/70">No results to display</p>
+      </div>
+    );
+  }
 
   return (
-    <>
-      {/* Backdrop */}
-      <div className="fixed inset-0 backdrop-blur-sm z-40" />
-
-      {/* Modal */}
-      <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
-        <div className="bg-background border border-secondary rounded-lg p-8 max-w-5xl max-h-[90vh] overflow-y-auto shadow-lg pointer-events-auto">
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h2 className="text-lg font-bold font-mono">test_results</h2>
-              {isBaseline && (
-                <div className="text-sm font-mono text-green-400 mt-2">
-                  baseline established!
-                </div>
-              )}
-              {isNewHighScore && !isBaseline && (
-                <div className="text-sm font-mono text-yellow-400 mt-2 animate-pulse">
-                  high score smashed! 🎯
-                </div>
-              )}
-            </div>
-            <button
-              onClick={onReset}
-              className="text-foreground hover:text-highlight transition-colors text-lg font-mono p-1"
-              aria-label="close"
-            >
-              ✕
-            </button>
+    <div className="flex-1 overflow-y-auto">
+      <main className="px-4 sm:px-8 md:px-12 py-8">
+        <div className="max-w-5xl mx-auto">
+          <div className="mb-8">
+            <h2 className="text-lg font-bold font-mono">test_results</h2>
+            {isBaseline && (
+              <div className="text-sm font-mono text-green-400 mt-2">
+                baseline established!
+              </div>
+            )}
+            {isNewHighScore && !isBaseline && (
+              <div className="text-sm font-mono text-yellow-400 mt-2 animate-pulse">
+                high score smashed! 🎯
+              </div>
+            )}
           </div>
 
           {/* Two-column layout: Stats on left, Chart on right */}
@@ -199,7 +174,7 @@ export default function ResultsModal({
                   Adjusted WPM
                 </div>
                 <div className="text-5xl font-bold text-highlight">
-                  {adjustedWpm}
+                  {stats.adjustedWpm}
                 </div>
               </div>
               <div>
@@ -207,7 +182,7 @@ export default function ResultsModal({
                   Raw WPM
                 </div>
                 <div className="text-4xl font-bold text-secondary">
-                  {rawWpm}
+                  {stats.rawWpm}
                 </div>
               </div>
               <div>
@@ -215,7 +190,7 @@ export default function ResultsModal({
                   Accuracy
                 </div>
                 <div className="text-4xl font-bold text-highlight">
-                  {accuracy_pct}%
+                  {stats.accuracy}%
                 </div>
               </div>
               <div>
@@ -226,6 +201,14 @@ export default function ResultsModal({
                   {elapsed}s
                 </div>
               </div>
+              <div>
+                <div className="text-xs text-foreground/60 tracking-widest mb-2 uppercase font-light">
+                  Error Rate
+                </div>
+                <div className="text-3xl font-bold text-red-400">
+                  {stats.errorRate}%
+                </div>
+              </div>
             </div>
 
             {/* Right: Performance Chart */}
@@ -234,7 +217,7 @@ export default function ResultsModal({
                 performance_analysis
               </h3>
               <ResponsiveContainer width="100%" height={300}>
-                <ComposedChart data={wpmProgressionDataWithRaw}>
+                <ComposedChart data={chartData}>
                   <CartesianGrid
                     strokeDasharray="3 3"
                     stroke="rgb(75, 85, 99)"
@@ -251,14 +234,25 @@ export default function ResultsModal({
                     style={{ fontSize: "12px" }}
                     label={{ value: "WPM", angle: -90, position: "insideLeft" }}
                   />
-                  <Tooltip {...chartTooltip} />
+                  <YAxis
+                    yAxisId="right"
+                    orientation="right"
+                    stroke="rgb(107, 114, 128)"
+                    style={{ fontSize: "12px" }}
+                    label={{
+                      value: "Error % / Acc %",
+                      angle: 90,
+                      position: "insideRight",
+                    }}
+                  />
+                  <Tooltip {...chartTooltipStyle} />
                   <Legend />
                   <Line
                     yAxisId="left"
                     type="monotone"
                     dataKey="adjustedWpm"
-                    stroke="rgb(16, 185, 129)"
-                    strokeWidth={2}
+                    stroke="#10b981"
+                    strokeWidth={2.5}
                     dot={false}
                     name="Adjusted WPM"
                   />
@@ -266,11 +260,29 @@ export default function ResultsModal({
                     yAxisId="left"
                     type="monotone"
                     dataKey="rawWpm"
-                    stroke="rgb(107, 114, 128)"
+                    stroke="#f59e0b"
                     strokeWidth={2}
                     dot={false}
                     strokeDasharray="5 5"
                     name="Raw WPM"
+                  />
+                  <Line
+                    yAxisId="right"
+                    type="monotone"
+                    dataKey="errorRate"
+                    stroke="#ef4444"
+                    strokeWidth={2}
+                    dot={false}
+                    name="Error Rate %"
+                  />
+                  <Line
+                    yAxisId="right"
+                    type="monotone"
+                    dataKey="accuracy"
+                    stroke="#ffff00"
+                    strokeWidth={2}
+                    dot={false}
+                    name="Accuracy %"
                   />
                 </ComposedChart>
               </ResponsiveContainer>
@@ -296,7 +308,7 @@ export default function ResultsModal({
                   Correct
                 </div>
                 <div className="text-3xl font-bold text-green-400">
-                  {stats.statusCounts.correct}
+                  {statusCounts.correct}
                 </div>
               </div>
               <div className="p-6 border border-secondary/30 rounded">
@@ -304,7 +316,7 @@ export default function ResultsModal({
                   Incorrect
                 </div>
                 <div className="text-3xl font-bold text-red-400">
-                  {stats.statusCounts.incorrect}
+                  {statusCounts.incorrect}
                 </div>
               </div>
               <div className="p-6 border border-secondary/30 rounded">
@@ -312,7 +324,7 @@ export default function ResultsModal({
                   Untyped
                 </div>
                 <div className="text-3xl font-bold text-foreground/50">
-                  {stats.statusCounts.pending}
+                  {statusCounts.pending}
                 </div>
               </div>
               <div className="p-6 border border-secondary/30 rounded">
@@ -320,7 +332,7 @@ export default function ResultsModal({
                   Error Rate
                 </div>
                 <div className="text-3xl font-bold text-orange-400">
-                  {errorRate}%
+                  {stats.errorRate}%
                 </div>
               </div>
               <div className="p-6 border border-secondary/30 rounded">
@@ -344,7 +356,7 @@ export default function ResultsModal({
                   Consistency
                 </div>
                 <div className="text-3xl font-bold text-foreground/70">
-                  {(100 - parseFloat(errorRate)).toFixed(1)}%
+                  {(100 - parseFloat(stats.errorRate)).toFixed(1)}%
                 </div>
               </div>
             </div>
@@ -352,12 +364,30 @@ export default function ResultsModal({
 
           {/* Action Button */}
           <div className="flex justify-center">
-            <Button onClick={onReset} variant="primary">
+            <Button
+              onClick={() => {
+                // Save attempt to history
+                const attempt: TypingAttempt = {
+                  id: `${Date.now()}-${Math.random()}`,
+                  timestamp: Date.now(),
+                  wpm,
+                  accuracy: Math.round(accuracy),
+                  errors,
+                  elapsed,
+                  mode,
+                  language,
+                  totalTyped,
+                  correctChars,
+                };
+                navigate("/", { state: { newAttempt: attempt } });
+              }}
+              variant="primary"
+            >
               try_again
             </Button>
           </div>
         </div>
-      </div>
-    </>
+      </main>
+    </div>
   );
 }

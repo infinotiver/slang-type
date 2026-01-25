@@ -1,8 +1,6 @@
 import { useRef, useMemo } from "react";
-import ResultsModal from "../ui/ResultsModal";
 import Button from "../ui/Button";
 import type { DisplayMode, Mode, Language } from "../../types";
-import type { TypingAttempt } from "../../types";
 
 interface UseTypingEngineReturn {
   cursor: number;
@@ -24,6 +22,21 @@ interface UseTypingEngineReturn {
   reset: () => void;
 }
 
+interface ResultsPayload {
+  wpm: number;
+  accuracy: number;
+  errors: number;
+  elapsed: number;
+  totalTyped: number;
+  correctChars: number;
+  charStatus: Record<number, "pending" | "correct" | "incorrect">;
+  targetText: string;
+  mode: Mode;
+  language: Language;
+  isNewHighScore: boolean;
+  isBaseline: boolean;
+}
+
 interface TypingAreaProps {
   targetText: string;
   engine: UseTypingEngineReturn;
@@ -31,7 +44,7 @@ interface TypingAreaProps {
   mode: Mode;
   language: Language;
   highScore: number;
-  onAttemptComplete?: (attempt: TypingAttempt) => void;
+  onResultsComplete?: (results: ResultsPayload) => void;
   timer?: {
     running: boolean;
     elapsed: number;
@@ -52,7 +65,7 @@ export default function TypingArea({
   mode,
   language,
   highScore,
-  onAttemptComplete,
+  onResultsComplete,
 }: TypingAreaProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -159,41 +172,28 @@ export default function TypingArea({
 
   // Show results
   if (engine.isComplete) {
-    const handleResultsClose = () => {
-      // Save attempt to history
-      if (onAttemptComplete) {
-        const attempt: TypingAttempt = {
-          id: `${Date.now()}-${Math.random()}`,
-          timestamp: Date.now(),
+    const handleResultsNavigate = () => {
+      if (onResultsComplete) {
+        onResultsComplete({
           wpm: engine.wpm,
           accuracy: engine.accuracy,
           errors: engine.errors,
           elapsed: engine.elapsed,
-          mode,
-          language,
           totalTyped: engine.totalTyped,
           correctChars: engine.correctChars,
-        };
-        onAttemptComplete(attempt);
+          charStatus: engine.status,
+          targetText,
+          mode,
+          language,
+          isNewHighScore: engine.wpm > highScore,
+          isBaseline: highScore === 0,
+        });
       }
       engine.reset();
     };
 
-    return (
-      <ResultsModal
-        wpm={engine.wpm}
-        accuracy={engine.accuracy}
-        errors={engine.errors}
-        elapsed={engine.elapsed}
-        totalTyped={engine.totalTyped}
-        correctChars={engine.correctChars}
-        charStatus={engine.status}
-        isNewHighScore={engine.wpm > highScore}
-        isBaseline={highScore === 0}
-        targetText={targetText}
-        onReset={handleResultsClose}
-      />
-    );
+    handleResultsNavigate();
+    return null;
   }
 
   // Show typing test or start overlay
