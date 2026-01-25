@@ -42,7 +42,17 @@ export default function HistoryPage() {
       minute: "2-digit",
     });
   };
-
+  const formatTime = (seconds: number) => {
+    if (seconds < 60) {
+      return `${seconds}s`;
+    }
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    if (remainingSeconds === 0) {
+      return `${minutes}m`;
+    }
+    return `${minutes}m ${remainingSeconds}s`;
+  };
   const getLanguageLabel = (lang: string) => {
     const labels: Record<string, string> = {
       slang: "slang",
@@ -284,7 +294,7 @@ export default function HistoryPage() {
                     total time
                   </div>
                   <div className="text-2xl sm:text-3xl font-bold text-foreground mt-3">
-                    {Math.round(stats.totalTime / 60)}m
+                    {formatTime(stats.totalTime)}
                   </div>
                 </div>
               </div>
