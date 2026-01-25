@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --color-background: #131316ff;
+  --color-accent: #696969;
+  --color-secondary: #26262cff;
+  --color-foreground: #FCF5E5ff;
+  --color-highlight: #fff000;
+  --font-sans: "Roboto", sans-serif;
+  --font-mono: "Roboto Mono", monospace;
+}
+
+[data-theme="light"] {
+  --color-background: #f5f5f5;
+  --color-secondary: #e5e5e5;
+  --color-foreground: #1a1a1a;
+  --color-accent: #14213d;
+  --color-highlight: #fca311;
+}
+
+[data-theme="latte"] {
+  --color-background: #2b2d3a;
+  --color-secondary: #3a3d4f;
+  --color-foreground: #dce0e8;
+  --color-accent: #9ca0b0;
+  /* overlay1 */
+  --color-highlight: #dc8a78;
+  /* rosewater */
+}
+
+[data-theme="frappe"] {
+  --color-background: #303446;
+  --color-secondary: #414559;
+  --color-foreground: #c6d0f5;
+  --color-accent: #737994;
+  /* overlay1 */
+  --color-highlight: #f4b8e4;
+  /* rosewater */
+}
+
+[data-theme="mocha"] {
+  --color-background: #1e1e2e;
+  --color-secondary: #313244;
+  --color-foreground: #cdd6f4;
+  --color-accent: #6c7086;
+  /* overlay1 */
+  --color-highlight: #94e2d5;
+  /* teal */
+}
+
+[data-theme="nord"] {
+  --color-background: #2e3440;
+  /* nord0 */
+  --color-secondary: #3b4252;
+  /* nord1 */
+  --color-foreground: #eceff4;
+  /* nord6 */
+  --color-accent: #81a1c1;
+  /* nord9 (muted use) */
+  --color-highlight: #88c0d0;
+  /* nord8 */
+}
+
+[data-theme="gruvbox"] {
+  --color-background: #282828;
+  --color-secondary: #3c3836;
+  --color-foreground: #ebdbb2;
+  --color-accent: #a89984;
+  --color-highlight: #fabd2f;
+}
