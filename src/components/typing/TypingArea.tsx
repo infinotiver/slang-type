@@ -69,24 +69,50 @@ export default function TypingArea({
 }: TypingAreaProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // NORMAL MODE: Split text into lines (approximate based on ~60 chars per line)
+  // NORMAL MODE: Split text into lines (wrap based on ~60 chars per line)
   const CHARS_PER_LINE = 60;
   const lines = useMemo(() => {
-    const result = [];
-    for (let i = 0; i < targetText.length; i += CHARS_PER_LINE) {
-      result.push(targetText.substring(i, i + CHARS_PER_LINE));
+    const textWords = targetText.split(" ");
+    const result: string[] = [];
+    let currentLine = "";
+
+    for (const word of textWords) {
+      if (currentLine.length + word.length + 1 > CHARS_PER_LINE) {
+        if (currentLine) {
+          result.push(currentLine.trimEnd());
+        }
+        currentLine = word + " ";
+      } else {
+        currentLine += word + " ";
+      }
     }
+
+    if (currentLine) {
+      result.push(currentLine.trimEnd());
+    }
+
     return result;
   }, [targetText]);
 
   // Calculate which line the cursor is on
-  const currentLine = Math.floor(engine.cursor / CHARS_PER_LINE);
-  const lineStart = Math.max(0, currentLine - 2); // Keep cursor on 3rd visible line
+  let currentLineIdx = 0;
+  let charCount = 0;
+  for (let i = 0; i < lines.length; i++) {
+    if (charCount + lines[i].length + 1 > engine.cursor) {
+      currentLineIdx = i;
+      break;
+    }
+    charCount += lines[i].length + 1; // +1 for space/newline
+  }
+
+  const lineStart = Math.max(0, currentLineIdx - 2); // Keep cursor on 3rd visible line
   const lineEnd = lineStart + MAX_VISIBLE_LINES;
 
   // Get visible lines and their character ranges
   const visibleLines = lines.slice(lineStart, lineEnd);
-  const visibleCharStart = lineStart * CHARS_PER_LINE;
+  // const visibleCharStart = lines
+  //   .slice(0, lineStart)
+  //   .reduce((sum, line) => sum + line.length + 1, 0);
 
   // TAPE MODES: Calculate word/char positions
   const words = useMemo(() => targetText.split(" "), [targetText]);
@@ -218,27 +244,33 @@ export default function TypingArea({
         <div className="mb-3 sm:mb-4 relative w-full max-w-4xl sm:max-w-5xl px-2 sm:px-0">
           {displayMode === "normal" && (
             <div className="text-lg sm:text-xl md:text-2xl leading-relaxed tracking-normal text-center">
-              {visibleLines.map((line, lineIdx) => (
-                <span key={lineStart + lineIdx}>
-                  {line.split("").map((char, charIdx) => {
-                    const globalIdx =
-                      visibleCharStart + lineIdx * CHARS_PER_LINE + charIdx;
-                    return (
-                      <span
-                        key={globalIdx}
-                        className={`${getCharColor(globalIdx)} transition-colors ${
-                          globalIdx === engine.cursor
-                            ? "bg-secondary border-b-2 border-highlight"
-                            : ""
-                        }`}
-                      >
-                        {char}
-                      </span>
-                    );
-                  })}
-                  {lineIdx < visibleLines.length - 1 && <br />}
-                </span>
-              ))}
+              {visibleLines.map((line, lineIdx) => {
+                // Calculate the actual character offset for this line
+                const lineOffset = lines
+                  .slice(0, lineStart + lineIdx)
+                  .reduce((sum, l) => sum + l.length + 1, 0);
+
+                return (
+                  <span key={lineStart + lineIdx}>
+                    {line.split("").map((char, charIdx) => {
+                      const globalIdx = lineOffset + charIdx;
+                      return (
+                        <span
+                          key={globalIdx}
+                          className={`${getCharColor(globalIdx)} transition-colors ${
+                            globalIdx === engine.cursor
+                              ? "bg-secondary border-b-2 border-highlight"
+                              : ""
+                          }`}
+                        >
+                          {char}
+                        </span>
+                      );
+                    })}
+                    {lineIdx < visibleLines.length - 1 && <br />}
+                  </span>
+                );
+              })}
             </div>
           )}
 
