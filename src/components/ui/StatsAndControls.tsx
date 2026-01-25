@@ -28,19 +28,24 @@ export default function StatsAndControls({
     ];
 
     return (
-      <div className="flex flex-col items-center gap-3 font-mono text-xs text-foreground/70">
-        <div className="flex items-center justify-center gap-4 text-foreground">
-          <span className="font-bold">{wpm}</span>
-          <span>·</span>
-          <span className="font-bold">{Math.round(accuracy)}%</span>
+      <div className="w-full flex flex-col items-center gap-3 sm:gap-4 font-mono text-xs sm:text-sm text-foreground/70">
+        {/* Stats */}
+        <div className="flex items-center justify-center gap-2 sm:gap-4 text-foreground">
+          <span className="font-bold text-sm sm:text-base">{wpm}</span>
+          <span className="text-foreground/50">·</span>
+          <span className="font-bold text-sm sm:text-base">
+            {Math.round(accuracy)}%
+          </span>
         </div>
-        <div className="flex items-center gap-2">
+
+        {/* Languages - stacked on mobile */}
+        <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
           {controlsOptions.map((lang, idx) => (
-            <span key={lang.label}>
-              {idx > 0 && <span className="mx-1">/</span>}
+            <span key={lang.label} className="flex items-center gap-1">
+              {idx > 0 && <span className="text-foreground/40">/</span>}
               <button
                 onClick={() => onLanguageChange(lang.label)}
-                className={`hover:text-highlight transition-colors ${
+                className={`px-1 py-0.5 hover:text-highlight transition-colors ${
                   language === lang.label ? "text-highlight font-semibold" : ""
                 } ${lang.disabled ? "opacity-40 cursor-not-allowed" : ""}`}
                 disabled={lang.disabled}
@@ -49,13 +54,16 @@ export default function StatsAndControls({
               </button>
             </span>
           ))}
-          <span className="mx-2 text-foreground/40">·</span>
+        </div>
+
+        {/* Modes - stacked on mobile */}
+        <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
           {["15s", "30s", "60s", "120s", "inf"].map((m, idx) => (
-            <span key={m}>
-              {idx > 0 && <span className="mx-1">/</span>}
+            <span key={m} className="flex items-center gap-1">
+              {idx > 0 && <span className="text-foreground/40">/</span>}
               <button
                 onClick={() => onModeChange(m)}
-                className={`hover:text-highlight transition-colors ${
+                className={`px-1 py-0.5 hover:text-highlight transition-colors ${
                   mode === m ? "text-highlight font-semibold" : ""
                 }`}
               >
