@@ -128,7 +128,7 @@ export default function StatsAndControls({
       <div className="hidden md:block w-px h-14 bg-secondary/40"></div>
 
       {/* CONTROLS PANEL */}
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-4">
+      <div className="flex items-center justify-center gap-3 sm:gap-4 md:gap-4">
         {/* Language - Dropdown on mobile, buttons on desktop */}
         <div className="w-full sm:w-auto flex items-center gap-2">
           <select
