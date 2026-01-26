@@ -79,7 +79,7 @@ export default function HomePage() {
   return (
     <>
       {/* STATS & CONTROLS */}
-      <div className="px-4 sm:px-8 md:px-12 py-2 flex justify-center items-center">
+      <div className="px-8 sm:px-16 md:px-20 py-4 flex justify-center items-center">
         <StatsAndControls
           wpm={engine.wpm}
           accuracy={engine.accuracy}
@@ -95,7 +95,7 @@ export default function HomePage() {
       </div>
 
       {/* TYPING AREA */}
-      <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-8 md:px-12 py-2">
+      <main className="flex-1 flex flex-col items-center justify-center px-8 sm:px-16 md:px-20 py-6">
         <TypingArea
           targetText={passageText}
           engine={engine}

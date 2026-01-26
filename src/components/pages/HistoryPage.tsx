@@ -127,7 +127,7 @@ export default function HistoryPage() {
     return (
       <div className="min-h-screen bg-background text-foreground flex flex-col font-mono">
         {/* Detail Header */}
-        <header className="px-4 sm:px-8 md:px-12 py-4 sm:py-6 border-b border-secondary/40">
+        <header className="px-8 sm:px-16 md:px-20 py-6 sm:py-8 border-b border-secondary/40">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setSelectedAttempt(null)}
@@ -149,7 +149,7 @@ export default function HistoryPage() {
         </header>
 
         {/* Detail Content */}
-        <main className="flex-1 px-4 sm:px-8 md:px-12 py-8 flex items-center justify-center">
+        <main className="flex-1 px-8 sm:px-16 md:px-20 py-10 flex items-center justify-center">
           <div className="max-w-2xl w-full">
             {/* Test Info */}
             <div className="mb-8 pb-8 border-b border-secondary/40">
@@ -273,7 +273,7 @@ export default function HistoryPage() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-mono">
       {/* Header */}
-      <header className="px-4 sm:px-8 md:px-12 py-4 sm:py-6 border-b border-secondary/40">
+      <header className="px-8 sm:px-16 md:px-20 py-6 sm:py-8 border-b border-secondary/40">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate("/")}
@@ -290,7 +290,7 @@ export default function HistoryPage() {
       </header>
 
       {/* Content */}
-      <main className="flex-1 px-4 sm:px-8 md:px-12 py-8">
+      <main className="flex-1 px-8 sm:px-16 md:px-20 py-10">
         {attempts.length > 0 ? (
           <div className="max-w-4xl mx-auto">
             {/* Key Stats - Focused View */}

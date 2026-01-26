@@ -149,7 +149,7 @@ export default function ResultsPage() {
 
   return (
     <div className="flex-1 overflow-y-auto bg-background text-foreground flex flex-col font-mono">
-      <main className="px-4 sm:px-8 md:px-12 py-8">
+      <main className="px-8 sm:px-16 md:px-20 py-10">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6 flex items-center gap-2">
             <button

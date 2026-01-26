@@ -40,7 +40,7 @@ export default function RootLayout() {
       <Outlet context={{ displayMode, statsDisplay }} />
 
       {/* FOOTER - always visible */}
-      <footer className="border-t border-secondary/40 px-4 sm:px-8 py-3 sm:py-4">
+      <footer className="border-t border-secondary/40 px-8 sm:px-16 md:px-20 py-4 sm:py-6">
         <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-xs font-mono text-foreground/50">
           <span>alpha</span>
           <span>
