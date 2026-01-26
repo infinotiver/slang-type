@@ -19,6 +19,16 @@ export default function StatsAndControls({
   duration = 0,
   display = "normal",
 }: StatsAndControlsExtendedProps) {
+  // Calculate remaining time for countdown display
+  const remaining = Math.max(0, duration - elapsed);
+
+  // Format time to MM:SS format
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
   // Mini mode: return just the values with minimal styling
   if (display === "mini") {
     const controlsOptions = [
@@ -76,15 +86,61 @@ export default function StatsAndControls({
     );
   }
 
-  // Calculate remaining time for countdown display
-  const remaining = Math.max(0, duration - elapsed);
+  // Focus mode: return just the timer with minimal styling
+  if (display === "focus") {
+    const controlsOptions = [
+      { label: "slang", disabled: slangDisabled },
+      { label: "english", disabled: false },
+      { label: "code", disabled: true },
+    ];
 
-  // Format time to MM:SS format
-  const formatTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
+    return (
+      <div className="w-full flex items-center justify-center gap-4 font-mono">
+        {/* Timer */}
+        <div className="text-3xl sm:text-4xl font-bold text-highlight">
+          {formatTime(remaining)}
+        </div>
+
+        {/* Language Options */}
+        <div className="flex items-center gap-1 bg-secondary/30 px-2 py-1 rounded-lg">
+          {controlsOptions.map((lang) => (
+            <button
+              key={lang.label}
+              onClick={() => onLanguageChange(lang.label)}
+              className={`px-2 py-0.5 text-sm rounded transition-colors ${
+                language === lang.label
+                  ? "bg-highlight text-background font-semibold"
+                  : "text-foreground/70 hover:text-foreground"
+              } ${lang.disabled ? "opacity-40 cursor-not-allowed" : ""}`}
+              disabled={lang.disabled}
+            >
+              {lang.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Mode Options */}
+        <div className="flex items-center gap-1 bg-secondary/30 px-2 py-1 rounded-lg">
+          {["15s", "30s", "60s", "120s", "inf"].map((m) => (
+            <button
+              key={m}
+              onClick={() => onModeChange(m)}
+              className={`px-2 py-0.5 text-sm rounded transition-colors ${
+                mode === m
+                  ? "bg-highlight text-background font-semibold"
+                  : "text-foreground/70 hover:text-foreground"
+              }`}
+            >
+              {m}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Calculate remaining time for countdown display (already done above)
+  // const remaining = Math.max(0, duration - elapsed);
 
   const controlsOptions = [
     { label: "slang", disabled: slangDisabled },
@@ -95,7 +151,7 @@ export default function StatsAndControls({
   return (
     <div className="w-full flex flex-col sm:flex-row sm:items-center sm:justify-center gap-4 sm:gap-6 md:gap-12 font-mono">
       {/* STATS PANEL */}
-      <div className="flex items-center justify-center gap-4 sm:gap-6 md:gap-8 h-16 sm:h-20">
+      <div className="flex items-center justify-center gap-4 sm:gap-6 md:gap-8 h-10 sm:h-15">
         <div className="flex flex-col items-center gap-1">
           <span className="text-xs text-foreground/70 tracking-wider font-light">
             wpm

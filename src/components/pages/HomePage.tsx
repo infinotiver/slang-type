@@ -79,7 +79,7 @@ export default function HomePage() {
   return (
     <>
       {/* STATS & CONTROLS */}
-      <div className="px-8 sm:px-16 md:px-20 py-4 flex justify-center items-center">
+      <div className="px-8 sm:px-16 md:px-20 pt-1 flex justify-center items-center">
         <StatsAndControls
           wpm={engine.wpm}
           accuracy={engine.accuracy}

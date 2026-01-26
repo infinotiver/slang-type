@@ -42,6 +42,7 @@ export default function SettingsModal({
   const statsDisplayOptions: { label: string; value: StatsDisplay }[] = [
     { label: "normal", value: "normal" },
     { label: "mini", value: "mini" },
+    { label: "focus", value: "focus" },
   ];
 
   return (
