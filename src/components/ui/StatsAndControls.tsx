@@ -95,46 +95,42 @@ export default function StatsAndControls({
     ];
 
     return (
-      <div className="w-full flex items-center justify-center gap-4 font-mono">
+      <div className="w-full flex flex-row items-center justify-center gap-2 font-mono">
         {/* Timer */}
-        <div className="text-3xl sm:text-4xl font-bold text-highlight">
+        <div className="text-3xl font-bold text-highlight whitespace-nowrap">
           {formatTime(remaining)}
         </div>
 
-        {/* Language Options */}
-        <div className="flex items-center gap-1 bg-secondary/30 px-2 py-1 rounded-lg">
+        {/* Language Dropdown */}
+        <select
+          value={language}
+          onChange={(e) => onLanguageChange(e.target.value)}
+          className="px-3 py-1 text-2xl font-bold bg-secondary/30 border border-secondary/60 font-mono text-foreground rounded hover:border-highlight hover:bg-secondary/40 transition-colors active:scale-95 focus:outline-none focus:border-highlight focus:ring-1 focus:ring-highlight/30"
+          disabled={slangDisabled && language === "slang"}
+        >
           {controlsOptions.map((lang) => (
-            <button
+            <option
               key={lang.label}
-              onClick={() => onLanguageChange(lang.label)}
-              className={`px-2 py-0.5 text-sm rounded transition-colors ${
-                language === lang.label
-                  ? "bg-highlight text-background font-semibold"
-                  : "text-foreground/70 hover:text-foreground"
-              } ${lang.disabled ? "opacity-40 cursor-not-allowed" : ""}`}
+              value={lang.label}
               disabled={lang.disabled}
             >
               {lang.label}
-            </button>
+            </option>
           ))}
-        </div>
+        </select>
 
-        {/* Mode Options */}
-        <div className="flex items-center gap-1 bg-secondary/30 px-2 py-1 rounded-lg">
+        {/* Mode Dropdown */}
+        <select
+          value={mode}
+          onChange={(e) => onModeChange(e.target.value)}
+          className="px-3 py-1 text-2xl font-bold bg-secondary/30 border border-secondary/60 font-mono text-foreground rounded hover:border-highlight hover:bg-secondary/40 transition-colors active:scale-95 focus:outline-none focus:border-highlight focus:ring-1 focus:ring-highlight/30"
+        >
           {["15s", "30s", "60s", "120s", "inf"].map((m) => (
-            <button
-              key={m}
-              onClick={() => onModeChange(m)}
-              className={`px-2 py-0.5 text-sm rounded transition-colors ${
-                mode === m
-                  ? "bg-highlight text-background font-semibold"
-                  : "text-foreground/70 hover:text-foreground"
-              }`}
-            >
+            <option key={m} value={m}>
               {m}
-            </button>
+            </option>
           ))}
-        </div>
+        </select>
       </div>
     );
   }
