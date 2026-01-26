@@ -148,222 +148,34 @@ export default function ResultsPage() {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto">
+    <div className="flex-1 overflow-y-auto bg-background text-foreground flex flex-col font-mono">
       <main className="px-4 sm:px-8 md:px-12 py-8">
-        <div className="max-w-5xl mx-auto">
-          <div className="mb-8">
-            <h2 className="text-lg font-bold font-mono">test_results</h2>
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-6 flex items-center gap-2">
+            <button
+              onClick={() => navigate("/")}
+              className="p-2 text-foreground hover:text-highlight transition-colors active:scale-95 -ml-2"
+              aria-label="back"
+            >
+              ←
+            </button>
+            <h2 className="text-lg sm:text-xl font-bold font-mono">
+              test_results
+            </h2>
             {isBaseline && (
-              <div className="text-sm font-mono text-green-400 mt-2">
+              <div className="text-xs sm:text-sm font-mono text-green-400 ml-auto">
                 baseline established!
               </div>
             )}
             {isNewHighScore && !isBaseline && (
-              <div className="text-sm font-mono text-yellow-400 mt-2 animate-pulse">
+              <div className="text-xs sm:text-sm font-mono text-yellow-400 ml-auto animate-pulse">
                 high score smashed! 🎯
               </div>
             )}
           </div>
 
-          {/* Two-column layout: Stats on left, Chart on right */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-10">
-            {/* Left: Big Stats Vertically Stacked */}
-            <div className="lg:col-span-1 space-y-8">
-              <div>
-                <div className="text-xs text-foreground/60 tracking-widest mb-2 uppercase font-light">
-                  Adjusted WPM
-                </div>
-                <div className="text-5xl font-bold text-highlight">
-                  {stats.adjustedWpm}
-                </div>
-              </div>
-              <div>
-                <div className="text-xs text-foreground/60 tracking-widest mb-2 uppercase font-light">
-                  Raw WPM
-                </div>
-                <div className="text-4xl font-bold text-secondary">
-                  {stats.rawWpm}
-                </div>
-              </div>
-              <div>
-                <div className="text-xs text-foreground/60 tracking-widest mb-2 uppercase font-light">
-                  Accuracy
-                </div>
-                <div className="text-4xl font-bold text-highlight">
-                  {stats.accuracy}%
-                </div>
-              </div>
-              <div>
-                <div className="text-xs text-foreground/60 tracking-widest mb-2 uppercase font-light">
-                  Duration
-                </div>
-                <div className="text-4xl font-bold text-highlight">
-                  {elapsed}s
-                </div>
-              </div>
-              <div>
-                <div className="text-xs text-foreground/60 tracking-widest mb-2 uppercase font-light">
-                  Error Rate
-                </div>
-                <div className="text-3xl font-bold text-red-400">
-                  {stats.errorRate}%
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Performance Chart */}
-            <div className="lg:col-span-2">
-              <h3 className="text-sm font-mono tracking-widest text-foreground/60 mb-4 uppercase">
-                performance_analysis
-              </h3>
-              <ResponsiveContainer width="100%" height={300}>
-                <ComposedChart data={chartData}>
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    stroke="rgb(75, 85, 99)"
-                    opacity={0.3}
-                  />
-                  <XAxis
-                    dataKey="time"
-                    stroke="rgb(107, 114, 128)"
-                    style={{ fontSize: "12px" }}
-                  />
-                  <YAxis
-                    yAxisId="left"
-                    stroke="rgb(107, 114, 128)"
-                    style={{ fontSize: "12px" }}
-                    label={{ value: "WPM", angle: -90, position: "insideLeft" }}
-                  />
-                  <YAxis
-                    yAxisId="right"
-                    orientation="right"
-                    stroke="rgb(107, 114, 128)"
-                    style={{ fontSize: "12px" }}
-                    label={{
-                      value: "Error % / Acc %",
-                      angle: 90,
-                      position: "insideRight",
-                    }}
-                  />
-                  <Tooltip {...chartTooltipStyle} />
-                  <Legend />
-                  <Line
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="adjustedWpm"
-                    stroke="#10b981"
-                    strokeWidth={2.5}
-                    dot={false}
-                    name="Adjusted WPM"
-                  />
-                  <Line
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="rawWpm"
-                    stroke="#f59e0b"
-                    strokeWidth={2}
-                    dot={false}
-                    strokeDasharray="5 5"
-                    name="Raw WPM"
-                  />
-                  <Line
-                    yAxisId="right"
-                    type="monotone"
-                    dataKey="errorRate"
-                    stroke="#ef4444"
-                    strokeWidth={2}
-                    dot={false}
-                    name="Error Rate %"
-                  />
-                  <Line
-                    yAxisId="right"
-                    type="monotone"
-                    dataKey="accuracy"
-                    stroke="#ffff00"
-                    strokeWidth={2}
-                    dot={false}
-                    name="Accuracy %"
-                  />
-                </ComposedChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* Detailed Statistics Grid */}
-          <div className="bg-background/40 border border-secondary rounded-lg p-8 mb-10">
-            <h3 className="text-sm font-mono tracking-widest text-foreground/60 mb-8 uppercase">
-              detailed_statistics
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div className="p-6 border border-secondary/30 rounded">
-                <div className="text-xs text-foreground/60 tracking-widest mb-3 uppercase font-light">
-                  Total Typed
-                </div>
-                <div className="text-3xl font-bold text-highlight">
-                  {totalTyped}
-                </div>
-              </div>
-              <div className="p-6 border border-secondary/30 rounded">
-                <div className="text-xs text-foreground/60 tracking-widest mb-3 uppercase font-light">
-                  Correct
-                </div>
-                <div className="text-3xl font-bold text-green-400">
-                  {statusCounts.correct}
-                </div>
-              </div>
-              <div className="p-6 border border-secondary/30 rounded">
-                <div className="text-xs text-foreground/60 tracking-widest mb-3 uppercase font-light">
-                  Incorrect
-                </div>
-                <div className="text-3xl font-bold text-red-400">
-                  {statusCounts.incorrect}
-                </div>
-              </div>
-              <div className="p-6 border border-secondary/30 rounded">
-                <div className="text-xs text-foreground/60 tracking-widest mb-3 uppercase font-light">
-                  Untyped
-                </div>
-                <div className="text-3xl font-bold text-foreground/50">
-                  {statusCounts.pending}
-                </div>
-              </div>
-              <div className="p-6 border border-secondary/30 rounded">
-                <div className="text-xs text-foreground/60 tracking-widest mb-3 uppercase font-light">
-                  Error Rate
-                </div>
-                <div className="text-3xl font-bold text-orange-400">
-                  {stats.errorRate}%
-                </div>
-              </div>
-              <div className="p-6 border border-secondary/30 rounded">
-                <div className="text-xs text-foreground/60 tracking-widest mb-3 uppercase font-light">
-                  Time per Char
-                </div>
-                <div className="text-3xl font-bold text-foreground/70">
-                  {stats.timePerChar}s
-                </div>
-              </div>
-              <div className="p-6 border border-secondary/30 rounded">
-                <div className="text-xs text-foreground/60 tracking-widest mb-3 uppercase font-light">
-                  Chars/sec
-                </div>
-                <div className="text-3xl font-bold text-foreground/70">
-                  {stats.charsPerSecond}
-                </div>
-              </div>
-              <div className="p-6 border border-secondary/30 rounded">
-                <div className="text-xs text-foreground/60 tracking-widest mb-3 uppercase font-light">
-                  Consistency
-                </div>
-                <div className="text-3xl font-bold text-foreground/70">
-                  {(100 - parseFloat(stats.errorRate)).toFixed(1)}%
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* Action Button */}
-          <div className="flex justify-center">
+          <div className="flex justify-center mb-6">
             <Button
               onClick={() => {
                 // Save attempt to history
@@ -385,6 +197,197 @@ export default function ResultsPage() {
             >
               try_again
             </Button>
+          </div>
+
+          {/* Key Stats - Focused View */}
+          <div className="mb-6 p-4 border border-secondary/40 rounded bg-secondary/10">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+              <div>
+                <div className="text-xs text-foreground/60">adjusted wpm</div>
+                <div className="text-2xl font-bold text-highlight">
+                  {stats.adjustedWpm}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-foreground/60">raw wpm</div>
+                <div className="text-2xl font-bold text-secondary">
+                  {stats.rawWpm}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-foreground/60">accuracy</div>
+                <div className="text-2xl font-bold text-foreground">
+                  {stats.accuracy}%
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-foreground/60">duration</div>
+                <div className="text-2xl font-bold text-foreground">
+                  {elapsed}s
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-foreground/60">error rate</div>
+                <div className="text-2xl font-bold text-red-400">
+                  {stats.errorRate}%
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Performance Chart */}
+          <div className="mb-6">
+            <h3 className="text-xs font-mono text-foreground/70 mb-2 tracking-wider uppercase">
+              performance_analysis
+            </h3>
+            <div className="border border-secondary/30 rounded p-2 bg-secondary/5">
+              <ResponsiveContainer width="100%" height={200}>
+                <ComposedChart data={chartData}>
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke="rgb(75, 85, 99)"
+                    opacity={0.3}
+                  />
+                  <XAxis
+                    dataKey="time"
+                    stroke="rgb(107, 114, 128)"
+                    style={{ fontSize: "11px" }}
+                  />
+                  <YAxis
+                    yAxisId="left"
+                    stroke="rgb(107, 114, 128)"
+                    style={{ fontSize: "11px" }}
+                    label={{ value: "WPM", angle: -90, position: "insideLeft" }}
+                  />
+                  <YAxis
+                    yAxisId="right"
+                    orientation="right"
+                    stroke="rgb(107, 114, 128)"
+                    style={{ fontSize: "11px" }}
+                    label={{
+                      value: "Err/Acc %",
+                      angle: 90,
+                      position: "insideRight",
+                      offset: 10,
+                    }}
+                  />
+                  <Tooltip {...chartTooltipStyle} />
+                  <Legend
+                    wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }}
+                  />
+                  <Line
+                    yAxisId="left"
+                    type="monotone"
+                    dataKey="adjustedWpm"
+                    stroke="#10b981"
+                    strokeWidth={2}
+                    dot={false}
+                    name="Adjusted WPM"
+                  />
+                  <Line
+                    yAxisId="left"
+                    type="monotone"
+                    dataKey="rawWpm"
+                    stroke="#f59e0b"
+                    strokeWidth={2}
+                    dot={false}
+                    strokeDasharray="5 5"
+                    name="Raw WPM"
+                  />
+                  <Line
+                    yAxisId="right"
+                    type="monotone"
+                    dataKey="errorRate"
+                    stroke="#ef4444"
+                    strokeWidth={1.5}
+                    dot={false}
+                    name="Error %"
+                  />
+                  <Line
+                    yAxisId="right"
+                    type="monotone"
+                    dataKey="accuracy"
+                    stroke="#ffff00"
+                    strokeWidth={1.5}
+                    dot={false}
+                    name="Accuracy %"
+                  />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Detailed Statistics Grid */}
+          <div className="bg-background/40 border border-secondary/40 rounded p-4">
+            <h3 className="text-xs font-mono text-foreground/70 mb-4 tracking-wider uppercase">
+              detailed_statistics
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="p-3 border border-secondary/30 rounded">
+                <div className="text-xs text-foreground/60 tracking-wider font-light mb-2">
+                  total typed
+                </div>
+                <div className="text-2xl font-bold text-highlight">
+                  {totalTyped}
+                </div>
+              </div>
+              <div className="p-3 border border-secondary/30 rounded">
+                <div className="text-xs text-foreground/60 tracking-wider font-light mb-2">
+                  correct
+                </div>
+                <div className="text-2xl font-bold text-green-400">
+                  {statusCounts.correct}
+                </div>
+              </div>
+              <div className="p-3 border border-secondary/30 rounded">
+                <div className="text-xs text-foreground/60 tracking-wider font-light mb-2">
+                  incorrect
+                </div>
+                <div className="text-2xl font-bold text-red-400">
+                  {statusCounts.incorrect}
+                </div>
+              </div>
+              <div className="p-3 border border-secondary/30 rounded">
+                <div className="text-xs text-foreground/60 tracking-wider font-light mb-2">
+                  untyped
+                </div>
+                <div className="text-2xl font-bold text-foreground/50">
+                  {statusCounts.pending}
+                </div>
+              </div>
+              <div className="p-3 border border-secondary/30 rounded">
+                <div className="text-xs text-foreground/60 tracking-wider font-light mb-2">
+                  error rate
+                </div>
+                <div className="text-2xl font-bold text-orange-400">
+                  {stats.errorRate}%
+                </div>
+              </div>
+              <div className="p-3 border border-secondary/30 rounded">
+                <div className="text-xs text-foreground/60 tracking-wider font-light mb-2">
+                  time/char
+                </div>
+                <div className="text-2xl font-bold text-foreground/70">
+                  {stats.timePerChar}s
+                </div>
+              </div>
+              <div className="p-3 border border-secondary/30 rounded">
+                <div className="text-xs text-foreground/60 tracking-wider font-light mb-2">
+                  chars/sec
+                </div>
+                <div className="text-2xl font-bold text-foreground/70">
+                  {stats.charsPerSecond}
+                </div>
+              </div>
+              <div className="p-3 border border-secondary/30 rounded">
+                <div className="text-xs text-foreground/60 tracking-wider font-light mb-2">
+                  consistency
+                </div>
+                <div className="text-2xl font-bold text-foreground/70">
+                  {(100 - parseFloat(stats.errorRate)).toFixed(1)}%
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </main>

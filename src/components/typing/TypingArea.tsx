@@ -145,8 +145,8 @@ export default function TypingArea({
   );
   const visibleWords = words.slice(tapeWordStart, tapeWordEnd);
 
-  // Calculate visible characters for tape-char mode (show 60 char window centered on cursor)
-  const TAPE_CHAR_WINDOW = 60;
+  // Calculate visible characters for tape-char mode (show 120 char window centered on cursor)
+  const TAPE_CHAR_WINDOW = 120;
   const tapeCharStart = Math.max(
     0,
     engine.cursor - Math.floor(TAPE_CHAR_WINDOW / 2),
@@ -279,55 +279,24 @@ export default function TypingArea({
               {visibleWords.map((word, wordIdx) => {
                 const globalWordIdx = tapeWordStart + wordIdx;
                 const wordCharStart = wordPositions[globalWordIdx];
-                const wordCharEnd = wordCharStart + word.length;
-                const isCurrent = currentWordIdx === globalWordIdx;
-
-                // Check if all characters in this word are correct/incorrect
-                let wordStatus: "correct" | "incorrect" | "pending" = "pending";
-                if (wordCharEnd <= engine.cursor) {
-                  // Word is completely typed
-                  let allCorrect = true;
-                  for (let i = wordCharStart; i < wordCharEnd; i++) {
-                    if (engine.status[i] === "incorrect") {
-                      wordStatus = "incorrect";
-                      allCorrect = false;
-                      break;
-                    }
-                  }
-                  if (allCorrect) wordStatus = "correct";
-                } else if (wordCharStart <= engine.cursor) {
-                  // Word is partially typed
-                  let hasIncorrect = false;
-                  for (
-                    let i = wordCharStart;
-                    i < Math.min(engine.cursor, wordCharEnd);
-                    i++
-                  ) {
-                    if (engine.status[i] === "incorrect") {
-                      hasIncorrect = true;
-                      break;
-                    }
-                  }
-                  wordStatus = hasIncorrect ? "incorrect" : "correct";
-                }
-
-                const wordColor =
-                  wordStatus === "correct"
-                    ? "text-highlight"
-                    : wordStatus === "incorrect"
-                      ? "text-red-500"
-                      : "text-foreground";
 
                 return (
-                  <span
-                    key={globalWordIdx}
-                    className={`${wordColor} ${
-                      isCurrent
-                        ? "bg-secondary border-b-2 border-highlight"
-                        : ""
-                    } transition-colors`}
-                  >
-                    {word}
+                  <span key={globalWordIdx}>
+                    {word.split("").map((char, charIdx) => {
+                      const globalCharIdx = wordCharStart + charIdx;
+                      return (
+                        <span
+                          key={globalCharIdx}
+                          className={`${getCharColor(globalCharIdx)} transition-colors ${
+                            globalCharIdx === engine.cursor
+                              ? "bg-secondary border-b-2 border-highlight"
+                              : ""
+                          }`}
+                        >
+                          {char}
+                        </span>
+                      );
+                    })}
                     {wordIdx < visibleWords.length - 1 && " "}
                   </span>
                 );
