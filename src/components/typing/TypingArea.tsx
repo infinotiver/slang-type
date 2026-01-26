@@ -231,12 +231,13 @@ export default function TypingArea({
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
         onFocus={handleFocus}
-        className="absolute opacity-0 w-0 h-0 pointer-events-none"
+        className="fixed bottom-0 left-0 opacity-0 w-px h-px pointer-events-none z-50"
         autoFocus
         autoCorrect="off"
         autoCapitalize="off"
         spellCheck="false"
         autoComplete="off"
+        inputMode="text"
       />
 
       <div className="w-full text-center relative flex flex-col items-center">
