@@ -102,7 +102,7 @@ export default function ResultsPage() {
 
   useEffect(() => {
     if (isNewHighScore || isBaseline) {
-      createConfetti();
+      // Confetti animation removed
     }
   }, [isNewHighScore, isBaseline]);
 
@@ -132,12 +132,6 @@ export default function ResultsPage() {
   const statusCounts = useMemo(() => {
     return countCharStatuses(charStatus);
   }, [charStatus]);
-
-  useEffect(() => {
-    if (isNewHighScore || isBaseline) {
-      createConfetti();
-    }
-  }, [isNewHighScore, isBaseline]);
 
   if (!state || !state.results) {
     return (
