@@ -97,7 +97,7 @@ export default function StatsAndControls({
     return (
       <div className="w-full flex flex-row items-center justify-center gap-2 font-mono">
         {/* Timer */}
-        <div className="text-3xl font-bold text-highlight whitespace-nowrap">
+        <div className="text-xl font-bold text-highlight whitespace-nowrap">
           {formatTime(remaining)}
         </div>
 
@@ -105,7 +105,7 @@ export default function StatsAndControls({
         <select
           value={language}
           onChange={(e) => onLanguageChange(e.target.value)}
-          className="px-3 py-1 text-2xl font-bold bg-secondary/30 border border-secondary/60 font-mono text-foreground rounded hover:border-highlight hover:bg-secondary/40 transition-colors active:scale-95 focus:outline-none focus:border-highlight focus:ring-1 focus:ring-highlight/30"
+          className="px-3 py-1 text-lg font-bold bg-secondary/30 border border-secondary/60 font-mono text-foreground rounded hover:border-highlight hover:bg-secondary/40 transition-colors active:scale-95 focus:outline-none focus:border-highlight focus:ring-1 focus:ring-highlight/30"
           disabled={slangDisabled && language === "slang"}
         >
           {controlsOptions.map((lang) => (
@@ -123,7 +123,7 @@ export default function StatsAndControls({
         <select
           value={mode}
           onChange={(e) => onModeChange(e.target.value)}
-          className="px-3 py-1 text-2xl font-bold bg-secondary/30 border border-secondary/60 font-mono text-foreground rounded hover:border-highlight hover:bg-secondary/40 transition-colors active:scale-95 focus:outline-none focus:border-highlight focus:ring-1 focus:ring-highlight/30"
+          className="px-3 py-1 text-lg font-bold bg-secondary/30 border border-secondary/60 font-mono text-foreground rounded hover:border-highlight hover:bg-secondary/40 transition-colors active:scale-95 focus:outline-none focus:border-highlight focus:ring-1 focus:ring-highlight/30"
         >
           {["15s", "30s", "60s", "120s", "inf"].map((m) => (
             <option key={m} value={m}>
