@@ -56,7 +56,6 @@ interface TypingAreaProps {
   };
 }
 
-
 export default function TypingArea({
   targetText,
   engine,
@@ -121,7 +120,7 @@ export default function TypingArea({
   }, [engine.cursor, wordPositions]);
 
   // Calculate visible words for tape-word mode (show context: 4 before, current, 4 after)
-  const TAPE_WORD_CONTEXT =4;
+  const TAPE_WORD_CONTEXT = 4;
   const tapeWordStart = Math.max(0, currentWordIdx - TAPE_WORD_CONTEXT);
   const tapeWordEnd = Math.min(
     words.length,
@@ -227,7 +226,7 @@ export default function TypingArea({
 
       <div className="w-full text-center relative flex flex-col items-center">
         {/* Text display - conditional based on displayMode */}
-        <div className="mb-3 sm:mb-4 relative w-full max-w-4xl sm:max-w-5xl px-2 sm:px-0">
+        <div className="mb-4 sm:mb-6 relative w-full max-w-4xl sm:max-w-5xl px-4 sm:px-6 md:px-8">
           {displayMode === "normal" && (
             <div className="text-lg sm:text-xl md:text-2xl leading-relaxed tracking-normal text-justify">
               {visibleNormalText.split("").map((char, idx) => {

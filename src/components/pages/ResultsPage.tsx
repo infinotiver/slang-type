@@ -68,37 +68,6 @@ export default function ResultsPage() {
     isBaseline: false,
   };
 
-  // Create confetti effect
-  const createConfetti = () => {
-    const confettiCount = 50;
-    for (let i = 0; i < confettiCount; i++) {
-      const confetti = document.createElement("div");
-      confetti.className = "fixed pointer-events-none font-bold text-2xl";
-      confetti.textContent = Math.random() > 0.5 ? "🎉" : "✨";
-      confetti.style.left = Math.random() * window.innerWidth + "px";
-      confetti.style.top = "-10px";
-      confetti.style.animation = `fall ${2 + Math.random()}s linear forwards`;
-      confetti.style.setProperty("--rotate", Math.random() * 360 + "deg");
-      document.body.appendChild(confetti);
-
-      setTimeout(() => confetti.remove(), 2500);
-    }
-
-    // Add CSS animation
-    if (!document.getElementById("confetti-styles")) {
-      const style = document.createElement("style");
-      style.id = "confetti-styles";
-      style.textContent = `
-        @keyframes fall {
-          to {
-            transform: translateY(100vh) rotate(var(--rotate));
-            opacity: 0;
-          }
-        }
-      `;
-      document.head.appendChild(style);
-    }
-  };
 
   useEffect(() => {
     if (isNewHighScore || isBaseline) {
@@ -144,7 +113,7 @@ export default function ResultsPage() {
   return (
     <div className="flex-1 overflow-y-auto bg-background text-foreground flex flex-col font-mono">
       <main className="px-8 sm:px-16 md:px-20 py-10">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8">
           <div className="mb-6 flex items-center gap-2">
             <button
               onClick={() => navigate("/")}
