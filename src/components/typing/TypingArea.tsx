@@ -56,7 +56,6 @@ interface TypingAreaProps {
   };
 }
 
-const MAX_VISIBLE_LINES = 5; // Configurable
 
 export default function TypingArea({
   targetText,
@@ -69,51 +68,6 @@ export default function TypingArea({
 }: TypingAreaProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // NORMAL MODE: Split text into lines (wrap based on ~60 chars per line)
-  const CHARS_PER_LINE = 60;
-  const lines = useMemo(() => {
-    const textWords = targetText.split(" ");
-    const result: string[] = [];
-    let currentLine = "";
-
-    for (const word of textWords) {
-      if (currentLine.length + word.length + 1 > CHARS_PER_LINE) {
-        if (currentLine) {
-          result.push(currentLine.trimEnd());
-        }
-        currentLine = word + " ";
-      } else {
-        currentLine += word + " ";
-      }
-    }
-
-    if (currentLine) {
-      result.push(currentLine.trimEnd());
-    }
-
-    return result;
-  }, [targetText]);
-
-  // Calculate which line the cursor is on
-  let currentLineIdx = 0;
-  let charCount = 0;
-  for (let i = 0; i < lines.length; i++) {
-    if (charCount + lines[i].length + 1 > engine.cursor) {
-      currentLineIdx = i;
-      break;
-    }
-    charCount += lines[i].length + 1; // +1 for space/newline
-  }
-
-  const lineStart = Math.max(0, currentLineIdx - 2); // Keep cursor on 3rd visible line
-  const lineEnd = lineStart + MAX_VISIBLE_LINES;
-
-  // Get visible lines and their character ranges
-  const visibleLines = lines.slice(lineStart, lineEnd);
-  // const visibleCharStart = lines
-  //   .slice(0, lineStart)
-  //   .reduce((sum, line) => sum + line.length + 1, 0);
-
   // TAPE MODES: Calculate word/char positions
   const words = useMemo(() => targetText.split(" "), [targetText]);
   const wordPositions = useMemo(() => {
@@ -124,7 +78,37 @@ export default function TypingArea({
       charPos += word.length + 1; // +1 for space
     }
     return positions;
-  }, [words]);
+  }, [words, targetText]);
+
+  // Calculate visible text window for normal mode
+  // Only scroll when user reaches the last word
+  const NORMAL_WINDOW = 300; // characters to show
+  let normalTextStart = 0;
+  let normalTextEnd = Math.min(targetText.length, NORMAL_WINDOW);
+
+  // If cursor is near the end (in last 100 chars), scroll up to show remaining text
+  if (targetText.length - engine.cursor < 100) {
+    normalTextStart = Math.max(0, targetText.length - NORMAL_WINDOW);
+    normalTextEnd = targetText.length;
+  }
+
+  // Extend start to beginning of word
+  while (normalTextStart > 0 && targetText[normalTextStart - 1] !== " ") {
+    normalTextStart--;
+  }
+
+  // Extend end to end of word
+  while (
+    normalTextEnd < targetText.length &&
+    targetText[normalTextEnd] !== " "
+  ) {
+    normalTextEnd++;
+  }
+
+  const visibleNormalText = targetText.substring(
+    normalTextStart,
+    normalTextEnd,
+  );
 
   // Find current word index based on cursor position
   const currentWordIdx = useMemo(() => {
@@ -136,8 +120,8 @@ export default function TypingArea({
     return 0;
   }, [engine.cursor, wordPositions]);
 
-  // Calculate visible words for tape-word mode (show context: 2 before, current, 2 after)
-  const TAPE_WORD_CONTEXT = 2;
+  // Calculate visible words for tape-word mode (show context: 4 before, current, 4 after)
+  const TAPE_WORD_CONTEXT =4;
   const tapeWordStart = Math.max(0, currentWordIdx - TAPE_WORD_CONTEXT);
   const tapeWordEnd = Math.min(
     words.length,
@@ -231,7 +215,8 @@ export default function TypingArea({
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
         onFocus={handleFocus}
-        className="fixed bottom-0 left-0 opacity-0 w-px h-px pointer-events-none z-50"
+        onClick={() => inputRef.current?.focus()}
+        className="fixed bottom-0 left-0 opacity-0 w-px h-px pointer-events-auto z-50"
         autoFocus
         autoCorrect="off"
         autoCapitalize="off"
@@ -244,31 +229,19 @@ export default function TypingArea({
         {/* Text display - conditional based on displayMode */}
         <div className="mb-3 sm:mb-4 relative w-full max-w-4xl sm:max-w-5xl px-2 sm:px-0">
           {displayMode === "normal" && (
-            <div className="text-lg sm:text-xl md:text-2xl leading-relaxed tracking-normal text-center">
-              {visibleLines.map((line, lineIdx) => {
-                // Calculate the actual character offset for this line
-                const lineOffset = lines
-                  .slice(0, lineStart + lineIdx)
-                  .reduce((sum, l) => sum + l.length + 1, 0);
-
+            <div className="text-lg sm:text-xl md:text-2xl leading-relaxed tracking-normal text-justify">
+              {visibleNormalText.split("").map((char, idx) => {
+                const globalIdx = normalTextStart + idx;
                 return (
-                  <span key={lineStart + lineIdx}>
-                    {line.split("").map((char, charIdx) => {
-                      const globalIdx = lineOffset + charIdx;
-                      return (
-                        <span
-                          key={globalIdx}
-                          className={`${getCharColor(globalIdx)} transition-colors ${
-                            globalIdx === engine.cursor
-                              ? "bg-secondary border-b-2 border-highlight"
-                              : ""
-                          }`}
-                        >
-                          {char}
-                        </span>
-                      );
-                    })}
-                    {lineIdx < visibleLines.length - 1 && <br />}
+                  <span
+                    key={globalIdx}
+                    className={`${getCharColor(globalIdx)} transition-colors ${
+                      globalIdx === engine.cursor
+                        ? "bg-secondary border-b-2 border-highlight"
+                        : ""
+                    }`}
+                  >
+                    {char}
                   </span>
                 );
               })}
