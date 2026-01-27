@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Header } from "../components/ui/common";
 import useLocalStorage from "../hooks/useLocalStorage";
 import type { Theme, DisplayMode, StatsDisplay } from "../types";
-
+import { Analytics } from "@vercel/analytics/next"
 export default function RootLayout() {
   const navigate = useNavigate();
   const [theme, setTheme] = useLocalStorage<Theme>("slangtype_theme", "dark");
@@ -38,6 +38,7 @@ export default function RootLayout() {
       {/* Page content */}
       <Outlet context={{ displayMode, statsDisplay }} />
       <ScrollRestoration />
+      <Analytics/>
       {/* FOOTER - always visible */}
       <footer className="border-t border-secondary/40 px-8 sm:px-16 md:px-20 py-3 sm:py-4 md:py-6">
         <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-xs font-mono text-foreground/50">
