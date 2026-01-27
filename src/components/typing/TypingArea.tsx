@@ -1,5 +1,5 @@
 import { useRef, useMemo } from "react";
-import Button from "../ui/Button";
+import { Button } from "../ui/common";
 import type { DisplayMode, Mode, Language } from "../../types";
 
 interface UseTypingEngineReturn {

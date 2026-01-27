@@ -1,5 +1,5 @@
-import type { StatsAndControlsProps, StatsDisplay } from "../../types";
-import Button from "./Button";
+import type { StatsAndControlsProps, StatsDisplay } from "../../../types";
+import { Button } from "../common";
 
 interface StatsAndControlsExtendedProps extends StatsAndControlsProps {
   elapsed?: number;

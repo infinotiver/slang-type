@@ -1,6 +1,6 @@
 import { Outlet, ScrollRestoration, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import Header from "../components/ui/Header";
+import { Header } from "../components/ui/common";
 import useLocalStorage from "../hooks/useLocalStorage";
 import type { Theme, DisplayMode, StatsDisplay } from "../types";
 
@@ -23,7 +23,7 @@ export default function RootLayout() {
   }, [theme]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col font-mono px-2 py-4 sm:p-16 md:p-20">
+    <div className="min-h-screen bg-background text-foreground flex flex-col font-mono px-2 py-4 sm:px-16 md:px-20">
       {/* Header always visible */}
       <Header
         theme={theme}

@@ -4,6 +4,7 @@ import RootLayout from "./layouts/RootLayout";
 import HomePage from "./components/pages/HomePage";
 import HistoryPage from "./components/pages/HistoryPage";
 import ResultsPage from "./components/pages/ResultsPage";
+import NotFoundPage from "./components/pages/NotFoundPage";
 
 // Create router configuration
 const router = createBrowserRouter([
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
       {
         path: "/results",
         element: <ResultsPage />,
+      },
+      {
+        path: "*",
+        element: <NotFoundPage />,
       },
     ],
   },

@@ -16,7 +16,7 @@ import {
   countCharStatuses,
   chartTooltipStyle,
 } from "../../utils/resultsCalculations";
-import Button from "../ui/Button";
+import { Button } from "../ui/common";
 import type { Language, Mode, TypingAttempt } from "../../types";
 
 interface ResultsLocationState {
@@ -67,7 +67,6 @@ export default function ResultsPage() {
     isNewHighScore: false,
     isBaseline: false,
   };
-
 
   useEffect(() => {
     if (isNewHighScore || isBaseline) {

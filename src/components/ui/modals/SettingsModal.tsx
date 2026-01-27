@@ -3,9 +3,9 @@ import type {
   Theme,
   DisplayMode,
   StatsDisplay,
-} from "../../types";
+} from "../../../types";
 import ModalBase from "./ModalBase";
-import ButtonGroup from "./ButtonGroup";
+import ButtonGroup from "../common/ButtonGroup";
 
 export default function SettingsModal({
   isOpen,

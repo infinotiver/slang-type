@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
-import StatsAndControls from "../ui/StatsAndControls";
+import { StatsAndControls } from "../ui/stats";
 import TypingArea from "../typing/TypingArea";
 import { generatePhrase } from "../../utils/textGenerator";
 import type { Language, Mode, StatsDisplay, DisplayMode } from "../../types";

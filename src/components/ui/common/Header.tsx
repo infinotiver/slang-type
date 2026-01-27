@@ -4,10 +4,10 @@ import {
   TbSettingsFilled,
   TbInfoCircleFilled,
 } from "react-icons/tb";
-import SettingsModal from "./SettingsModal";
-import CreditsModal from "./CreditsModal";
-import type { Theme, DisplayMode, StatsDisplay } from "../../types";
+import { SettingsModal, CreditsModal } from "../modals";
+import type { Theme, DisplayMode, StatsDisplay } from "../../../types";
 import { Link } from "react-router-dom";
+
 interface HeaderProps {
   theme: Theme;
   onThemeChange: (theme: Theme) => void;
@@ -18,6 +18,7 @@ interface HeaderProps {
   highScore: number;
   onHistoryClick?: () => void;
 }
+
 export default function Header({
   theme,
   onThemeChange,
