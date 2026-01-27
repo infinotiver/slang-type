@@ -81,7 +81,11 @@ export default function TypingArea({
 
   // Calculate visible text window for normal mode
   // Only scroll when user reaches the last word
-  const NORMAL_WINDOW = 300; // characters to show
+  const MOBILE_WINDOW = 100; // characters to show on mobile
+  const DESKTOP_WINDOW = 300; // characters to show on desktop
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+  const NORMAL_WINDOW = isMobile ? MOBILE_WINDOW : DESKTOP_WINDOW;
+
   let normalTextStart = 0;
   let normalTextEnd = Math.min(targetText.length, NORMAL_WINDOW);
 
@@ -155,6 +159,17 @@ export default function TypingArea({
     engine.handleKey(e);
     if (inputRef.current) inputRef.current.value = "";
   };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (!value) return;
+
+    const char = value[value.length - 1];
+    const syntheticEvent = new KeyboardEvent("keydown", {
+      key: char,
+    }) as unknown as React.KeyboardEvent<HTMLInputElement>;
+    engine.handleKey(syntheticEvent);
+    e.target.value = "";
+  };
 
   // Pause on blur
   const handleBlur = () => {
@@ -212,23 +227,25 @@ export default function TypingArea({
         ref={inputRef}
         type="text"
         onKeyDown={handleKeyDown}
+        onChange={handleChange}
         onBlur={handleBlur}
         onFocus={handleFocus}
         onClick={() => inputRef.current?.focus()}
-        className="fixed bottom-0 left-0 opacity-0 w-px h-px pointer-events-auto z-50"
+        className="fixed bottom-0 left-0 opacity-0 pointer-events-auto z-50"
         autoFocus
         autoCorrect="off"
         autoCapitalize="off"
         spellCheck="false"
         autoComplete="off"
         inputMode="text"
+        style={{ position: "fixed", bottom: "50%", left: "-9999px" }}
       />
 
-      <div className="w-full text-center relative flex flex-col items-center">
+      <div className="w-full text-center relative flex flex-col items-center overflow-hidden">
         {/* Text display - conditional based on displayMode */}
-        <div className="mb-4 sm:mb-6 relative w-full max-w-4xl sm:max-w-5xl px-4 sm:px-6 md:px-8">
+        <div className="mb-2 sm:mb-4 relative w-full px-2 sm:px-4 md:px-6">
           {displayMode === "normal" && (
-            <div className="text-lg sm:text-xl md:text-2xl leading-relaxed tracking-normal text-justify">
+            <div className="text-xl sm:text-xl md:text-2xl leading-relaxed tracking-normal text-justify">
               {visibleNormalText.split("").map((char, idx) => {
                 const globalIdx = normalTextStart + idx;
                 return (
@@ -321,7 +338,7 @@ export default function TypingArea({
 
         {/* Stats */}
         {engine.running && (
-          <div className="text-xs text-foreground opacity-60 tracking-wide space-y-1">
+          <div className="hidden sm:block text-xs text-foreground opacity-60 tracking-wide space-y-1">
             <div>
               wpm: {engine.wpm} | acc: {Math.round(engine.accuracy)}% | errors:{" "}
               {engine.errors}
