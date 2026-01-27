@@ -38,34 +38,36 @@ export default function Header({
         <div className="px-8 sm:px-16 md:px-20 pt-1 sm:pt-2 md:pt-4">
           <div className="max-w-6xl mx-auto">
             {/* Top row: Logo and Right controls */}
-            <div className="flex items-start justify-between gap-4 mb-3">
-              <div>
-                <Link to="/" className="flex items-center gap-2">
-                  <h1 className="text-xl sm:text-2xl font-bold font-mono tracking-wide mb-2 text-highlight hover:text-accent">
-                    slangtype
-                  </h1>
+            <div className="flex items-center justify-between gap-4 mb-3">
+              <div className="flex items-center gap-1.5">
+                <Link to="/">
+                  <div className="text-xl sm:text-2xl font-bold font-mono tracking-wide leading-none">
+                    <span className="text-highlight">slang</span>
+                    <span>type</span>
+                  </div>
                 </Link>
+
+                <button
+                  onClick={() => setIsCreditsOpen(true)}
+                  className="flex items-center justify-center p-1 rounded hover:bg-secondary/20 text-foreground hover:text-highlight transition-colors relative top-0.5"
+                  aria-label="credits"
+                >
+                  <TbInfoCircleFilled size={20} />
+                </button>
+              </div>
+
+              <div className="flex items-center gap-1 sm:gap-2">
                 <div className="flex items-center gap-2 text-sm font-mono">
                   <span className="text-foreground/60">best</span>
                   <span className="text-highlight font-bold">{highScore}</span>
                 </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setIsCreditsOpen(true)}
-                  className="p-1.5 rounded hover:bg-secondary/20 text-foreground hover:text-highlight transition-colors"
-                  aria-label="credits"
-                  title="info"
-                >
-                  <TbInfoCircleFilled size={18} />
-                </button>
                 <button
                   onClick={onHistoryClick}
                   className="p-1.5 rounded hover:bg-secondary/20 text-foreground hover:text-highlight transition-colors"
                   aria-label="history"
                   title="history"
                 >
-                  <TbArticleFilled size={18} />
+                  <TbArticleFilled size={20} />
                 </button>
                 <button
                   onClick={() => setIsSettingsOpen(true)}
@@ -73,7 +75,7 @@ export default function Header({
                   aria-label="settings"
                   title="settings"
                 >
-                  <TbSettingsFilled size={18} />
+                  <TbSettingsFilled size={20} />
                 </button>
               </div>
             </div>

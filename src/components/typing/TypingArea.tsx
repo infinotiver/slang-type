@@ -154,11 +154,7 @@ export default function TypingArea({
     inputRef.current?.focus();
   };
 
-  // Handle keyboard input - engine handles escape internally
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    engine.handleKey(e);
-    if (inputRef.current) inputRef.current.value = "";
-  };
+  // Handle keyboard input via onChange for better mobile support
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (!value) return;
@@ -226,7 +222,6 @@ export default function TypingArea({
       <input
         ref={inputRef}
         type="text"
-        onKeyDown={handleKeyDown}
         onChange={handleChange}
         onBlur={handleBlur}
         onFocus={handleFocus}

@@ -61,39 +61,6 @@ pnpm build
 - **Tabler Icons** - Icon library
 - **Recharts** - Data visualization for performance charts
 
-## Project Structure
-
-```
-src/
-├── components/
-│   ├── typing/
-│   │   └── TypingArea.tsx
-│   └── ui/
-│       ├── ModalBase.tsx
-│       ├── Button.tsx
-│       ├── ButtonGroup.tsx
-│       ├── StatItem.tsx
-│       ├── Header.tsx
-│       ├── StatsAndControls.tsx
-│       ├── SettingsModal.tsx
-│       ├── HistoryModal.tsx
-│       ├── CreditsModal.tsx
-│       └── ResultsModal.tsx
-├── hooks/
-│   ├── useTypingEngine.ts
-│   ├── useTimer.ts
-│   └── useLocalStorage.ts
-├── utils/
-│   ├── calculateStats.ts
-│   └── textGenerator.ts
-├── types/
-│   └── index.ts
-├── data/
-│   └── data.json
-├── App.tsx
-├── main.tsx
-└── index.css
-```
 
 ## Development
 
