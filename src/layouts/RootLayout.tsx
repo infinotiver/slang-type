@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Header } from "../components/ui/common";
 import useLocalStorage from "../hooks/useLocalStorage";
 import type { Theme, DisplayMode, StatsDisplay } from "../types";
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/react"
 export default function RootLayout() {
   const navigate = useNavigate();
   const [theme, setTheme] = useLocalStorage<Theme>("slangtype_theme", "dark");
