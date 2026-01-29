@@ -154,6 +154,13 @@ export default function TypingArea({
     inputRef.current?.focus();
   };
 
+  // Handle special keys (Backspace, Escape) that don't trigger onChange
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace" || e.key === "Escape") {
+      engine.handleKey(e);
+    }
+  };
+
   // Handle keyboard input via onChange for better mobile support
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -222,6 +229,7 @@ export default function TypingArea({
       <input
         ref={inputRef}
         type="text"
+        onKeyDown={handleKeyDown}
         onChange={handleChange}
         onBlur={handleBlur}
         onFocus={handleFocus}
@@ -233,6 +241,7 @@ export default function TypingArea({
         spellCheck="false"
         autoComplete="off"
         inputMode="text"
+        aria-label="typing input"
         style={{ position: "fixed", bottom: "50%", left: "-9999px" }}
       />
 
