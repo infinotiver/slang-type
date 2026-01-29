@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Header } from "../components/ui/common";
 import useLocalStorage from "../hooks/useLocalStorage";
 import type { Theme, DisplayMode, StatsDisplay } from "../types";
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from "@vercel/analytics/react";
 export default function RootLayout() {
   const navigate = useNavigate();
   const [theme, setTheme] = useLocalStorage<Theme>("slangtype_theme", "dark");
@@ -24,21 +24,29 @@ export default function RootLayout() {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-mono px-2 py-4 sm:px-16 md:px-20">
+      {/* Skip to main content link for accessibility */}
+      <a href="#main-content" className="sr-only focus:not-sr-only">
+        Skip to main content
+      </a>
       {/* Header always visible */}
-      <Header
-        theme={theme}
-        onThemeChange={setTheme}
-        displayMode={displayMode}
-        onDisplayModeChange={setDisplayMode}
-        statsDisplay={statsDisplay}
-        onStatsDisplayChange={setStatsDisplay}
-        highScore={highScore}
-        onHistoryClick={() => navigate("/history")}
-      />
+      <header>
+        <Header
+          theme={theme}
+          onThemeChange={setTheme}
+          displayMode={displayMode}
+          onDisplayModeChange={setDisplayMode}
+          statsDisplay={statsDisplay}
+          onStatsDisplayChange={setStatsDisplay}
+          highScore={highScore}
+          onHistoryClick={() => navigate("/history")}
+        />
+      </header>
       {/* Page content */}
-      <Outlet context={{ displayMode, statsDisplay }} />
+      <main id="main-content" className="flex-1">
+        <Outlet context={{ displayMode, statsDisplay }} />
+      </main>
       <ScrollRestoration />
-      <Analytics/>
+      <Analytics />
       {/* FOOTER - always visible */}
       <footer className="border-t border-secondary/40 px-8 sm:px-16 md:px-20 py-3 sm:py-4 md:py-6">
         <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-xs font-mono text-foreground/50">
