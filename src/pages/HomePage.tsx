@@ -1,12 +1,17 @@
 import { useState, useMemo } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
-import { StatsAndControls } from "../ui/stats";
-import TypingArea from "../typing/TypingArea";
-import { generatePhrase } from "../../utils/textGenerator";
-import type { Language, Mode, StatsDisplay, DisplayMode } from "../../types";
-import useTypingEngine from "../../hooks/useTypingEngine";
-import useTimer from "../../hooks/useTimer";
-import useLocalStorage from "../../hooks/useLocalStorage";
+import { StatsAndControls } from "@components/ui/stats";
+import TypingArea from "@components/typing/TypingArea";
+import { generatePhrase } from "@utils/textGenerator";
+import type {
+  Language,
+  Mode,
+  StatsDisplay,
+  DisplayMode,
+} from "@shared-types/index";
+import useTypingEngine from "@hooks/useTypingEngine";
+import useTimer from "@hooks/useTimer";
+import useLocalStorage from "@hooks/useLocalStorage";
 
 interface ContextType {
   displayMode: DisplayMode;

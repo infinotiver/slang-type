@@ -1,6 +1,7 @@
 import { useRef, useMemo } from "react";
-import { Button } from "../ui/common";
-import type { DisplayMode, Mode, Language } from "../../types";
+import { Button } from "@components/ui/common";
+import type { DisplayMode, Mode, Language } from "@shared-types/index";
+import { motion } from "framer-motion";
 
 interface UseTypingEngineReturn {
   cursor: number;
@@ -245,7 +246,12 @@ export default function TypingArea({
         style={{ position: "fixed", bottom: "50%", left: "-9999px" }}
       />
 
-      <div className="w-full text-center relative flex flex-col items-center overflow-hidden">
+      <motion.div
+        className="w-full text-center relative flex flex-col items-center overflow-hidden"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
         {/* Text display - conditional based on displayMode */}
         <div className="mb-2 sm:mb-4 relative w-full px-2 sm:px-4 md:px-6">
           {displayMode === "normal" && (
@@ -353,7 +359,7 @@ export default function TypingArea({
             </div>
           </div>
         )}
-      </div>
+      </motion.div>
     </>
   );
 }

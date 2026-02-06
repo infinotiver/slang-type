@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { TbHome } from "react-icons/tb";
-import { Button } from "../ui/common";
+import { Button } from "@components/ui/common";
 
 export default function NotFoundPage() {
   const navigate = useNavigate();

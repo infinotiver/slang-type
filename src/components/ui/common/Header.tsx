@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Newspaper, Settings } from "lucide-react";
-import { SettingsModal, CreditsModal } from "../modals";
-import type { Theme, DisplayMode, StatsDisplay } from "../../../types";
+import { SettingsModal, CreditsModal } from "@components/ui/modals";
+import type { Theme, DisplayMode, StatsDisplay } from "@shared-types/index";
 import { Link } from "react-router-dom";
 
 interface HeaderProps {

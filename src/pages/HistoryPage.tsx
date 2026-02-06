@@ -1,10 +1,10 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { TbArrowLeft } from "react-icons/tb";
-import { useHistoryStats } from "../../hooks/useHistoryStats";
-import { HistoryStatCard, StatBreakdownCard } from "../ui/stats";
-import { ChartContainer } from "../ui/charts";
-import { AttemptListItem } from "../ui/lists";
+import { useHistoryStats } from "@hooks/useHistoryStats";
+import { HistoryStatCard, StatBreakdownCard } from "@components/ui/stats";
+import { ChartContainer } from "@components/ui/charts";
+import { AttemptListItem } from "@components/ui/lists";
 
 export default function HistoryPage() {
   const navigate = useNavigate();

@@ -6,8 +6,8 @@ import {
 } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Header } from "../components/ui/common";
-import useLocalStorage from "../hooks/useLocalStorage";
+import { Header } from "@components/ui/common";
+import useLocalStorage from "@hooks/useLocalStorage";
 import type { Theme, DisplayMode, StatsDisplay } from "../types";
 import { Analytics } from "@vercel/analytics/react";
 import { CreditsModal } from "../components/ui/modals";

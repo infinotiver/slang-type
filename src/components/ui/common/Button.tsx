@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary";
@@ -25,8 +26,15 @@ export default function Button({
   const finalClassName = `${baseStyles} ${variantStyles[variant]} ${disabledStyles} ${className}`;
 
   return (
-    <button className={finalClassName} disabled={disabled} {...props}>
+    <motion.button
+      className={finalClassName}
+      disabled={disabled}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+      {...props}
+    >
       {props.children}
-    </button>
+    </motion.button>
   );
 }

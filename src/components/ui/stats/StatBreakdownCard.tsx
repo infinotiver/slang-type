@@ -1,4 +1,4 @@
-import type { TypingAttempt } from "../../../types";
+import type { TypingAttempt } from "@shared-types/index";
 
 interface StatBreakdownCardProps {
   label: string;

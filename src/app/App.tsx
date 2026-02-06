@@ -1,10 +1,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
-import RootLayout from "./layouts/RootLayout";
-import HomePage from "./components/pages/HomePage";
-import HistoryPage from "./components/pages/HistoryPage";
-import ResultsPage from "./components/pages/ResultsPage";
-import NotFoundPage from "./components/pages/NotFoundPage";
+import RootLayout from "../layouts/RootLayout";
+import HomePage from "@pages/HomePage";
+import HistoryPage from "@pages/HistoryPage";
+import ResultsPage from "@pages/ResultsPage";
+import NotFoundPage from "@pages/NotFoundPage";
 
 // Create router configuration
 const router = createBrowserRouter([
@@ -13,7 +13,7 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       {
-        path: "/",
+        index: true,
         element: <HomePage />,
       },
       {

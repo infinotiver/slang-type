@@ -15,9 +15,9 @@ import {
   generateWpmProgressionData,
   countCharStatuses,
   chartTooltipStyle,
-} from "../../utils/resultsCalculations";
-import { Button } from "../ui/common";
-import type { Language, Mode, TypingAttempt } from "../../types";
+} from "@utils/resultsCalculations";
+import { Button } from "@components/ui/common";
+import type { Language, Mode, TypingAttempt } from "@shared-types/index";
 
 interface ResultsLocationState {
   results: {

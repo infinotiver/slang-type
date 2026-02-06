@@ -1,5 +1,6 @@
-import type { StatsAndControlsProps, StatsDisplay } from "../../../types";
-import { Button } from "../common";
+import type { StatsAndControlsProps, StatsDisplay } from "@shared-types/index";
+import { Button } from "@components/ui/common";
+import { motion } from "framer-motion";
 
 interface StatsAndControlsExtendedProps extends StatsAndControlsProps {
   elapsed?: number;
@@ -82,9 +83,7 @@ export default function StatsAndControls({
             </span>
           ))}
         </div>
-      </div>
-    );
-  }
+    </motion.div>
 
   // Focus mode: return just the timer with minimal styling
   if (display === "focus") {
@@ -145,7 +144,12 @@ export default function StatsAndControls({
   ];
 
   return (
-    <div className="w-full flex flex-col sm:flex-row sm:items-center sm:justify-center gap-4 sm:gap-6 md:gap-12 font-mono">
+    <motion.div
+      className="w-full flex flex-col sm:flex-row sm:items-center sm:justify-center gap-4 sm:gap-6 md:gap-12 font-mono"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+    >
       {/* STATS PANEL */}
       <div className="flex items-center justify-center gap-2 md:gap-4 h-10 sm:h-15">
         <div className="flex flex-col items-center gap-1">
