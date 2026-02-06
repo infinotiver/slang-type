@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import { StatsAndControls } from "@components/ui/stats";
 import TypingArea from "@components/typing/TypingArea";
@@ -45,6 +45,20 @@ export default function HomePage() {
     "slangtype_highscore",
     0,
   );
+
+  // Ref to store pending results for high score update
+  const pendingResultsRef = useRef<ResultsPayload | null>(null);
+
+  // Handle high score update after navigation
+  useEffect(() => {
+    if (pendingResultsRef.current) {
+      const results = pendingResultsRef.current;
+      if (results.wpm > highScore) {
+        setHighScore(results.wpm);
+      }
+      pendingResultsRef.current = null;
+    }
+  }, [highScore, setHighScore]);
 
   // Generate passage text based on language and mode
   const passageText = useMemo(() => {
@@ -111,10 +125,8 @@ export default function HomePage() {
           language={language}
           highScore={highScore}
           onResultsComplete={(resultsPayload: ResultsPayload) => {
-            // Update high score if needed
-            if (resultsPayload.wpm > highScore) {
-              setHighScore(resultsPayload.wpm);
-            }
+            // Store results for high score update after navigation
+            pendingResultsRef.current = resultsPayload;
             // Navigate to results page with state
             navigate("/results", {
               state: {

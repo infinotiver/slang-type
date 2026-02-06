@@ -1,3 +1,4 @@
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { TbArrowLeft } from "react-icons/tb";
 import { useHistoryStats } from "@hooks/useHistoryStats";
@@ -5,9 +6,12 @@ import { HistoryStatCard, StatBreakdownCard } from "@components/ui/stats";
 import { ChartContainer } from "@components/ui/charts";
 import { AttemptListItem } from "@components/ui/lists";
 import type { TypingAttempt } from "@shared-types/index";
-
+import { Button } from "@components/ui/common";
 export default function HistoryPage() {
   const navigate = useNavigate();
+  const [selectedAttemptId, setSelectedAttemptId] = useState<string | null>(
+    null,
+  );
 
   const {
     attempts,
@@ -17,6 +21,15 @@ export default function HistoryPage() {
     statsByMode,
     wpmProgressionData,
   } = useHistoryStats();
+
+  // Derive selectedAttempt from attemptId
+  const selectedAttempt = useMemo(
+    () =>
+      selectedAttemptId
+        ? allAttempts.find((a) => a.id === selectedAttemptId) || null
+        : null,
+    [selectedAttemptId, allAttempts],
+  );
 
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp);
@@ -48,8 +61,175 @@ export default function HistoryPage() {
   };
 
   const handleAttemptSelect = (attempt: TypingAttempt) => {
-    navigate(`/results?attemptId=${attempt.id}`);
+    setSelectedAttemptId(attempt.id);
   };
+
+  // Show detail view for selected attempt
+  if (selectedAttempt) {
+    const minutesElapsed = selectedAttempt.elapsed / 60;
+    const adjustedWpm =
+      selectedAttempt.correctChars > 0
+        ? Math.round(selectedAttempt.correctChars / 5 / minutesElapsed)
+        : 0;
+    const rawWpm =
+      selectedAttempt.totalTyped > 0
+        ? Math.round(selectedAttempt.totalTyped / 5 / minutesElapsed)
+        : 0;
+
+    return (
+      <div className="min-h-screen bg-background text-foreground flex flex-col font-mono">
+        {/* Detail Header */}
+        <header className="px-8 sm:px-16 md:px-20 py-6 sm:py-8 border-b border-secondary/40">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setSelectedAttemptId(null)}
+              className="p-2 text-foreground hover:text-highlight transition-colors active:scale-95 -ml-2"
+              aria-label="back"
+              title="back to history"
+            >
+              <TbArrowLeft size={24} />
+            </button>
+            <div>
+              <h1 className="text-lg sm:text-xl font-bold tracking-wider">
+                attempt details
+              </h1>
+              <p className="text-xs text-foreground/60 mt-1">
+                {formatDate(selectedAttempt.timestamp)}
+              </p>
+            </div>
+          </div>
+        </header>
+
+        {/* Detail Content */}
+        <main className="flex-1 px-8 sm:px-16 md:px-20 py-10 flex items-center justify-center">
+          <div className="max-w-2xl w-full px-4 sm:px-6 md:px-8">
+            {/* Test Info */}
+            <div className="mb-8 pb-8 border-b border-secondary/40">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="text-xs text-foreground/70 tracking-wider font-light">
+                    test type
+                  </div>
+                  <div className="text-sm font-mono">
+                    {getLanguageLabel(selectedAttempt.language)} /{" "}
+                    {selectedAttempt.mode}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-foreground/70 tracking-wider font-light">
+                    duration
+                  </div>
+                  <div className="text-sm font-mono">
+                    {selectedAttempt.elapsed}s
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Performance Stats */}
+            <div className="mb-8">
+              <h3 className="text-sm font-mono text-foreground/70 mb-4 tracking-wider">
+                performance
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="text-xs text-foreground/70 tracking-wider font-light">
+                    adjusted wpm
+                  </div>
+                  <div className="text-2xl font-bold text-highlight">
+                    {adjustedWpm}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-foreground/70 tracking-wider font-light">
+                    raw wpm
+                  </div>
+                  <div className="text-2xl font-bold text-secondary">
+                    {rawWpm}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-foreground/70 tracking-wider font-light">
+                    accuracy
+                  </div>
+                  <div className="text-2xl font-bold text-foreground">
+                    {Math.round(selectedAttempt.accuracy)}%
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-foreground/70 tracking-wider font-light">
+                    time elapsed
+                  </div>
+                  <div className="text-2xl font-bold text-foreground">
+                    {selectedAttempt.elapsed}s
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Character Stats */}
+            <div className="mb-8">
+              <h3 className="text-sm font-mono text-foreground/70 mb-4 tracking-wider">
+                character stats
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="text-xs text-foreground/70 tracking-wider font-light">
+                    total typed
+                  </div>
+                  <div className="text-lg font-semibold">
+                    {selectedAttempt.totalTyped}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-foreground/70 tracking-wider font-light">
+                    correct
+                  </div>
+                  <div className="text-lg font-semibold text-highlight">
+                    {selectedAttempt.correctChars}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-foreground/70 tracking-wider font-light">
+                    errors
+                  </div>
+                  <div className="text-lg font-semibold text-red-500">
+                    {selectedAttempt.errors}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-foreground/70 tracking-wider font-light">
+                    error rate
+                  </div>
+                  <div className="text-lg font-semibold">
+                    {selectedAttempt.totalTyped > 0
+                      ? (
+                          ((selectedAttempt.totalTyped -
+                            selectedAttempt.correctChars) /
+                            selectedAttempt.totalTyped) *
+                          100
+                        ).toFixed(1)
+                      : "0.0"}
+                    %
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Button */}
+            <div className="flex justify-center">
+              <Button
+                onClick={() => navigate("/")}
+                className="px-6 py-2 bg-highlight hover:bg-highlight/90 text-background font-mono rounded transition-colors"
+              >
+                try_again
+              </Button>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   // Main history list view
   return (
