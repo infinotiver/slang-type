@@ -40,20 +40,23 @@ export default function Header({
             {/* Top row: Logo and Right controls */}
             <div className="flex items-center justify-between gap-4 mb-3">
               <div className="flex items-center gap-1.5">
-                <Link to="/">
-                  <h1 className="text-xl sm:text-2xl font-bold font-mono tracking-wide leading-none">
-                    <span className="text-highlight">slang</span>
-                    <span>type</span>
-                  </h1>
+                <Link to="/" className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 pointer-events-auto">
+                    <h1 className="text-xl font-bold tracking-tighter text-highlight lowercase">
+                      slangtype
+                    </h1>
+                    <button
+                      onClick={() => setIsCreditsOpen(true)}
+                      className="text-xs bg-white/10 px-2 py-0.5 rounded text-white/50 flex items-center gap-1 hover:bg-secondary/20 hover:text-highlight transition-colors"
+                      aria-label="credits"
+                      tabIndex={0}
+                      type="button"
+                    >
+                      beta
+                      <TbInfoCircleFilled size={16} />
+                    </button>
+                  </div>
                 </Link>
-
-                <button
-                  onClick={() => setIsCreditsOpen(true)}
-                  className="flex items-center justify-center p-1 rounded hover:bg-secondary/20 text-foreground hover:text-highlight transition-colors relative top-0.5"
-                  aria-label="credits"
-                >
-                  <TbInfoCircleFilled size={20} />
-                </button>
               </div>
 
               <div className="flex items-center gap-1 sm:gap-2">

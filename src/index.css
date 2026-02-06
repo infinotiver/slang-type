@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-
 @import "tailwindcss";
 
 @theme {
@@ -8,8 +6,8 @@
   --color-secondary: #26262cff;
   --color-foreground: #FCF5E5ff;
   --color-highlight: #fff000;
-  --font-sans: "Roboto", sans-serif;
-  --font-mono: "Roboto Mono", monospace;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-display: "Space Mono", monospace;
 }
 
 [data-theme="light"] {
