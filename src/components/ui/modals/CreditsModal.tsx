@@ -1,11 +1,11 @@
 import {
-  TbBrandReact,
-  TbBrandTypescript,
-  TbBrandTailwind,
-  TbBrandVite,
-  TbPalette,
-  TbChartLine,
-} from "react-icons/tb";
+  Code,
+  Palette,
+  BarChart,
+  Settings,
+  Newspaper,
+  Info,
+} from "lucide-react";
 import ModalBase from "./ModalBase";
 
 interface CreditsModalProps {
@@ -15,12 +15,12 @@ interface CreditsModalProps {
 
 export default function CreditsModal({ isOpen, onClose }: CreditsModalProps) {
   const technologies = [
-    { name: "React 19", description: "UI library", icon: TbBrandReact },
-    { name: "TypeScript", description: "type safety", icon: TbBrandTypescript },
-    { name: "Tailwind CSS", description: "styling", icon: TbBrandTailwind },
-    { name: "Vite", description: "build tool", icon: TbBrandVite },
-    { name: "Tabler Icons", description: "icon set", icon: TbPalette },
-    { name: "Recharts", description: "data visualization", icon: TbChartLine },
+    { name: "React", description: "UI library", icon: Code },
+    { name: "TypeScript", description: "type safety", icon: Code },
+    { name: "Tailwind CSS", description: "styling", icon: Palette },
+    { name: "Vite", description: "build tool", icon: Settings },
+    { name: "Lucide Icons", description: "icon set", icon: Palette },
+    { name: "Recharts", description: "data visualization", icon: BarChart },
   ];
 
   return (
