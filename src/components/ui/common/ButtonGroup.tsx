@@ -48,7 +48,9 @@ export default function ButtonGroup<T extends string>({
             {isThemeGroup && (
               <span
                 className="inline-block w-3 h-3 rounded-full mr-2 align-middle"
-                style={{ backgroundColor: themeColors[option.value] || "#fff000" }}
+                style={{
+                  backgroundColor: themeColors[option.value] || "#fff000",
+                }}
               />
             )}
             {option.label}

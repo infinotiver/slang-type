@@ -40,9 +40,9 @@ export default function SettingsModal({
     { label: "tape-char", value: "tape-char" },
   ];
   const statsDisplayOptions: { label: string; value: StatsDisplay }[] = [
-    { label: "normal", value: "normal" },
-    { label: "mini", value: "mini" },
+    { label: "compact", value: "compact" },
     { label: "focus", value: "focus" },
+    { label: "normal", value: "normal" },
   ];
 
   return (

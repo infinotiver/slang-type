@@ -10,7 +10,7 @@ export type Theme =
   | "nord"
   | "gruvbox";
 export type DisplayMode = "normal" | "tape-word" | "tape-char";
-export type StatsDisplay = "normal" | "mini" | "focus";
+export type StatsDisplay = "compact" | "focus" | "normal";
 
 // Component Props
 export interface StatsAndControlsProps {

@@ -96,6 +96,7 @@ export default function HomePage() {
           elapsed={engine.elapsed}
           duration={durationSeconds || 0}
           display={context.statsDisplay}
+          isTypingRunning={engine.running}
         />
       </div>
 

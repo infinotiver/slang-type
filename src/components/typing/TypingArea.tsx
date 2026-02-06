@@ -78,7 +78,7 @@ export default function TypingArea({
       charPos += word.length + 1; // +1 for space
     }
     return positions;
-  }, [words, targetText]);
+  }, [words]);
 
   // Calculate visible text window for normal mode
   // Only scroll when user reaches the last word

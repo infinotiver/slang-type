@@ -3,6 +3,7 @@ import { Newspaper, Settings } from "lucide-react";
 import { SettingsModal, CreditsModal } from "@components/ui/modals";
 import type { Theme, DisplayMode, StatsDisplay } from "@shared-types/index";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 interface HeaderProps {
   theme: Theme;
@@ -50,22 +51,36 @@ export default function Header({
                   <span className="text-foreground/60">best</span>
                   <span className="text-highlight font-bold">{highScore}</span>
                 </div>
-                <button
+                <motion.button
                   onClick={onHistoryClick}
                   className="p-1.5 rounded hover:bg-secondary/20 text-foreground hover:text-highlight transition-colors"
                   aria-label="history"
                   title="history"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <Newspaper size={20} />
-                </button>
-                <button
+                  <motion.div
+                    whileHover={{ rotate: [0, -10, 10, 0] }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Newspaper size={20} />
+                  </motion.div>
+                </motion.button>
+                <motion.button
                   onClick={() => setIsSettingsOpen(true)}
                   className="p-1.5 rounded hover:bg-secondary/20 text-foreground hover:text-highlight transition-colors"
                   aria-label="settings"
                   title="settings"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <Settings size={20} />
-                </button>
+                  <motion.div
+                    whileHover={{ rotate: 90 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Settings size={20} />
+                  </motion.div>
+                </motion.button>
               </div>
             </div>
           </div>
