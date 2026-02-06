@@ -38,7 +38,7 @@ export default function StatsAndControls({
     ];
 
     return (
-      <div className="w-full flex flex-col items-center gap-3 sm:gap-4 font-mono text-xs sm:text-sm text-foreground/70">
+      <div className="w-full flex flex-col items-center gap-1 sm:gap-2 font-mono text-xs sm:text-sm text-foreground/70">
         {/* Stats */}
         <div className="flex items-center justify-center gap-2 sm:gap-4 text-foreground">
           <span className="font-bold text-sm sm:text-base">{wpm}</span>
@@ -147,7 +147,7 @@ export default function StatsAndControls({
   return (
     <div className="w-full flex flex-col sm:flex-row sm:items-center sm:justify-center gap-4 sm:gap-6 md:gap-12 font-mono">
       {/* STATS PANEL */}
-      <div className="flex items-center justify-center gap-4 sm:gap-6 md:gap-8 h-10 sm:h-15">
+      <div className="flex items-center justify-center gap-2 md:gap-4 h-10 sm:h-15">
         <div className="flex flex-col items-center gap-1">
           <span className="text-xs text-foreground/70 tracking-wider font-light">
             wpm

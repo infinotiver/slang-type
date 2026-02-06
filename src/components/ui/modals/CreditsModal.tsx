@@ -3,8 +3,6 @@ import {
   Palette,
   BarChart,
   Settings,
-  Newspaper,
-  Info,
 } from "lucide-react";
 import ModalBase from "./ModalBase";
 

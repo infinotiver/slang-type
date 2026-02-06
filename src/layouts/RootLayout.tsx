@@ -1,4 +1,10 @@
-import { Outlet, ScrollRestoration, useNavigate } from "react-router-dom";
+import {
+  Outlet,
+  ScrollRestoration,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Header } from "../components/ui/common";
 import useLocalStorage from "../hooks/useLocalStorage";
@@ -7,6 +13,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { CreditsModal } from "../components/ui/modals";
 
 export default function RootLayout() {
+  const location = useLocation();
   const navigate = useNavigate();
   const [theme, setTheme] = useLocalStorage<Theme>("slangtype_theme", "dark");
   const [displayMode, setDisplayMode] = useLocalStorage<DisplayMode>(
@@ -46,7 +53,17 @@ export default function RootLayout() {
       </header>
       {/* Page content */}
       <main id="main-content" className="flex-1">
-        <Outlet context={{ displayMode, statsDisplay }} />
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.22, ease: "easeInOut" }}
+          >
+            <Outlet context={{ displayMode, statsDisplay }} />
+          </motion.div>
+        </AnimatePresence>
       </main>
       <ScrollRestoration />
       <Analytics />

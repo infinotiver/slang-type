@@ -21,11 +21,11 @@ export default function ButtonGroup<T extends string>({
   return (
     <div>
       {label && (
-        <label className="block text-sm font-mono text-foreground/70 mb-4 tracking-wider">
+        <label className="block text-sm font-mono text-foreground/70 mb-2 tracking-wider">
           {label}
         </label>
       )}
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-2">
         {options.map((option) => (
           <Button
             key={option.value}
