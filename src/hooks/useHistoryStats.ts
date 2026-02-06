@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import useLocalStorage from "./useLocalStorage";
 import {
   calculateAllStats,
@@ -18,10 +18,14 @@ export interface UseHistoryStatsReturn {
   statsByLanguage: StatsByLanguage;
   statsByMode: Record<string, TypingAttempt | null>;
   wpmProgressionData: WpmProgressionPoint[];
+  addAttempt: (attempt: TypingAttempt) => void;
 }
 
 export function useHistoryStats(): UseHistoryStatsReturn {
-  const [attempts] = useLocalStorage<TypingAttempt[]>("slangtype_attempts", []);
+  const [attempts, setAttempts] = useLocalStorage<TypingAttempt[]>(
+    "slangtype_attempts",
+    [],
+  );
 
   const allAttempts = useMemo(() => [...attempts].reverse(), [attempts]);
 
@@ -36,6 +40,13 @@ export function useHistoryStats(): UseHistoryStatsReturn {
     [attempts],
   );
 
+  const addAttempt = useCallback(
+    (attempt: TypingAttempt) => {
+      setAttempts((prevAttempts) => [...prevAttempts, attempt]);
+    },
+    [setAttempts],
+  );
+
   return {
     attempts,
     allAttempts,
@@ -43,5 +54,6 @@ export function useHistoryStats(): UseHistoryStatsReturn {
     statsByLanguage,
     statsByMode,
     wpmProgressionData,
+    addAttempt,
   };
 }
