@@ -22,10 +22,8 @@ export default function StatsAndControls({
   display = "normal",
   isTypingRunning = false,
 }: StatsAndControlsExtendedProps) {
-  // Calculate remaining time for countdown display
   const remaining = Math.max(0, duration - elapsed);
 
-  // Format time to MM:SS format
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -38,11 +36,23 @@ export default function StatsAndControls({
     { label: "code", disabled: true },
   ];
 
+  const layoutClass =
+    display === "compact"
+      ? "flex-col items-center gap-1"
+      : display === "focus"
+        ? "flex-row items-center justify-center gap-2 sm:gap-3"
+        : "flex-col sm:flex-row sm:items-center sm:justify-center gap-3 sm:gap-5 md:gap-8";
+
   const renderStats = (displayMode: StatsDisplay) => {
     switch (displayMode) {
       case "compact":
         return (
-          <div className="flex items-center justify-center gap-0.5 sm:gap-1 text-foreground">
+          <motion.div
+            className="flex items-center justify-center gap-0.5 sm:gap-1 text-foreground"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25 }}
+          >
             <span className="font-bold text-sm sm:text-base">{wpm}</span>
             <span className="text-foreground/50">·</span>
             <span className="font-bold text-sm sm:text-base">
@@ -52,58 +62,74 @@ export default function StatsAndControls({
             <span className="font-bold text-sm sm:text-base text-highlight">
               {formatTime(remaining)}
             </span>
-          </div>
+          </motion.div>
         );
       case "focus":
         return (
-          <div className="text-2xl sm:text-3xl font-bold text-highlight whitespace-nowrap">
+          <motion.div
+            className="text-2xl sm:text-3xl font-bold text-highlight whitespace-nowrap"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25 }}
+          >
             {formatTime(remaining)}
-          </div>
+          </motion.div>
         );
       case "normal":
       default:
         return (
-          <div className="flex items-center justify-center gap-2 md:gap-4 h-10 sm:h-12">
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-xs text-foreground/70 tracking-wider font-light">
-                wpm
-              </span>
-              <span className="text-lg sm:text-xl font-bold text-foreground">
-                {wpm}
-              </span>
-            </div>
-            <div className="w-px h-10 sm:h-12 bg-secondary/40"></div>
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-xs text-foreground/70 tracking-wider font-light">
-                acc
-              </span>
-              <span className="text-lg sm:text-xl font-bold text-foreground">
-                {Math.round(accuracy)}%
-              </span>
-            </div>
-            <div className="w-px h-10 sm:h-12 bg-secondary/40"></div>
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-xs text-foreground/70 tracking-wider font-light">
-                time
-              </span>
-              <span className="text-lg sm:text-xl font-bold text-highlight">
-                {formatTime(remaining)}
-              </span>
-            </div>
-          </div>
+          <motion.div
+            className="flex items-center justify-center gap-2 md:gap-4 h-10 sm:h-12"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            {[
+              { label: "wpm", value: wpm.toString() },
+              { label: "acc", value: `${Math.round(accuracy)}%` },
+              { label: "time", value: formatTime(remaining), highlight: true },
+            ].map(({ label, value, highlight }) => (
+              <div key={label} className="flex flex-col items-center gap-1">
+                <span className="text-xs text-foreground/70 tracking-wider font-light">
+                  {label}
+                </span>
+                <span
+                  className={`text-lg sm:text-xl font-bold ${
+                    highlight ? "text-highlight" : "text-foreground"
+                  }`}
+                >
+                  {value}
+                </span>
+              </div>
+            ))}
+          </motion.div>
         );
     }
+  };
+
+  const controlButtonVariants = {
+    hover: { scale: 1.04 },
+    tap: { scale: 0.96 },
   };
 
   const renderControls = (displayMode: StatsDisplay) => {
     switch (displayMode) {
       case "compact":
         return (
-          <div className="flex flex-col items-center space-x-0.5">
-            {/* Languages */}
+          <motion.div
+            className="flex flex-col items-center gap-2"
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
             <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
               {controlsOptions.map((lang, idx) => (
-                <span key={lang.label} className="flex items-center gap-1">
+                <motion.span
+                  key={lang.label}
+                  className="flex items-center gap-1 text-sm"
+                  whileHover="hover"
+                  whileTap="tap"
+                  variants={controlButtonVariants}
+                >
                   {idx > 0 && <span className="text-foreground/40">/</span>}
                   <button
                     onClick={() => onLanguageChange(lang.label)}
@@ -116,13 +142,18 @@ export default function StatsAndControls({
                   >
                     {lang.label}
                   </button>
-                </span>
+                </motion.span>
               ))}
             </div>
-            {/* Modes */}
             <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
               {["15s", "30s", "60s", "120s", "inf"].map((m, idx) => (
-                <span key={m} className="flex items-center gap-1">
+                <motion.span
+                  key={m}
+                  className="flex items-center gap-1 text-sm"
+                  whileHover="hover"
+                  whileTap="tap"
+                  variants={controlButtonVariants}
+                >
                   {idx > 0 && <span className="text-foreground/40">/</span>}
                   <button
                     onClick={() => onModeChange(m)}
@@ -132,15 +163,18 @@ export default function StatsAndControls({
                   >
                     {m}
                   </button>
-                </span>
+                </motion.span>
               ))}
             </div>
-          </div>
+          </motion.div>
         );
       case "focus":
         return (
-          <div className="flex items-center gap-2">
-            {/* Language Dropdown */}
+          <motion.div
+            className="flex items-center gap-2 sm:gap-3"
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
             <select
               value={language}
               onChange={(e) => onLanguageChange(e.target.value)}
@@ -157,7 +191,6 @@ export default function StatsAndControls({
                 </option>
               ))}
             </select>
-            {/* Mode Dropdown */}
             <select
               value={mode}
               onChange={(e) => onModeChange(e.target.value)}
@@ -169,18 +202,21 @@ export default function StatsAndControls({
                 </option>
               ))}
             </select>
-          </div>
+          </motion.div>
         );
       case "normal":
       default:
         return (
-          <div className="flex items-center justify-center space-x-3 sm:space-x-4 md:space-x-4">
-            {/* Language */}
+          <motion.div
+            className="flex items-center justify-center gap-3 sm:gap-4"
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
             <div className="w-full sm:w-auto flex items-center gap-2">
               <select
                 value={language}
                 onChange={(e) => onLanguageChange(e.target.value)}
-                className="sm:hidden w-full px-3 py-2 bg-secondary/30 border border-secondary/60 text-sm font-mono text-foreground rounded hover:border-highlight hover:bg-secondary/40 transition-colors active:scale-95 focus:outline-none focus:border-highlight focus:ring-1 focus:ring-highlight/30"
+                className="sm:hidden w-full px-3 py-2 bg-secondary/30 border border-secondary/60 text-sm font-mono text-foreground rounded hover:border-highlight hover:bg-secondary/40 transition-colors focus:outline-none focus:border-highlight focus:ring-1 focus:ring-highlight/30"
                 disabled={slangDisabled && language === "slang"}
               >
                 {controlsOptions.map((lang) => (
@@ -195,24 +231,29 @@ export default function StatsAndControls({
               </select>
               <div className="hidden sm:flex items-center gap-2">
                 {controlsOptions.map((lang) => (
-                  <Button
+                  <motion.div
                     key={lang.label}
-                    onClick={() => onLanguageChange(lang.label)}
-                    variant={language === lang.label ? "primary" : "secondary"}
-                    className={language === lang.label ? "font-semibold" : ""}
-                    disabled={lang.disabled}
+                    whileHover="hover"
+                    whileTap="tap"
+                    variants={controlButtonVariants}
                   >
-                    {lang.label}
-                  </Button>
+                    <Button
+                      onClick={() => onLanguageChange(lang.label)}
+                      variant={language === lang.label ? "primary" : "secondary"}
+                      className={language === lang.label ? "font-semibold" : ""}
+                      disabled={lang.disabled}
+                    >
+                      {lang.label}
+                    </Button>
+                  </motion.div>
                 ))}
               </div>
             </div>
-            {/* Mode */}
             <div className="w-full sm:w-auto flex items-center gap-2">
               <select
                 value={mode}
                 onChange={(e) => onModeChange(e.target.value)}
-                className="sm:hidden w-full px-3 py-2 bg-secondary/30 border border-secondary/60 text-sm font-mono text-foreground rounded hover:border-highlight hover:bg-secondary/40 transition-colors active:scale-95 focus:outline-none focus:border-highlight focus:ring-1 focus:ring-highlight/30"
+                className="sm:hidden w-full px-3 py-2 bg-secondary/30 border border-secondary/60 text-sm font-mono text-foreground rounded hover:border-highlight hover:bg-secondary/40 transition-colors focus:outline-none focus:border-highlight focus:ring-1 focus:ring-highlight/30"
               >
                 {["15s", "30s", "60s", "120s", "inf"].map((m) => (
                   <option key={m} value={m}>
@@ -222,36 +263,38 @@ export default function StatsAndControls({
               </select>
               <div className="hidden sm:flex items-center gap-2">
                 {["15s", "30s", "60s", "120s", "inf"].map((m) => (
-                  <Button
+                  <motion.div
                     key={m}
-                    onClick={() => onModeChange(m)}
-                    variant={mode === m ? "primary" : "secondary"}
-                    className={mode === m ? "font-semibold" : ""}
+                    whileHover="hover"
+                    whileTap="tap"
+                    variants={controlButtonVariants}
                   >
-                    {m}
-                  </Button>
+                    <Button
+                      onClick={() => onModeChange(m)}
+                      variant={mode === m ? "primary" : "secondary"}
+                      className={mode === m ? "font-semibold" : ""}
+                    >
+                      {m}
+                    </Button>
+                  </motion.div>
                 ))}
               </div>
             </div>
-          </div>
+          </motion.div>
         );
     }
   };
 
   return (
     <motion.div
-      className={`w-full flex ${
-        display === "compact"
-          ? "flex-col items-center gap-0"
-          : display === "focus"
-            ? "flex-row items-center justify-center gap-0"
-            : "flex-col sm:flex-row sm:items-center sm:justify-center gap-4 sm:gap-6 md:gap-12"
-      } font-mono ${
+      className={`w-full flex ${layoutClass} font-mono ${
         display === "compact" ? "text-xs sm:text-sm text-foreground/70" : ""
       }`}
       initial={{ opacity: 0, y: 0 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      whileHover={{ scale: display === "compact" ? 1 : 1.01 }}
+      whileTap={{ scale: display === "compact" ? 1 : 0.99 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
     >
       {isTypingRunning && renderStats(display)}
       {(display === "compact" || display === "focus") && !isTypingRunning && (
