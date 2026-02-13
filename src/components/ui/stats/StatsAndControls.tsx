@@ -42,7 +42,7 @@ export default function StatsAndControls({
     switch (displayMode) {
       case "compact":
         return (
-          <div className="flex items-center justify-center gap-1 sm:gap-2 text-foreground">
+          <div className="flex items-center justify-center gap-0.5 sm:gap-1 text-foreground">
             <span className="font-bold text-sm sm:text-base">{wpm}</span>
             <span className="text-foreground/50">·</span>
             <span className="font-bold text-sm sm:text-base">
@@ -99,7 +99,7 @@ export default function StatsAndControls({
     switch (displayMode) {
       case "compact":
         return (
-          <div className="flex flex-col items-center gap-0.5">
+          <div className="flex flex-col items-center space-x-0.5">
             {/* Languages */}
             <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
               {controlsOptions.map((lang, idx) => (
@@ -174,7 +174,7 @@ export default function StatsAndControls({
       case "normal":
       default:
         return (
-          <div className="flex items-center justify-center gap-3 sm:gap-4 md:gap-4">
+          <div className="flex items-center justify-center space-x-3 sm:space-x-4 md:space-x-4">
             {/* Language */}
             <div className="w-full sm:w-auto flex items-center gap-2">
               <select
@@ -242,18 +242,18 @@ export default function StatsAndControls({
     <motion.div
       className={`w-full flex ${
         display === "compact"
-          ? "flex-col items-center gap-0.5"
+          ? "flex-col items-center gap-0"
           : display === "focus"
-            ? "flex-row items-center justify-center gap-2"
+            ? "flex-row items-center justify-center gap-0"
             : "flex-col sm:flex-row sm:items-center sm:justify-center gap-4 sm:gap-6 md:gap-12"
       } font-mono ${
         display === "compact" ? "text-xs sm:text-sm text-foreground/70" : ""
       }`}
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 0 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      {renderStats(display)}
+      {isTypingRunning && renderStats(display)}
       {(display === "compact" || display === "focus") && !isTypingRunning && (
         <div className="hidden md:block w-px h-14 bg-secondary/40"></div>
       )}

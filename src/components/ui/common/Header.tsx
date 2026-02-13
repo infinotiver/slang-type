@@ -32,8 +32,8 @@ export default function Header({
   return (
     <>
       <header className="bg-background">
-        <div className="px-8 sm:px-16 md:px-20 pt-1 sm:pt-2 md:pt-4">
-          <div className="max-w-6xl mx-auto">
+        <div className="px-6 sm:px-12 md:px-16 pt-1 sm:pt-2 md:pt-4">
+          <div className="mx-auto">
             {/* Top row: Logo and Right controls */}
             <div className="flex items-center justify-between gap-4 mb-3">
               <div className="flex items-center gap-1.5">
