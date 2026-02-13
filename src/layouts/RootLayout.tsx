@@ -10,7 +10,9 @@ import { Header } from "@components/ui/common";
 import useLocalStorage from "@hooks/useLocalStorage";
 import type { Theme, DisplayMode, StatsDisplay } from "../types";
 import { Analytics } from "@vercel/analytics/react";
-import { CreditsModal } from "../components/ui/modals";
+import { CreditsModal, ChangelogModal } from "../components/ui/modals";
+import changelog from "../../CHANGELOG.md?raw";
+import { version as appVersion } from "../../package.json";
 
 export default function RootLayout() {
   const location = useLocation();
@@ -26,6 +28,7 @@ export default function RootLayout() {
   );
   const [highScore] = useLocalStorage<number>("slangtype_highscore", 0);
   const [isCreditsOpen, setIsCreditsOpen] = useState(false);
+  const [isChangelogOpen, setIsChangelogOpen] = useState(false);
 
   // Apply theme to document
   useEffect(() => {
@@ -33,7 +36,7 @@ export default function RootLayout() {
   }, [theme]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col font-mono px-2 py-4 sm:px-16 md:px-20">
+    <div className="min-h-screen bg-background text-foreground flex flex-col font-mono px-2 py-2 sm:px-10 md:px-12">
       {/* Skip to main content link for accessibility */}
       <a href="#main-content" className="sr-only focus:not-sr-only">
         Skip to main content
@@ -68,9 +71,15 @@ export default function RootLayout() {
       <ScrollRestoration />
       <Analytics />
       {/* FOOTER - always visible */}
-      <footer className="border-t border-secondary/40 px-8 sm:px-16 md:px-20 py-3 sm:py-4 md:py-6">
+      <footer className="border-t border-secondary/40 px-8 sm:px-16 md:px-20 py-1 sm:py-2 md:py-4">
         <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-xs font-mono text-foreground/50">
-          <span>alpha</span>
+          <button
+            type="button"
+            onClick={() => setIsChangelogOpen(true)}
+            className="text-foreground/80 hover:text-highlight transition-colors font-semibold flex items-center gap-1 tracking-wide"
+          >
+            ver {appVersion}
+          </button>
           <span className="flex items-center gap-1">
             made with love by
             <a
@@ -81,7 +90,7 @@ export default function RootLayout() {
             </a>
             <button
               onClick={() => setIsCreditsOpen(true)}
-              className="ml-1 p-1 rounded hover:bg-secondary/20 text-foreground hover:text-highlight transition-colors"
+              className="ml-1 p-1 rounded hover:bg-secondary/20 hover:text-highlight transition-colors"
               aria-label="credits"
               type="button"
             >
@@ -99,6 +108,12 @@ export default function RootLayout() {
         <CreditsModal
           isOpen={isCreditsOpen}
           onClose={() => setIsCreditsOpen(false)}
+        />
+        <ChangelogModal
+          isOpen={isChangelogOpen}
+          onClose={() => setIsChangelogOpen(false)}
+          changelog={changelog}
+          version={appVersion}
         />
       </footer>
     </div>

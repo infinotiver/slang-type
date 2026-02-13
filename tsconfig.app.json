@@ -33,7 +33,8 @@
       "@hooks/*": ["src/hooks/*"],
       "@utils/*": ["src/utils/*"],
       "@shared-types/*": ["src/types/*"]
-    }
+    },
+    "resolveJsonModule": true
   },
   "include": ["src"]
 }
