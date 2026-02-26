@@ -8,7 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Header } from "@components/ui/common";
 import useLocalStorage from "@hooks/useLocalStorage";
-import type { Theme, DisplayMode, StatsDisplay } from "../types";
+import type { Theme, DisplayMode } from "../types";
 import { Analytics } from "@vercel/analytics/react";
 import { CreditsModal, ChangelogModal } from "../components/ui/modals";
 import changelog from "../../CHANGELOG.md?raw";
@@ -20,10 +20,6 @@ export default function RootLayout() {
   const [theme, setTheme] = useLocalStorage<Theme>("slangtype_theme", "dark");
   const [displayMode, setDisplayMode] = useLocalStorage<DisplayMode>(
     "slangtype_displayMode",
-    "normal",
-  );
-  const [statsDisplay, setStatsDisplay] = useLocalStorage<StatsDisplay>(
-    "slangtype_statsDisplay",
     "normal",
   );
   const [highScore] = useLocalStorage<number>("slangtype_highscore", 0);
@@ -48,8 +44,6 @@ export default function RootLayout() {
           onThemeChange={setTheme}
           displayMode={displayMode}
           onDisplayModeChange={setDisplayMode}
-          statsDisplay={statsDisplay}
-          onStatsDisplayChange={setStatsDisplay}
           highScore={highScore}
           onHistoryClick={() => navigate("/history")}
         />
@@ -64,7 +58,7 @@ export default function RootLayout() {
             exit={{ opacity: 0, y: -16 }}
             transition={{ duration: 0.22, ease: "easeInOut" }}
           >
-            <Outlet context={{ displayMode, statsDisplay }} />
+            <Outlet context={{ displayMode }} />
           </motion.div>
         </AnimatePresence>
       </main>

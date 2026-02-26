@@ -1,9 +1,4 @@
-import type {
-  SettingsModalProps,
-  Theme,
-  DisplayMode,
-  StatsDisplay,
-} from "../../../types";
+import type { SettingsModalProps, Theme, DisplayMode } from "../../../types";
 import ModalBase from "./ModalBase";
 import ButtonGroup from "../common/ButtonGroup";
 
@@ -14,13 +9,9 @@ export default function SettingsModal({
   onThemeChange,
   displayMode = "normal",
   onDisplayModeChange,
-  statsDisplay = "normal",
-  onStatsDisplayChange,
 }: SettingsModalProps & {
   displayMode?: DisplayMode;
   onDisplayModeChange?: (mode: DisplayMode) => void;
-  statsDisplay?: StatsDisplay;
-  onStatsDisplayChange?: (display: StatsDisplay) => void;
 }) {
   if (!isOpen) return null;
 
@@ -39,12 +30,6 @@ export default function SettingsModal({
     { label: "tape-word", value: "tape-word" },
     { label: "tape-char", value: "tape-char" },
   ];
-  const statsDisplayOptions: { label: string; value: StatsDisplay }[] = [
-    { label: "compact", value: "compact" },
-    { label: "focus", value: "focus" },
-    { label: "normal", value: "normal" },
-  ];
-
   return (
     <ModalBase isOpen={isOpen} onClose={onClose} title="settings">
       <div className="space-y-8">
@@ -64,13 +49,6 @@ export default function SettingsModal({
           onChange={onDisplayModeChange || (() => {})}
         />
 
-        {/* Stats Display Setting */}
-        <ButtonGroup
-          label="stats display"
-          options={statsDisplayOptions}
-          value={statsDisplay}
-          onChange={onStatsDisplayChange || (() => {})}
-        />
       </div>
     </ModalBase>
   );

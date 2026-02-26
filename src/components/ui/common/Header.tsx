@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Newspaper, Settings } from "lucide-react";
 import { SettingsModal, CreditsModal } from "@components/ui/modals";
-import type { Theme, DisplayMode, StatsDisplay } from "@shared-types/index";
+import type { Theme, DisplayMode } from "@shared-types/index";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -10,8 +10,6 @@ interface HeaderProps {
   onThemeChange: (theme: Theme) => void;
   displayMode: DisplayMode;
   onDisplayModeChange: (mode: DisplayMode) => void;
-  statsDisplay: StatsDisplay;
-  onStatsDisplayChange: (display: StatsDisplay) => void;
   highScore: number;
   onHistoryClick?: () => void;
 }
@@ -21,13 +19,19 @@ export default function Header({
   onThemeChange,
   displayMode,
   onDisplayModeChange,
-  statsDisplay,
-  onStatsDisplayChange,
   highScore,
   onHistoryClick,
 }: HeaderProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isCreditsOpen, setIsCreditsOpen] = useState(false);
+  const iconButtonMotion = {
+    whileHover: { scale: 1.1 },
+    whileTap: { scale: 0.95 },
+  };
+  const iconInnerMotion = {
+    whileHover: { rotate: [0, -10, 10, 0] },
+    transition: { duration: 0.3 },
+  };
 
   return (
     <>
@@ -56,12 +60,12 @@ export default function Header({
                   className="p-1.5 rounded hover:bg-secondary/20 text-foreground hover:text-highlight transition-colors"
                   aria-label="history"
                   title="history"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={iconButtonMotion.whileHover}
+                  whileTap={iconButtonMotion.whileTap}
                 >
                   <motion.div
-                    whileHover={{ rotate: [0, -10, 10, 0] }}
-                    transition={{ duration: 0.3 }}
+                    whileHover={iconInnerMotion.whileHover}
+                    transition={iconInnerMotion.transition}
                   >
                     <Newspaper size={20} />
                   </motion.div>
@@ -71,12 +75,12 @@ export default function Header({
                   className="p-1.5 rounded hover:bg-secondary/20 text-foreground hover:text-highlight transition-colors"
                   aria-label="settings"
                   title="settings"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={iconButtonMotion.whileHover}
+                  whileTap={iconButtonMotion.whileTap}
                 >
                   <motion.div
-                    whileHover={{ rotate: 90 }}
-                    transition={{ duration: 0.2 }}
+                    whileHover={iconInnerMotion.whileHover}
+                    transition={iconInnerMotion.transition}
                   >
                     <Settings size={20} />
                   </motion.div>
@@ -94,8 +98,6 @@ export default function Header({
         onThemeChange={onThemeChange}
         displayMode={displayMode}
         onDisplayModeChange={onDisplayModeChange}
-        statsDisplay={statsDisplay}
-        onStatsDisplayChange={onStatsDisplayChange}
       />
       {/* CreditsModal will be triggered from the footer now */}
       <CreditsModal

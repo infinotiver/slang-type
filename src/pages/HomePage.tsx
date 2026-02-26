@@ -6,7 +6,6 @@ import { generatePhrase } from "@utils/textGenerator";
 import type {
   Language,
   Mode,
-  StatsDisplay,
   DisplayMode,
 } from "@shared-types/index";
 import useTypingEngine from "@hooks/useTypingEngine";
@@ -15,7 +14,6 @@ import useLocalStorage from "@hooks/useLocalStorage";
 
 interface ContextType {
   displayMode: DisplayMode;
-  statsDisplay: StatsDisplay;
 }
 
 interface ResultsPayload {
@@ -109,7 +107,6 @@ export default function HomePage() {
           onModeChange={handleModeChange}
           elapsed={engine.elapsed}
           duration={durationSeconds || 0}
-          display={context.statsDisplay}
           isTypingRunning={engine.running}
         />
       </div>
