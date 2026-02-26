@@ -1,7 +1,32 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useLayoutEffect, useState } from "react";
 import { Button } from "@components/ui/common";
 import type { DisplayMode, Mode, Language } from "@shared-types/index";
 import { motion } from "framer-motion";
+
+const buildLineStarts = (text: string, lineLength: number): number[] => {
+  if (!text) return [0];
+  const starts = [0];
+  let cursor = 0;
+  let currentLineLength = 0;
+
+  while (cursor < text.length) {
+    const nextSpace = text.indexOf(" ", cursor);
+    const wordEnd = nextSpace === -1 ? text.length : nextSpace;
+    const wordLength = wordEnd - cursor;
+    const hasSpace = wordEnd < text.length;
+    const addition = wordLength + (hasSpace ? 1 : 0);
+
+    if (currentLineLength > 0 && currentLineLength + addition > lineLength) {
+      starts.push(cursor);
+      currentLineLength = 0;
+    }
+
+    currentLineLength += addition;
+    cursor = wordEnd + (hasSpace ? 1 : 0);
+  }
+
+  return starts;
+};
 
 interface UseTypingEngineReturn {
   cursor: number;
@@ -67,6 +92,8 @@ export default function TypingArea({
   onResultsComplete,
 }: TypingAreaProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const normalContainerRef = useRef<HTMLDivElement>(null);
+  const normalMeasureRef = useRef<HTMLSpanElement>(null);
 
   // TAPE MODES: Calculate word/char positions
   const words = useMemo(() => targetText.split(" "), [targetText]);
@@ -80,35 +107,94 @@ export default function TypingArea({
     return positions;
   }, [words]);
 
-  // Calculate visible text window for normal mode
-  // Only scroll when user reaches the last word
-  const MOBILE_WINDOW = 100; // characters to show on mobile
-  const DESKTOP_WINDOW = 300; // characters to show on desktop
   const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
-  const NORMAL_WINDOW = isMobile ? MOBILE_WINDOW : DESKTOP_WINDOW;
+  const DEFAULT_LINE_LENGTH = isMobile ? 40 : 80;
+  const DEFAULT_VISIBLE_LINES = isMobile ? 2 : 3;
+  const [normalLineLength, setNormalLineLength] =
+    useState<number>(DEFAULT_LINE_LENGTH);
+  const [normalVisibleLines, setNormalVisibleLines] =
+    useState<number>(DEFAULT_VISIBLE_LINES);
 
-  let normalTextStart = 0;
-  let normalTextEnd = Math.min(targetText.length, NORMAL_WINDOW);
+  useLayoutEffect(() => {
+    if (displayMode !== "normal") return;
 
-  // If cursor is near the end (in last 100 chars), scroll up to show remaining text
-  if (targetText.length - engine.cursor < 100) {
-    normalTextStart = Math.max(0, targetText.length - NORMAL_WINDOW);
-    normalTextEnd = targetText.length;
+    const container = normalContainerRef.current;
+    const measure = normalMeasureRef.current;
+    if (!container || !measure) return;
+
+    const updateSizing = () => {
+      const containerWidth = container.clientWidth;
+      const sampleWidth = measure.getBoundingClientRect().width;
+      const charWidth =
+        sampleWidth > 0 ? sampleWidth / measure.textContent!.length : 0;
+
+      const computed = window.getComputedStyle(container);
+      let lineHeight = parseFloat(computed.lineHeight);
+      if (Number.isNaN(lineHeight)) {
+        const fontSize = parseFloat(computed.fontSize) || 16;
+        lineHeight = fontSize * 1.4;
+      }
+
+      const targetHeight = window.innerHeight * (isMobile ? 0.26 : 0.34);
+      const maxLines = isMobile ? 4 : 8;
+      const nextVisibleLines = Math.max(
+        DEFAULT_VISIBLE_LINES,
+        Math.min(maxLines, Math.floor(targetHeight / lineHeight)),
+      );
+
+      const nextLineLength =
+        charWidth > 0
+          ? Math.max(DEFAULT_LINE_LENGTH, Math.floor(containerWidth / charWidth))
+          : DEFAULT_LINE_LENGTH;
+
+      setNormalVisibleLines((prev) =>
+        prev === nextVisibleLines ? prev : nextVisibleLines,
+      );
+      setNormalLineLength((prev) =>
+        prev === nextLineLength ? prev : nextLineLength,
+      );
+    };
+
+    updateSizing();
+    const onResize = () => updateSizing();
+    window.addEventListener("resize", onResize);
+
+    const observer = new ResizeObserver(updateSizing);
+    observer.observe(container);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+      observer.disconnect();
+    };
+  }, [displayMode, isMobile, DEFAULT_LINE_LENGTH, DEFAULT_VISIBLE_LINES]);
+  const lineStarts = useMemo(
+    () => buildLineStarts(targetText, normalLineLength),
+    [targetText, normalLineLength],
+  );
+  const totalLines = lineStarts.length;
+  const clampedCursor = Math.min(engine.cursor, targetText.length);
+  let cursorLine = totalLines - 1;
+  for (let i = 0; i < totalLines; i++) {
+    const nextLineStart =
+      i + 1 < totalLines ? lineStarts[i + 1] : targetText.length;
+    if (clampedCursor >= lineStarts[i] && clampedCursor < nextLineStart) {
+      cursorLine = i;
+      break;
+    }
   }
-
-  // Extend start to beginning of word
-  while (normalTextStart > 0 && targetText[normalTextStart - 1] !== " ") {
-    normalTextStart--;
-  }
-
-  // Extend end to end of word
-  while (
-    normalTextEnd < targetText.length &&
-    targetText[normalTextEnd] !== " "
-  ) {
-    normalTextEnd++;
-  }
-
+  const maxStartLine = Math.max(0, totalLines - normalVisibleLines);
+  const baseStartLine = Math.max(
+    0,
+    cursorLine - (normalVisibleLines - 1),
+  );
+  const windowStartLine = Math.min(baseStartLine, maxStartLine);
+  const windowEndLine = Math.min(
+    totalLines,
+    windowStartLine + normalVisibleLines,
+  );
+  const normalTextStart = lineStarts[windowStartLine];
+  const normalTextEnd =
+    windowEndLine < totalLines ? lineStarts[windowEndLine] : targetText.length;
   const visibleNormalText = targetText.substring(
     normalTextStart,
     normalTextEnd,
@@ -195,6 +281,7 @@ export default function TypingArea({
     const status = engine.status[index];
     if (status === "correct") return "text-highlight";
     if (status === "incorrect") return "text-red-500";
+    if (index >= engine.cursor) return "text-foreground/60";
     return "text-foreground";
   };
 
@@ -255,7 +342,16 @@ export default function TypingArea({
         {/* Text display - conditional based on displayMode */}
         <div className="mb-2 sm:mb-4 relative w-full px-2 sm:px-4 md:px-6">
           {displayMode === "normal" && (
-            <div className="text-xl sm:text-xl md:text-2xl leading-relaxed tracking-normal text-justify">
+            <div
+              ref={normalContainerRef}
+              className="text-xl sm:text-xl md:text-2xl leading-relaxed tracking-normal text-justify"
+            >
+              <span
+                ref={normalMeasureRef}
+                className="absolute opacity-0 pointer-events-none"
+              >
+                MMMMMMMMMM
+              </span>
               {visibleNormalText.split("").map((char, idx) => {
                 const globalIdx = normalTextStart + idx;
                 return (

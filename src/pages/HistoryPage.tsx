@@ -83,11 +83,11 @@ export default function HistoryPage() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => setSelectedAttemptId(null)}
-              className="p-2 text-foreground hover:text-highlight transition-colors active:scale-95 -ml-2"
+              className="p-2 text-foreground/60 hover:text-highlight transition-colors active:scale-95 -ml-2"
               aria-label="back"
               title="back to history"
             >
-              <TbArrowLeft size={24} />
+              <TbArrowLeft size={24} className="text-inherit" />
             </button>
             <div>
               <h1 className="text-lg sm:text-xl font-bold tracking-wider">
@@ -239,11 +239,11 @@ export default function HistoryPage() {
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate("/")}
-            className="p-2 text-foreground hover:text-highlight transition-colors active:scale-95 -ml-2"
+            className="p-2 text-foreground/60 hover:text-highlight transition-colors active:scale-95 -ml-2"
             aria-label="back"
             title="back to typing"
           >
-            <TbArrowLeft size={24} />
+            <TbArrowLeft size={24} className="text-inherit" />
           </button>
           <h1 className="text-lg sm:text-xl font-bold tracking-wider">
             history

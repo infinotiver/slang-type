@@ -81,13 +81,7 @@ export default function RootLayout() {
             ver {appVersion}
           </button>
           <span className="flex items-center gap-1">
-            made with love by
-            <a
-              href="https://github.com/infinotiver"
-              className="hover:text-highlight transition-colors"
-            >
-              infinotiver
-            </a>
+          
             <button
               onClick={() => setIsCreditsOpen(true)}
               className="ml-1 p-1 rounded hover:bg-secondary/20 hover:text-highlight transition-colors"

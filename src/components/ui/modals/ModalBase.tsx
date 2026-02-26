@@ -65,10 +65,10 @@ export default function ModalBase({
                 </h2>
                 <button
                   onClick={onClose}
-                  className="text-foreground hover:text-highlight transition-colors active:scale-95 p-1"
+                  className="text-foreground/60 hover:text-highlight transition-colors active:scale-95 p-1"
                   aria-label="close"
                 >
-                  <TbX size={20} />
+                  <TbX size={20} className="text-inherit" />
                 </button>
               </div>
               {children}

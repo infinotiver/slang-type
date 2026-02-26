@@ -27,7 +27,7 @@ export default function NotFoundPage() {
             onClick={() => navigate("/")}
             className="flex items-center justify-center gap-2"
           >
-            <TbHome size={16} />
+            <TbHome size={16} className="text-foreground/60" />
             Home
           </Button>
           <Button
