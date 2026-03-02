@@ -1,22 +1,13 @@
 import { useMemo, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  ComposedChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-} from "recharts";
+import { TbArrowLeft } from "react-icons/tb";
 import {
   calculateResultStats,
   generateWpmProgressionData,
   countCharStatuses,
-  chartTooltipStyle,
 } from "@utils/resultsCalculations";
 import { Button } from "@components/ui/common";
+import { ChartContainer } from "@components/ui/charts";
 import useLocalStorage from "@hooks/useLocalStorage";
 import type { Language, Mode, TypingAttempt } from "@shared-types/index";
 
@@ -70,40 +61,42 @@ export default function ResultsPage() {
     isBaseline: false,
   };
 
-  useEffect(() => {
-    if (isNewHighScore || isBaseline) {
-      // Confetti animation removed
-    }
-  }, [isNewHighScore, isBaseline]);
+  const stats = useMemo(
+    () =>
+      calculateResultStats(
+        elapsed,
+        totalTyped,
+        correctChars,
+        accuracy,
+        charStatus,
+      ),
+    [elapsed, totalTyped, correctChars, accuracy, charStatus],
+  );
 
-  // Use utility functions to calculate stats
-  const stats = useMemo(() => {
-    return calculateResultStats(
-      elapsed,
-      totalTyped,
-      correctChars,
-      accuracy,
-      charStatus,
-    );
-  }, [elapsed, totalTyped, correctChars, accuracy, charStatus]);
+  const chartData = useMemo(
+    () =>
+      generateWpmProgressionData(
+        elapsed,
+        totalTyped,
+        correctChars,
+        charStatus,
+        accuracy,
+      ),
+    [elapsed, totalTyped, correctChars, charStatus, accuracy],
+  );
 
-  // Generate chart data
-  const chartData = useMemo(() => {
-    return generateWpmProgressionData(
-      elapsed,
-      totalTyped,
-      correctChars,
-      charStatus,
-      accuracy,
-    );
-  }, [elapsed, totalTyped, correctChars, charStatus, accuracy]);
+  const performanceData = useMemo(
+    () =>
+      chartData.map((point, idx) => ({
+        name: idx + 1,
+        wpm: point.adjustedWpm,
+        accuracy: point.accuracy,
+      })),
+    [chartData],
+  );
 
-  // Count character statuses
-  const statusCounts = useMemo(() => {
-    return countCharStatuses(charStatus);
-  }, [charStatus]);
+  const statusCounts = useMemo(() => countCharStatuses(charStatus), [charStatus]);
 
-  // Persist attempt once when landing on results page.
   useEffect(() => {
     if (!state?.results || hasSavedAttemptRef.current) return;
     hasSavedAttemptRef.current = true;
@@ -145,45 +138,39 @@ export default function ResultsPage() {
 
   return (
     <div className="flex-1 overflow-y-auto bg-background text-foreground flex flex-col font-mono">
-      <main className="px-8 sm:px-16 md:px-20 py-10">
+      <main className="px-8 sm:px-16 md:px-20 py-8 sm:py-10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8">
-          <div className="mb-6 flex items-center gap-2">
+          <div className="mb-6 flex items-center gap-4">
             <button
               onClick={() => navigate("/")}
-              className="p-2 text-foreground hover:text-highlight transition-colors active:scale-95 -ml-2"
+              className="p-2 text-foreground/60 hover:text-highlight transition-colors active:scale-95 -ml-2"
               aria-label="back"
+              title="back to typing"
             >
-              ←
+              <TbArrowLeft size={24} className="text-inherit" />
             </button>
-            <h2 className="text-lg sm:text-xl font-bold font-mono">
-              test_results
+            <h2 className="text-lg sm:text-xl font-bold tracking-wider">
+              results
             </h2>
             {isBaseline && (
-              <div className="text-xs sm:text-sm font-mono text-green-400 ml-auto">
-                baseline established!
+              <div className="text-xs sm:text-sm text-green-400 ml-auto">
+                baseline established
               </div>
             )}
             {isNewHighScore && !isBaseline && (
-              <div className="text-xs sm:text-sm font-mono text-yellow-400 ml-auto animate-pulse">
-                high score smashed! 🎯
+              <div className="text-xs sm:text-sm text-yellow-400 ml-auto">
+                new high score
               </div>
             )}
           </div>
 
-          {/* Action Button */}
           <div className="flex justify-center mb-6">
-            <Button
-              onClick={() => {
-                navigate("/");
-              }}
-              variant="primary"
-            >
-              try_again
+            <Button onClick={() => navigate("/")} variant="primary">
+              try again
             </Button>
           </div>
 
-          {/* Key Stats - Focused View */}
-          <div className="mb-6 p-4 border border-secondary/40 rounded bg-secondary/10">
+          <div className="mb-6 p-4 border border-secondary/35 rounded-xl bg-secondary/8">
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
               <div>
                 <div className="text-xs text-foreground/60">adjusted wpm</div>
@@ -218,95 +205,28 @@ export default function ResultsPage() {
             </div>
           </div>
 
-          {/* Performance Chart */}
-          <div className="mb-6">
-            <h3 className="text-xs font-mono text-foreground/70 mb-2 tracking-wider uppercase">
-              performance_analysis
-            </h3>
-            <div className="border border-secondary/30 rounded p-2 bg-secondary/5">
-              <ResponsiveContainer width="100%" height={200}>
-                <ComposedChart data={chartData}>
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    stroke="rgb(75, 85, 99)"
-                    opacity={0.3}
-                  />
-                  <XAxis
-                    dataKey="time"
-                    stroke="rgb(107, 114, 128)"
-                    style={{ fontSize: "11px" }}
-                  />
-                  <YAxis
-                    yAxisId="left"
-                    stroke="rgb(107, 114, 128)"
-                    style={{ fontSize: "11px" }}
-                    label={{ value: "WPM", angle: -90, position: "insideLeft" }}
-                  />
-                  <YAxis
-                    yAxisId="right"
-                    orientation="right"
-                    stroke="rgb(107, 114, 128)"
-                    style={{ fontSize: "11px" }}
-                    label={{
-                      value: "Err/Acc %",
-                      angle: 90,
-                      position: "insideRight",
-                      offset: 10,
-                    }}
-                  />
-                  <Tooltip {...chartTooltipStyle} />
-                  <Legend
-                    wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }}
-                  />
-                  <Line
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="adjustedWpm"
-                    stroke="#10b981"
-                    strokeWidth={2}
-                    dot={false}
-                    name="Adjusted WPM"
-                  />
-                  <Line
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="rawWpm"
-                    stroke="#f59e0b"
-                    strokeWidth={2}
-                    dot={false}
-                    strokeDasharray="5 5"
-                    name="Raw WPM"
-                  />
-                  <Line
-                    yAxisId="right"
-                    type="monotone"
-                    dataKey="errorRate"
-                    stroke="#ef4444"
-                    strokeWidth={1.5}
-                    dot={false}
-                    name="Error %"
-                  />
-                  <Line
-                    yAxisId="right"
-                    type="monotone"
-                    dataKey="accuracy"
-                    stroke="#ffff00"
-                    strokeWidth={1.5}
-                    dot={false}
-                    name="Accuracy %"
-                  />
-                </ComposedChart>
-              </ResponsiveContainer>
-            </div>
+          <div className="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <ChartContainer
+              title="wpm progression"
+              data={performanceData}
+              dataKey="wpm"
+              stroke="#10b981"
+            />
+            <ChartContainer
+              title="accuracy trend"
+              data={performanceData}
+              dataKey="accuracy"
+              stroke="#f59e0b"
+              yAxisDomain={[0, 100]}
+            />
           </div>
 
-          {/* Detailed Statistics Grid */}
-          <div className="bg-background/40 border border-secondary/40 rounded p-4">
+          <div className="bg-background/35 border border-secondary/35 rounded-xl p-4">
             <h3 className="text-xs font-mono text-foreground/70 mb-4 tracking-wider uppercase">
-              detailed_statistics
+              detailed statistics
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div className="p-3 border border-secondary/30 rounded">
+              <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5">
                 <div className="text-xs text-foreground/60 tracking-wider font-light mb-2">
                   total typed
                 </div>
@@ -314,7 +234,7 @@ export default function ResultsPage() {
                   {totalTyped}
                 </div>
               </div>
-              <div className="p-3 border border-secondary/30 rounded">
+              <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5">
                 <div className="text-xs text-foreground/60 tracking-wider font-light mb-2">
                   correct
                 </div>
@@ -322,7 +242,7 @@ export default function ResultsPage() {
                   {statusCounts.correct}
                 </div>
               </div>
-              <div className="p-3 border border-secondary/30 rounded">
+              <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5">
                 <div className="text-xs text-foreground/60 tracking-wider font-light mb-2">
                   incorrect
                 </div>
@@ -330,7 +250,7 @@ export default function ResultsPage() {
                   {statusCounts.incorrect}
                 </div>
               </div>
-              <div className="p-3 border border-secondary/30 rounded">
+              <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5">
                 <div className="text-xs text-foreground/60 tracking-wider font-light mb-2">
                   untyped
                 </div>
@@ -338,7 +258,7 @@ export default function ResultsPage() {
                   {statusCounts.pending}
                 </div>
               </div>
-              <div className="p-3 border border-secondary/30 rounded">
+              <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5">
                 <div className="text-xs text-foreground/60 tracking-wider font-light mb-2">
                   error rate
                 </div>
@@ -346,7 +266,7 @@ export default function ResultsPage() {
                   {stats.errorRate}%
                 </div>
               </div>
-              <div className="p-3 border border-secondary/30 rounded">
+              <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5">
                 <div className="text-xs text-foreground/60 tracking-wider font-light mb-2">
                   time/char
                 </div>
@@ -354,7 +274,7 @@ export default function ResultsPage() {
                   {stats.timePerChar}s
                 </div>
               </div>
-              <div className="p-3 border border-secondary/30 rounded">
+              <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5">
                 <div className="text-xs text-foreground/60 tracking-wider font-light mb-2">
                   chars/sec
                 </div>
@@ -362,7 +282,7 @@ export default function ResultsPage() {
                   {stats.charsPerSecond}
                 </div>
               </div>
-              <div className="p-3 border border-secondary/30 rounded">
+              <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5">
                 <div className="text-xs text-foreground/60 tracking-wider font-light mb-2">
                   consistency
                 </div>

@@ -29,14 +29,14 @@ export default function ChartContainer({
       <h2 className="text-xs font-mono text-foreground/70 mb-2 tracking-wider uppercase">
         {title}
       </h2>
-      <div className="border border-secondary/30 rounded p-2 bg-secondary/5">
+      <div className="border border-secondary/35 rounded-xl p-3 bg-secondary/8">
         {data.length > 0 ? (
-          <ResponsiveContainer width="100%" height={200}>
+          <ResponsiveContainer width="100%" height={190}>
             <LineChart data={data}>
               <CartesianGrid
                 strokeDasharray="3 3"
                 stroke="rgb(75, 85, 99)"
-                opacity={0.3}
+                opacity={0.25}
               />
               <XAxis
                 dataKey="name"
@@ -52,7 +52,7 @@ export default function ChartContainer({
                 contentStyle={{
                   backgroundColor: "rgb(31, 41, 55)",
                   border: "1px solid rgb(75, 85, 99)",
-                  borderRadius: "4px",
+                  borderRadius: "8px",
                   fontSize: "11px",
                 }}
               />
