@@ -19,7 +19,7 @@ export default function TypingStatusBar({
   const controlsOptions = [
     { label: "slang", disabled: slangDisabled },
     { label: "english", disabled: false },
-    { label: "code", disabled: true },
+    { label: "code", disabled: false },
   ];
 
   const layoutClass =

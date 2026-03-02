@@ -53,7 +53,7 @@ export default function Header({
                 </div>
                 <motion.button
                   onClick={onHistoryClick}
-                  className="p-1.5 rounded hover:bg-secondary/20 text-foreground hover:text-highlight transition-colors"
+                  className="p-1.5 rounded hover:bg-secondary/20 text-foreground/50 hover:text-highlight transition-colors"
                   aria-label="history"
                   title="history"
                   whileHover={iconButtonMotion.whileHover}
@@ -63,7 +63,7 @@ export default function Header({
                 </motion.button>
                 <motion.button
                   onClick={() => setIsSettingsOpen(true)}
-                  className="p-1.5 rounded hover:bg-secondary/20 text-foreground hover:text-highlight transition-colors"
+                  className="p-1.5 rounded hover:bg-secondary/20 text-foreground/50 hover:text-highlight transition-colors"
                   aria-label="settings"
                   title="settings"
                   whileHover={iconButtonMotion.whileHover}
