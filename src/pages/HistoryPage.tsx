@@ -67,14 +67,13 @@ export default function HistoryPage() {
   // Show detail view for selected attempt
   if (selectedAttempt) {
     const minutesElapsed = selectedAttempt.elapsed / 60;
-    const adjustedWpm =
-      selectedAttempt.correctChars > 0
-        ? Math.round(selectedAttempt.correctChars / 5 / minutesElapsed)
-        : 0;
     const rawWpm =
       selectedAttempt.totalTyped > 0
         ? Math.round(selectedAttempt.totalTyped / 5 / minutesElapsed)
         : 0;
+    const adjustedWpm = Math.round(
+      (Math.round(selectedAttempt.accuracy) / 100) * rawWpm,
+    );
 
     return (
       <div className="min-h-screen bg-background text-foreground flex flex-col font-mono">

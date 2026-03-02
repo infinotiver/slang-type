@@ -42,9 +42,9 @@ export default function useTypingEngine({
   const [paused, setPaused] = useState<boolean>(false); // Pause state
   const correctChars = correctRef.current;
   const totalTyped = typedRef.current + extraTypedRef.current;
-  const wpm = calculateWPM(correctChars, timer.elapsed);
-  // Accuracy: correct chars typed / total chars typed (excluding errors from count)
+  const rawWpm = calculateWPM(totalTyped, timer.elapsed);
   const accuracy = calculateAccuracy(totalTyped, errors);
+  const wpm = Math.round((accuracy / 100) * rawWpm);
   // internal: when a test is considered complete
 
   useEffect(() => {
@@ -116,10 +116,7 @@ export default function useTypingEngine({
         const prev = cursor - 1;
         // if we were extra typing beyond target
         if (prev >= length) {
-          if (extraTypedRef.current > 0)
-            extraTypedRef.current = Math.max(0, extraTypedRef.current - 1);
           setCursor(prev);
-          setErrors((s) => Math.max(0, s - 1));
           return;
         }
         const prevStatus = statusRef.current[prev];
@@ -130,10 +127,6 @@ export default function useTypingEngine({
         }
         if (prevStatus === "correct") {
           correctRef.current = Math.max(0, correctRef.current - 1);
-          typedRef.current = Math.max(0, typedRef.current - 1);
-        } else if (prevStatus === "incorrect") {
-          setErrors((s) => Math.max(0, s - 1));
-          typedRef.current = Math.max(0, typedRef.current - 1);
         }
         delete statusRef.current[prev];
         setCursor(prev);

@@ -10,9 +10,9 @@ export const calculateAccuracy = (
   return Math.max(0, Math.round(accuracy));
 };
 
-export function calculateWPM(correctChars: number, elapsedSeconds: number) {
+export function calculateWPM(typedChars: number, elapsedSeconds: number) {
   if (elapsedSeconds <= 0) return 0;
-  const words = correctChars / 5;
+  const words = typedChars / 5;
   const minutes = elapsedSeconds / 60;
   return Math.round(words / minutes || 0);
 }

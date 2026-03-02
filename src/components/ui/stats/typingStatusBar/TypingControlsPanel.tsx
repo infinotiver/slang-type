@@ -20,9 +20,9 @@ const selectClass =
 const baseButtonClass =
   "px-3 py-1.5 rounded-md text-xs tracking-wide border border-transparent transition-colors duration-150";
 const activeButtonClass =
-  "font-semibold bg-highlight/15 text-highlight hover:bg-highlight/25 hover:border-highlight/40";
+  "font-semibold bg-highlight/15 text-highlight hover:bg-highlight/25 hover:border-highlight";
 const inactiveButtonClass =
-  "text-foreground/70 bg-transparent hover:bg-secondary/25 hover:text-highlight/90 hover:border-secondary/50";
+  "text-foreground/70 bg-transparent hover:bg-secondary/25 hover:text-highlight/90 hover:border-secondary";
 
 interface SegmentedOption {
   label: string;

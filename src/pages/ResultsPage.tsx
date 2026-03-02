@@ -43,7 +43,6 @@ export default function ResultsPage() {
   const state = location.state as ResultsLocationState;
 
   const {
-    wpm,
     accuracy,
     errors,
     elapsed,
@@ -144,7 +143,7 @@ export default function ResultsPage() {
                 const attempt: TypingAttempt = {
                   id: `${Date.now()}-${Math.random()}`,
                   timestamp: Date.now(),
-                  wpm,
+                  wpm: stats.adjustedWpm,
                   accuracy: Math.round(accuracy),
                   errors,
                   elapsed,
