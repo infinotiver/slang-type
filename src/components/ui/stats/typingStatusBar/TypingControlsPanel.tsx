@@ -1,5 +1,3 @@
-import { motion } from "framer-motion";
-import { Button } from "@components/ui/common";
 import type { TypingControlsOption } from "./types";
 
 interface TypingControlsPanelProps {
@@ -13,10 +11,51 @@ interface TypingControlsPanelProps {
 
 const modeOptions = ["15s", "30s", "60s", "120s", "inf"];
 
-const controlButtonVariants = {
-  hover: { scale: 1.04 },
-  tap: { scale: 0.96 },
-};
+const wrapperClass =
+  "w-full sm:w-auto flex items-center justify-center gap-3 sm:gap-4 rounded-xl bg-secondary px-1 py-1";
+const segmentClass =
+  "w-full sm:w-auto flex items-center gap-1 rounded-lg bg-background/50 p-1";
+const selectClass =
+  "sm:hidden w-full px-3 py-2 bg-background/60 border border-secondary/40 text-sm font-mono text-foreground rounded-md hover:bg-secondary/15 transition-colors focus:outline-none focus:ring-1 focus:ring-highlight/20";
+const baseButtonClass =
+  "px-3 py-1.5 rounded-md text-xs tracking-wide border border-transparent transition-colors duration-150";
+const activeButtonClass =
+  "font-semibold bg-highlight/15 text-highlight hover:bg-highlight/25 hover:border-highlight/40";
+const inactiveButtonClass =
+  "text-foreground/70 bg-transparent hover:bg-secondary/25 hover:text-highlight/90 hover:border-secondary/50";
+
+interface SegmentedOption {
+  label: string;
+  disabled?: boolean;
+}
+
+function SegmentedButtons({
+  options,
+  selected,
+  onSelect,
+}: {
+  options: SegmentedOption[];
+  selected: string;
+  onSelect: (value: string) => void;
+}) {
+  return (
+    <div className="hidden sm:flex items-center gap-1.5">
+      {options.map((option) => (
+        <button
+          key={option.label}
+          onClick={() => onSelect(option.label)}
+          type="button"
+          className={`${
+            selected === option.label ? activeButtonClass : inactiveButtonClass
+          } ${baseButtonClass}`}
+          disabled={option.disabled}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 export default function TypingControlsPanel({
   language,
@@ -27,16 +66,12 @@ export default function TypingControlsPanel({
   onModeChange,
 }: TypingControlsPanelProps) {
   return (
-    <motion.div
-      className="flex items-center justify-center gap-3 sm:gap-4"
-      initial={{ opacity: 0, y: 4 }}
-      animate={{ opacity: 1, y: 0 }}
-    >
-      <div className="w-full sm:w-auto flex items-center gap-2">
+    <div className={wrapperClass}>
+      <div className={segmentClass}>
         <select
           value={language}
           onChange={(e) => onLanguageChange(e.target.value)}
-          className="sm:hidden w-full px-3 py-2 bg-secondary/30 border border-secondary/60 text-sm font-mono text-foreground rounded hover:border-highlight hover:bg-secondary/40 transition-colors focus:outline-none focus:border-highlight focus:ring-1 focus:ring-highlight/30"
+          className={selectClass}
           disabled={slangDisabled && language === "slang"}
         >
           {controlsOptions.map((lang) => (
@@ -45,31 +80,17 @@ export default function TypingControlsPanel({
             </option>
           ))}
         </select>
-        <div className="hidden sm:flex items-center gap-2">
-          {controlsOptions.map((lang) => (
-            <motion.div
-              key={lang.label}
-              whileHover="hover"
-              whileTap="tap"
-              variants={controlButtonVariants}
-            >
-              <Button
-                onClick={() => onLanguageChange(lang.label)}
-                variant={language === lang.label ? "primary" : "secondary"}
-                className={language === lang.label ? "font-semibold" : ""}
-                disabled={lang.disabled}
-              >
-                {lang.label}
-              </Button>
-            </motion.div>
-          ))}
-        </div>
+        <SegmentedButtons
+          options={controlsOptions}
+          selected={language}
+          onSelect={onLanguageChange}
+        />
       </div>
-      <div className="w-full sm:w-auto flex items-center gap-2">
+      <div className={segmentClass}>
         <select
           value={mode}
           onChange={(e) => onModeChange(e.target.value)}
-          className="sm:hidden w-full px-3 py-2 bg-secondary/30 border border-secondary/60 text-sm font-mono text-foreground rounded hover:border-highlight hover:bg-secondary/40 transition-colors focus:outline-none focus:border-highlight focus:ring-1 focus:ring-highlight/30"
+          className={selectClass}
         >
           {modeOptions.map((entry) => (
             <option key={entry} value={entry}>
@@ -77,25 +98,12 @@ export default function TypingControlsPanel({
             </option>
           ))}
         </select>
-        <div className="hidden sm:flex items-center gap-2">
-          {modeOptions.map((entry) => (
-            <motion.div
-              key={entry}
-              whileHover="hover"
-              whileTap="tap"
-              variants={controlButtonVariants}
-            >
-              <Button
-                onClick={() => onModeChange(entry)}
-                variant={mode === entry ? "primary" : "secondary"}
-                className={mode === entry ? "font-semibold" : ""}
-              >
-                {entry}
-              </Button>
-            </motion.div>
-          ))}
-        </div>
+        <SegmentedButtons
+          options={modeOptions.map((entry) => ({ label: entry }))}
+          selected={mode}
+          onSelect={onModeChange}
+        />
       </div>
-    </motion.div>
+    </div>
   );
 }

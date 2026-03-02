@@ -30,8 +30,6 @@ export default function TypingStatusBar({
       className={`w-full flex ${layoutClass} font-mono`}
       initial={{ opacity: 0, y: 0 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ scale: 1.01 }}
-      whileTap={{ scale: 0.99 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
       {isTypingRunning && (

@@ -25,12 +25,8 @@ export default function Header({
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isCreditsOpen, setIsCreditsOpen] = useState(false);
   const iconButtonMotion = {
-    whileHover: { scale: 1.1 },
-    whileTap: { scale: 0.95 },
-  };
-  const iconInnerMotion = {
-    whileHover: { rotate: [0, -10, 10, 0] },
-    transition: { duration: 0.3 },
+    whileHover: { scale: 1.08 },
+    whileTap: { scale: 0.96 },
   };
 
   return (
@@ -63,12 +59,7 @@ export default function Header({
                   whileHover={iconButtonMotion.whileHover}
                   whileTap={iconButtonMotion.whileTap}
                 >
-                  <motion.div
-                    whileHover={iconInnerMotion.whileHover}
-                    transition={iconInnerMotion.transition}
-                  >
-                    <Newspaper size={20} />
-                  </motion.div>
+                  <Newspaper size={20} />
                 </motion.button>
                 <motion.button
                   onClick={() => setIsSettingsOpen(true)}
@@ -78,12 +69,7 @@ export default function Header({
                   whileHover={iconButtonMotion.whileHover}
                   whileTap={iconButtonMotion.whileTap}
                 >
-                  <motion.div
-                    whileHover={iconInnerMotion.whileHover}
-                    transition={iconInnerMotion.transition}
-                  >
-                    <Settings size={20} />
-                  </motion.div>
+                  <Settings size={20} />
                 </motion.button>
               </div>
             </div>

@@ -23,7 +23,7 @@ export default function ModalBase({
         <>
           {/* Backdrop */}
           <motion.div
-            className="fixed inset-0 z-40 bg-gradient-to-br from-background/80 via-secondary/60 to-background/90 backdrop-blur-[3px]"
+            className="fixed inset-0 z-40 bg-linear-to-br from-background/50 via-secondary/50 to-background/50 backdrop-blur-sm"
             onClick={onClose}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -39,7 +39,7 @@ export default function ModalBase({
             transition={{ duration: 0.28, ease: "anticipate" }}
           >
             <div
-              className={`bg-background/95 border border-secondary rounded-xl p-6 sm:p-8 w-full ${maxWidth} shadow-2xl pointer-events-auto max-h-[90vh] sm:max-h-[80vh] overflow-y-auto custom-scroll`}
+              className={`bg-secondary/90 border border-secondary rounded-xl p-6 sm:p-8 w-full ${maxWidth} shadow-2xl pointer-events-auto max-h-[90vh] sm:max-h-[80vh] overflow-y-auto custom-scroll`}
               style={{ scrollbarWidth: "thin", scrollbarColor: "#888 #222" }}
             >
               <style>{`
