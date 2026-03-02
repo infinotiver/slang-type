@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from "react";
-import { useOutletContext, useNavigate } from "react-router-dom";
+import { useOutletContext, useNavigate, useLocation } from "react-router-dom";
 import { TypingStatusBar } from "@components/ui/stats";
 import TypingArea from "@components/typing/TypingArea";
 import { generatePhrase } from "@utils/textGenerator";
@@ -7,6 +7,7 @@ import type {
   Language,
   Mode,
   DisplayMode,
+  TypingAttempt,
 } from "@shared-types/index";
 import useTypingEngine from "@hooks/useTypingEngine";
 import useTimer from "@hooks/useTimer";
@@ -33,6 +34,7 @@ interface ResultsPayload {
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const context = useOutletContext<ContextType>();
 
   const [language, setLanguage] = useState<Language>("slang");
@@ -42,6 +44,10 @@ export default function HomePage() {
   const [highScore, setHighScore] = useLocalStorage<number>(
     "slangtype_highscore",
     0,
+  );
+  const [, setAttempts] = useLocalStorage<TypingAttempt[]>(
+    "slangtype_attempts",
+    [],
   );
 
   // Ref to store pending results for high score update
@@ -57,6 +63,20 @@ export default function HomePage() {
       pendingResultsRef.current = null;
     }
   }, [highScore, setHighScore]);
+
+  // Persist attempts sent back from ResultsPage.
+  useEffect(() => {
+    const state = location.state as { newAttempt?: TypingAttempt } | null;
+    if (!state?.newAttempt) return;
+
+    const incoming = state.newAttempt;
+    setAttempts((prev) => {
+      if (prev.some((attempt) => attempt.id === incoming.id)) return prev;
+      return [...prev, incoming];
+    });
+
+    navigate(location.pathname, { replace: true, state: null });
+  }, [location.pathname, location.state, navigate, setAttempts]);
 
   // Generate passage text based on language and mode
   const passageText = useMemo(() => {

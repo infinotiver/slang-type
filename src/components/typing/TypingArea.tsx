@@ -112,8 +112,9 @@ export default function TypingArea({
   const DEFAULT_VISIBLE_LINES = isMobile ? 2 : 3;
   const [normalLineLength, setNormalLineLength] =
     useState<number>(DEFAULT_LINE_LENGTH);
-  const [normalVisibleLines, setNormalVisibleLines] =
-    useState<number>(DEFAULT_VISIBLE_LINES);
+  const [normalVisibleLines, setNormalVisibleLines] = useState<number>(
+    DEFAULT_VISIBLE_LINES,
+  );
 
   useLayoutEffect(() => {
     if (displayMode !== "normal") return;
@@ -144,7 +145,10 @@ export default function TypingArea({
 
       const nextLineLength =
         charWidth > 0
-          ? Math.max(DEFAULT_LINE_LENGTH, Math.floor(containerWidth / charWidth))
+          ? Math.max(
+              DEFAULT_LINE_LENGTH,
+              Math.floor(containerWidth / charWidth),
+            )
           : DEFAULT_LINE_LENGTH;
 
       setNormalVisibleLines((prev) =>
@@ -183,10 +187,7 @@ export default function TypingArea({
     }
   }
   const maxStartLine = Math.max(0, totalLines - normalVisibleLines);
-  const baseStartLine = Math.max(
-    0,
-    cursorLine - (normalVisibleLines - 1),
-  );
+  const baseStartLine = Math.max(0, cursorLine - (normalVisibleLines - 1));
   const windowStartLine = Math.min(baseStartLine, maxStartLine);
   const windowEndLine = Math.min(
     totalLines,
@@ -441,9 +442,8 @@ export default function TypingArea({
               </div>
             )}
         </div>
-
-        {/* Stats */}
-        {engine.running && (
+        {/* Stats - only show in development mode */}
+        {process.env.NODE_ENV === "development" && engine.running && (
           <div className="hidden sm:block text-xs text-foreground opacity-60 tracking-wide space-y-1">
             <div>
               wpm: {engine.wpm} | acc: {Math.round(engine.accuracy)}% | errors:{" "}
