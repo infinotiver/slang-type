@@ -1,4 +1,6 @@
 import ModalBase from "./ModalBase";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface ChangelogModalProps {
   isOpen: boolean;
@@ -17,12 +19,85 @@ export default function ChangelogModal({
     <ModalBase
       isOpen={isOpen}
       onClose={onClose}
-      title={`Changelog — v${version}`}
+      title={`Changelog - v${version}`}
       maxWidth="max-w-3xl"
     >
-      <div className="text-xs sm:text-sm font-mono text-foreground/70 whitespace-pre-wrap leading-relaxed">
-        {changelog}
+      <div className="changelog-markdown text-xs sm:text-sm text-foreground/80 leading-relaxed">
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{changelog}</ReactMarkdown>
       </div>
+      <style>{`
+        .changelog-markdown h1,
+        .changelog-markdown h2,
+        .changelog-markdown h3 {
+          color: var(--color-highlight);
+          font-family: monospace;
+          font-weight: 700;
+          letter-spacing: 0.02em;
+          margin-top: 0.9rem;
+          margin-bottom: 0.5rem;
+        }
+        .changelog-markdown h1 { font-size: 1rem; }
+        .changelog-markdown h2 { font-size: 0.95rem; }
+        .changelog-markdown h3 { font-size: 0.9rem; }
+        .changelog-markdown p { margin: 0.45rem 0; }
+        .changelog-markdown ul,
+        .changelog-markdown ol { margin: 0.45rem 0 0.65rem 1.1rem; }
+        .changelog-markdown li { margin: 0.2rem 0; }
+        .changelog-markdown a {
+          color: var(--color-highlight);
+          text-decoration: underline;
+          text-underline-offset: 2px;
+        }
+        .changelog-markdown code {
+          background: color-mix(in oklab, var(--color-secondary) 75%, transparent);
+          border: 1px solid color-mix(in oklab, var(--color-secondary) 85%, var(--color-highlight) 15%);
+          border-radius: 0.35rem;
+          padding: 0.1rem 0.3rem;
+          font-size: 0.85em;
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+        .changelog-markdown pre {
+          background: color-mix(in oklab, var(--color-secondary) 65%, transparent);
+          border: 1px solid color-mix(in oklab, var(--color-secondary) 85%, var(--color-highlight) 15%);
+          border-radius: 0.55rem;
+          padding: 0.75rem;
+          overflow-x: auto;
+          margin: 0.7rem 0;
+        }
+        .changelog-markdown pre code {
+          background: transparent;
+          border: 0;
+          padding: 0;
+          font-size: 0.85em;
+        }
+        .changelog-markdown blockquote {
+          border-left: 2px solid color-mix(in oklab, var(--color-highlight) 70%, transparent);
+          padding-left: 0.7rem;
+          color: color-mix(in oklab, var(--color-foreground) 70%, transparent);
+          margin: 0.6rem 0;
+        }
+        .changelog-markdown hr {
+          border: 0;
+          border-top: 1px solid color-mix(in oklab, var(--color-secondary) 70%, transparent);
+          margin: 0.8rem 0;
+        }
+        .changelog-markdown table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 0.6rem 0;
+          font-size: 0.9em;
+        }
+        .changelog-markdown th,
+        .changelog-markdown td {
+          border: 1px solid color-mix(in oklab, var(--color-secondary) 75%, transparent);
+          padding: 0.35rem 0.45rem;
+          text-align: left;
+        }
+        .changelog-markdown th {
+          color: var(--color-highlight);
+          background: color-mix(in oklab, var(--color-secondary) 80%, transparent);
+        }
+      `}</style>
     </ModalBase>
   );
 }
