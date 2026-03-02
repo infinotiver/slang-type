@@ -1,5 +1,14 @@
 # slang-type
 
+## 0.1.1
+
+### Patch Changes
+
+- Fix typing accuracy and WPM scoring behavior:
+
+  - Keep accuracy penalties after backtracking. Correcting previously mistyped characters now updates visual status in the typing area without refunding prior error impact on accuracy.
+  - Standardize adjusted WPM everywhere to use `accuracy * rawWpm` for live metrics, results stats, chart progression, and saved attempts/history views.
+
 ## 0.1.0
 
 ### Minor Changes
