@@ -80,7 +80,6 @@ export default function HomePage() {
 
   // Generate passage text based on language and mode
   const passageText = useMemo(() => {
-    if (language === "code") return "";
     const targetWords =
       mode === "inf"
         ? 50

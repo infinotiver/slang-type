@@ -13,6 +13,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { CreditsModal, ChangelogModal } from "../components/ui/modals";
 import changelog from "../../CHANGELOG.md?raw";
 import { version as appVersion } from "../../package.json";
+import { InfoIcon } from "lucide-react";
 
 export default function RootLayout() {
   const location = useLocation();
@@ -65,7 +66,7 @@ export default function RootLayout() {
       <ScrollRestoration />
       <Analytics />
       {/* FOOTER - always visible */}
-      <footer className="border-t border-secondary/40 px-8 sm:px-16 md:px-20 py-1 sm:py-2 md:py-4">
+      <footer className="border-t border-secondary px-8 sm:px-16 md:px-20 py-1 sm:py-2 md:py-4">
         <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-xs font-mono text-foreground/50">
           <button
             type="button"
@@ -82,14 +83,7 @@ export default function RootLayout() {
               aria-label="credits"
               type="button"
             >
-              <svg
-                width="16"
-                height="16"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm-1-7h2v5h-2v-5zm0-4h2v2h-2V9z" />
-              </svg>
+              <InfoIcon size={16} />
             </button>
           </span>
         </div>

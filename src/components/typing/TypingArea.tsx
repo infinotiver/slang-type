@@ -1,4 +1,4 @@
-import { useRef, useMemo, useLayoutEffect, useState } from "react";
+import { useRef, useMemo, useLayoutEffect, useState, useEffect } from "react";
 import { Button } from "@components/ui/common";
 import type { DisplayMode, Mode, Language } from "@shared-types/index";
 import { motion } from "framer-motion";
@@ -94,6 +94,7 @@ export default function TypingArea({
   const inputRef = useRef<HTMLInputElement>(null);
   const normalContainerRef = useRef<HTMLDivElement>(null);
   const normalMeasureRef = useRef<HTMLSpanElement>(null);
+  const completionHandledRef = useRef(false);
 
   // TAPE MODES: Calculate word/char positions
   const words = useMemo(() => targetText.split(" "), [targetText]);
@@ -115,6 +116,12 @@ export default function TypingArea({
   const [normalVisibleLines, setNormalVisibleLines] = useState<number>(
     DEFAULT_VISIBLE_LINES,
   );
+
+  useEffect(() => {
+    if (!engine.isComplete && !engine.paused) {
+      inputRef.current?.focus();
+    }
+  }, [engine.isComplete, engine.paused, targetText]);
 
   useLayoutEffect(() => {
     if (displayMode !== "normal") return;
@@ -286,31 +293,43 @@ export default function TypingArea({
     return "text-foreground";
   };
 
-  // Show results
-  if (engine.isComplete) {
-    const handleResultsNavigate = () => {
-      if (onResultsComplete) {
-        onResultsComplete({
-          wpm: engine.wpm,
-          accuracy: engine.accuracy,
-          errors: engine.errors,
-          elapsed: engine.elapsed,
-          totalTyped: engine.totalTyped,
-          correctChars: engine.correctChars,
-          charStatus: engine.status,
-          targetText,
-          mode,
-          language,
-          isNewHighScore: engine.wpm > highScore,
-          isBaseline: highScore === 0,
-        });
-      }
-      engine.reset();
-    };
+  // Handle completion side effects once, outside render.
+  useEffect(() => {
+    if (!engine.isComplete) {
+      completionHandledRef.current = false;
+      return;
+    }
+    if (completionHandledRef.current) return;
+    completionHandledRef.current = true;
 
-    handleResultsNavigate();
-    return null;
-  }
+    if (onResultsComplete) {
+      onResultsComplete({
+        wpm: engine.wpm,
+        accuracy: engine.accuracy,
+        errors: engine.errors,
+        elapsed: engine.elapsed,
+        totalTyped: engine.totalTyped,
+        correctChars: engine.correctChars,
+        charStatus: { ...engine.status },
+        targetText,
+        mode,
+        language,
+        isNewHighScore: engine.wpm > highScore,
+        isBaseline: highScore === 0,
+      });
+    }
+    engine.reset();
+  }, [
+    engine,
+    engine.isComplete,
+    highScore,
+    language,
+    mode,
+    onResultsComplete,
+    targetText,
+  ]);
+
+  if (engine.isComplete) return null;
 
   // Show typing test or start overlay
   return (
@@ -339,6 +358,7 @@ export default function TypingArea({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
+        onClick={() => inputRef.current?.focus()}
       >
         {/* Text display - conditional based on displayMode */}
         <div className="mb-2 sm:mb-4 relative w-full px-2 sm:px-4 md:px-6">

@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   ComposedChart,
@@ -17,6 +17,7 @@ import {
   chartTooltipStyle,
 } from "@utils/resultsCalculations";
 import { Button } from "@components/ui/common";
+import useLocalStorage from "@hooks/useLocalStorage";
 import type { Language, Mode, TypingAttempt } from "@shared-types/index";
 
 interface ResultsLocationState {
@@ -41,6 +42,8 @@ export default function ResultsPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const state = location.state as ResultsLocationState;
+  const [, setAttempts] = useLocalStorage<TypingAttempt[]>("slangtype_attempts", []);
+  const hasSavedAttemptRef = useRef(false);
 
   const {
     accuracy,
@@ -100,6 +103,38 @@ export default function ResultsPage() {
     return countCharStatuses(charStatus);
   }, [charStatus]);
 
+  // Persist attempt once when landing on results page.
+  useEffect(() => {
+    if (!state?.results || hasSavedAttemptRef.current) return;
+    hasSavedAttemptRef.current = true;
+
+    const attempt: TypingAttempt = {
+      id: `${Date.now()}-${Math.random()}`,
+      timestamp: Date.now(),
+      wpm: stats.adjustedWpm,
+      accuracy: Math.round(accuracy),
+      errors,
+      elapsed,
+      mode,
+      language,
+      totalTyped,
+      correctChars,
+    };
+
+    setAttempts((prev) => [...prev, attempt]);
+  }, [
+    state,
+    setAttempts,
+    stats.adjustedWpm,
+    accuracy,
+    errors,
+    elapsed,
+    mode,
+    language,
+    totalTyped,
+    correctChars,
+  ]);
+
   if (!state || !state.results) {
     return (
       <div className="flex-1 flex items-center justify-center">
@@ -139,20 +174,7 @@ export default function ResultsPage() {
           <div className="flex justify-center mb-6">
             <Button
               onClick={() => {
-                // Save attempt to history
-                const attempt: TypingAttempt = {
-                  id: `${Date.now()}-${Math.random()}`,
-                  timestamp: Date.now(),
-                  wpm: stats.adjustedWpm,
-                  accuracy: Math.round(accuracy),
-                  errors,
-                  elapsed,
-                  mode,
-                  language,
-                  totalTyped,
-                  correctChars,
-                };
-                navigate("/", { state: { newAttempt: attempt } });
+                navigate("/");
               }}
               variant="primary"
             >
