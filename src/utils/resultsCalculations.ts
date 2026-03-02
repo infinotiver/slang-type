@@ -30,7 +30,7 @@ export interface CharStatusCounts {
 export function calculateResultStats(
   elapsed: number,
   totalTyped: number,
-  correctChars: number,
+  _correctChars: number,
   accuracy: number,
   charStatus: Record<number, "pending" | "correct" | "incorrect">,
 ): ResultStats {
@@ -39,10 +39,9 @@ export function calculateResultStats(
   const incorrectChars = statusCounts.incorrect;
   const errorRate =
     totalTyped > 0 ? ((incorrectChars / totalTyped) * 100).toFixed(1) : "0.0";
-  const adjustedWpm =
-    correctChars > 0 ? Math.round(correctChars / 5 / minutesElapsed) : 0;
   const rawWpm =
     totalTyped > 0 ? Math.round(totalTyped / 5 / minutesElapsed) : 0;
+  const adjustedWpm = Math.round((Math.round(accuracy) / 100) * rawWpm);
   const timePerChar =
     totalTyped > 0 ? (elapsed / totalTyped).toFixed(2) : "0.00";
   const charsPerSecond = (totalTyped / elapsed).toFixed(2);
@@ -84,7 +83,7 @@ export function countCharStatuses(
 export function generateWpmProgressionData(
   elapsed: number,
   totalTyped: number,
-  correctChars: number,
+  _correctChars: number,
   _charStatus: Record<number, "pending" | "correct" | "incorrect">,
   accuracy: number,
 ): ChartDataPoint[] {
@@ -97,16 +96,12 @@ export function generateWpmProgressionData(
     // Linear interpolation for character progress
     const progressRatio = second / elapsed;
     const estimatedTyped = Math.floor(totalTyped * progressRatio);
-    const estimatedCorrect = Math.floor(correctChars * progressRatio);
+    const estimatedCorrect = Math.floor(totalTyped * (accuracy / 100) * progressRatio);
     const estimatedIncorrect = estimatedTyped - estimatedCorrect;
 
     const minutesElapsed = Math.max(second / 60, 0.0167);
 
     // Calculate metrics at this point in time
-    const adjustedWpm =
-      estimatedCorrect > 0
-        ? Math.round(estimatedCorrect / 5 / minutesElapsed)
-        : 0;
     const rawWpm =
       estimatedTyped > 0 ? Math.round(estimatedTyped / 5 / minutesElapsed) : 0;
     const errorRate =
@@ -117,6 +112,7 @@ export function generateWpmProgressionData(
       estimatedTyped > 0
         ? Math.round((estimatedCorrect / estimatedTyped) * 100)
         : 0;
+    const adjustedWpm = Math.round((estimatedAccuracy / 100) * rawWpm);
 
     data.push({
       time: second,
@@ -133,8 +129,11 @@ export function generateWpmProgressionData(
     : [
         {
           time: elapsed,
-          adjustedWpm: Math.round(correctChars / 5 / (elapsed / 60)),
           rawWpm: Math.round(totalTyped / 5 / (elapsed / 60)),
+          adjustedWpm: Math.round(
+            (Math.round(accuracy) / 100) *
+              Math.round(totalTyped / 5 / (elapsed / 60)),
+          ),
           errorRate: Math.round((1 - accuracy / 100) * 100),
           accuracy: Math.round(accuracy),
         },
