@@ -12,7 +12,7 @@ interface TypingControlsPanelProps {
 const modeOptions = ["15s", "30s", "60s", "120s", "inf"];
 
 const wrapperClass =
-  "w-full sm:w-auto flex items-center justify-center gap-3 sm:gap-4 rounded-xl bg-secondary px-1 py-1";
+  "w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl bg-secondary px-1 py-1";
 const segmentClass =
   "w-full sm:w-auto flex items-center gap-1 rounded-lg bg-background/50 p-1";
 const selectClass =

@@ -23,7 +23,7 @@ export default function TypingStatusBar({
   ];
 
   const layoutClass =
-    "flex-col sm:flex-row sm:items-center sm:justify-center gap-3 sm:gap-5 md:gap-8";
+    "flex-col sm:flex-row sm:items-center sm:justify-center gap-2 sm:gap-3 md:gap-4";
 
   return (
     <motion.div
