@@ -430,20 +430,9 @@ export default function TypingArea({
             </div>
           )}
 
-          {/* Show start button only before test starts */}
-          {!engine.running &&
-            !engine.paused &&
-            !engine.isComplete &&
-            engine.cursor === 0 && (
-              <div className="absolute inset-0 backdrop-blur-sm bg-black/10 flex flex-col items-center justify-center rounded">
-                <Button onClick={handleStartClick} variant="primary">
-                  click here to start typing
-                </Button>
-              </div>
-            )}
         </div>
         {/* Stats - only show in development mode */}
-        {process.env.NODE_ENV === "development" && engine.running && (
+        {import.meta.env.MODE === "development" && engine.running && (
           <div className="hidden sm:block text-xs text-foreground opacity-60 tracking-wide space-y-1">
             <div>
               wpm: {engine.wpm} | acc: {Math.round(engine.accuracy)}% | errors:{" "}
