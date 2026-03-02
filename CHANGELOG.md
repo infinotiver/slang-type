@@ -1,5 +1,18 @@
 # slang-type
 
+## 0.2.0
+
+### Minor Changes
+
+- Code Generation Mode, UI updates
+
+  - Javascript code generation mode for text generation using predefined templates.
+  - UI updates:
+    - Replaced the "i" icon in the footer with info icon from the lucide-react library.
+    - Fixed localstorage issue while storing the attempt
+    - Also fixed the issue with multiple reloads and localstorage issues
+    - Simpler and cleaner result and history pages using the shared chart component
+
 ## 0.1.1
 
 ### Patch Changes
