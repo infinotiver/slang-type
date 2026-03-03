@@ -9,7 +9,7 @@ export type Theme =
   | "mocha"
   | "nord"
   | "gruvbox";
-export type DisplayMode = "normal" | "tape-word" | "tape-char";
+export type DisplayMode = "normal";
 
 // Component Props
 export interface StatsAndControlsProps {

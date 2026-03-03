@@ -296,7 +296,7 @@ export default function ResultsPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-6">
             <div className="flex flex-col h-full">
               <div className="p-5 bg-highlight/10 rounded-xl flex-1 flex flex-col justify-between">
                 <div className="grid grid-cols-1 gap-6">
@@ -308,7 +308,7 @@ export default function ResultsPage() {
                   </div>
                   <div>
                     <div className="text-sm text-foreground/60">accuracy</div>
-                    <div className="text-5xl font-extrabold text-foreground bg-highlight/25 rounded-md px-2 py-1 inline-block leading-none">
+                    <div className="text-5xl font-extrabold text-foreground py-1 inline-block leading-none">
                       {stats.accuracy}%
                     </div>
                   </div>

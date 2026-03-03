@@ -86,7 +86,7 @@ interface TypingAreaProps {
 export default function TypingArea({
   targetText,
   engine,
-  displayMode,
+  displayMode: _displayMode,
   mode,
   language,
   highScore,
@@ -97,18 +97,6 @@ export default function TypingArea({
   const normalMeasureRef = useRef<HTMLSpanElement>(null);
   const completionHandledRef = useRef(false);
   const resultsIdRef = useRef<string | null>(null);
-
-  // TAPE MODES: Calculate word/char positions
-  const words = useMemo(() => targetText.split(" "), [targetText]);
-  const wordPositions = useMemo(() => {
-    const positions = [];
-    let charPos = 0;
-    for (const word of words) {
-      positions.push(charPos);
-      charPos += word.length + 1; // +1 for space
-    }
-    return positions;
-  }, [words]);
 
   const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
   const DEFAULT_LINE_LENGTH = isMobile ? 40 : 80;
@@ -126,8 +114,6 @@ export default function TypingArea({
   }, [engine.isComplete, engine.paused, targetText]);
 
   useLayoutEffect(() => {
-    if (displayMode !== "normal") return;
-
     const container = normalContainerRef.current;
     const measure = normalMeasureRef.current;
     if (!container || !measure) return;
@@ -179,7 +165,7 @@ export default function TypingArea({
       window.removeEventListener("resize", onResize);
       observer.disconnect();
     };
-  }, [displayMode, isMobile, DEFAULT_LINE_LENGTH, DEFAULT_VISIBLE_LINES]);
+  }, [isMobile, DEFAULT_LINE_LENGTH, DEFAULT_VISIBLE_LINES]);
   const lineStarts = useMemo(
     () => buildLineStarts(targetText, normalLineLength),
     [targetText, normalLineLength],
@@ -209,37 +195,6 @@ export default function TypingArea({
     normalTextStart,
     normalTextEnd,
   );
-
-  // Find current word index based on cursor position
-  const currentWordIdx = useMemo(() => {
-    for (let i = wordPositions.length - 1; i >= 0; i--) {
-      if (engine.cursor >= wordPositions[i]) {
-        return i;
-      }
-    }
-    return 0;
-  }, [engine.cursor, wordPositions]);
-
-  // Calculate visible words for tape-word mode (show context: 4 before, current, 4 after)
-  const TAPE_WORD_CONTEXT = 4;
-  const tapeWordStart = Math.max(0, currentWordIdx - TAPE_WORD_CONTEXT);
-  const tapeWordEnd = Math.min(
-    words.length,
-    currentWordIdx + TAPE_WORD_CONTEXT + 1,
-  );
-  const visibleWords = words.slice(tapeWordStart, tapeWordEnd);
-
-  // Calculate visible characters for tape-char mode (show 120 char window centered on cursor)
-  const TAPE_CHAR_WINDOW = 120;
-  const tapeCharStart = Math.max(
-    0,
-    engine.cursor - Math.floor(TAPE_CHAR_WINDOW / 2),
-  );
-  const tapeCharEnd = Math.min(
-    targetText.length,
-    tapeCharStart + TAPE_CHAR_WINDOW,
-  );
-  const tapeCharText = targetText.substring(tapeCharStart, tapeCharEnd);
 
   // Handle starting the test
   const handleStartClick = () => {
@@ -366,86 +321,34 @@ export default function TypingArea({
         transition={{ duration: 0.6, ease: "easeOut" }}
         onClick={() => inputRef.current?.focus()}
       >
-        {/* Text display - conditional based on displayMode */}
+        {/* Text display */}
         <div className="mb-2 sm:mb-4 relative w-full px-2 sm:px-4 md:px-6">
-          {displayMode === "normal" && (
-            <div
-              ref={normalContainerRef}
-              className="text-xl sm:text-xl md:text-2xl leading-relaxed tracking-normal text-justify"
+          <div
+            ref={normalContainerRef}
+            className="text-xl sm:text-xl md:text-2xl leading-relaxed tracking-normal text-justify"
+          >
+            <span
+              ref={normalMeasureRef}
+              className="absolute opacity-0 pointer-events-none"
             >
-              <span
-                ref={normalMeasureRef}
-                className="absolute opacity-0 pointer-events-none"
-              >
-                MMMMMMMMMM
-              </span>
-              {visibleNormalText.split("").map((char, idx) => {
-                const globalIdx = normalTextStart + idx;
-                return (
-                  <span
-                    key={globalIdx}
-                    className={`${getCharColor(globalIdx)} transition-colors ${
-                      globalIdx === engine.cursor
-                        ? "bg-secondary border-b-2 border-highlight"
-                        : ""
-                    }`}
-                  >
-                    {char}
-                  </span>
-                );
-              })}
-            </div>
-          )}
-
-          {displayMode === "tape-word" && (
-            <div className="text-lg sm:text-xl md:text-2xl leading-relaxed tracking-normal text-center whitespace-nowrap overflow-hidden">
-              {visibleWords.map((word, wordIdx) => {
-                const globalWordIdx = tapeWordStart + wordIdx;
-                const wordCharStart = wordPositions[globalWordIdx];
-
-                return (
-                  <span key={globalWordIdx}>
-                    {word.split("").map((char, charIdx) => {
-                      const globalCharIdx = wordCharStart + charIdx;
-                      return (
-                        <span
-                          key={globalCharIdx}
-                          className={`${getCharColor(globalCharIdx)} transition-colors ${
-                            globalCharIdx === engine.cursor
-                              ? "bg-secondary border-b-2 border-highlight"
-                              : ""
-                          }`}
-                        >
-                          {char}
-                        </span>
-                      );
-                    })}
-                    {wordIdx < visibleWords.length - 1 && " "}
-                  </span>
-                );
-              })}
-            </div>
-          )}
-
-          {displayMode === "tape-char" && (
-            <div className="text-lg sm:text-xl md:text-2xl leading-relaxed tracking-normal text-center whitespace-pre-wrap">
-              {tapeCharText.split("").map((char, charIdx) => {
-                const globalIdx = tapeCharStart + charIdx;
-                return (
-                  <span
-                    key={globalIdx}
-                    className={`${getCharColor(globalIdx)} transition-colors ${
-                      globalIdx === engine.cursor
-                        ? "bg-secondary border-b-2 border-highlight"
-                        : ""
-                    }`}
-                  >
-                    {char}
-                  </span>
-                );
-              })}
-            </div>
-          )}
+              MMMMMMMMMM
+            </span>
+            {visibleNormalText.split("").map((char, idx) => {
+              const globalIdx = normalTextStart + idx;
+              return (
+                <span
+                  key={globalIdx}
+                  className={`${getCharColor(globalIdx)} transition-colors ${
+                    globalIdx === engine.cursor
+                      ? "bg-secondary border-b-2 border-highlight"
+                      : ""
+                  }`}
+                >
+                  {char}
+                </span>
+              );
+            })}
+          </div>
 
           {/* Start or Resume overlay - only show if truly paused or before start */}
           {engine.paused && !engine.isComplete && (
@@ -455,7 +358,6 @@ export default function TypingArea({
               </Button>
             </div>
           )}
-
         </div>
         {/* Stats - only show in development mode */}
         {import.meta.env.MODE === "development" && engine.running && (

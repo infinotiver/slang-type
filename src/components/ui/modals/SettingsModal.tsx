@@ -7,8 +7,8 @@ export default function SettingsModal({
   onClose,
   theme,
   onThemeChange,
-  displayMode = "normal",
-  onDisplayModeChange,
+  displayMode: _displayMode = "normal",
+  onDisplayModeChange: _onDisplayModeChange,
 }: SettingsModalProps & {
   displayMode?: DisplayMode;
   onDisplayModeChange?: (mode: DisplayMode) => void;
@@ -25,11 +25,6 @@ export default function SettingsModal({
     "gruvbox",
   ];
   const themeOptions = themes.map((t) => ({ label: t, value: t }));
-  const displayModeOptions: { label: string; value: DisplayMode }[] = [
-    { label: "normal", value: "normal" },
-    { label: "tape-word", value: "tape-word" },
-    { label: "tape-char", value: "tape-char" },
-  ];
   return (
     <ModalBase isOpen={isOpen} onClose={onClose} title="settings">
       <div className="space-y-8">
@@ -41,14 +36,7 @@ export default function SettingsModal({
           onChange={onThemeChange}
         />
 
-        {/* Display Mode Setting */}
-        <ButtonGroup
-          label="display mode"
-          options={displayModeOptions}
-          value={displayMode}
-          onChange={onDisplayModeChange || (() => {})}
-        />
-
+        {/* Display Mode removed (tape modes deprecated) */}
       </div>
     </ModalBase>
   );
