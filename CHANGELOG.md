@@ -1,6 +1,6 @@
 # slang-type
 
-## 0.2.0
+## 0.2.0 - 2026-03-02
 
 ### Minor Changes
 
@@ -13,7 +13,7 @@
     - Also fixed the issue with multiple reloads and localstorage issues
     - Simpler and cleaner result and history pages using the shared chart component
 
-## 0.1.1
+## 0.1.1 - 2026-03-02
 
 ### Patch Changes
 
@@ -22,7 +22,7 @@
   - Keep accuracy penalties after backtracking. Correcting previously mistyped characters now updates visual status in the typing area without refunding prior error impact on accuracy.
   - Standardize adjusted WPM everywhere to use `accuracy * rawWpm` for live metrics, results stats, chart progression, and saved attempts/history views.
 
-## 0.1.0
+## 0.1.0 - 2026-02-06
 
 ### Minor Changes
 
@@ -34,7 +34,7 @@
   - Fixed React Compiler memoization error in useHistoryStats hook
   - Cleaned up unused imports in HistoryPage component
 
-## 0.0.1
+## 0.0.1 - 2026-02-06
 
 ### Patch Changes
 

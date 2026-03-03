@@ -23,7 +23,37 @@ export default function ChangelogModal({
       maxWidth="max-w-3xl"
     >
       <div className="changelog-markdown text-xs sm:text-sm text-foreground/80 leading-relaxed">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{changelog}</ReactMarkdown>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={{
+            a: ({ children, ...props }) => (
+              <a {...props} target="_blank" rel="noopener noreferrer">
+                {children}
+              </a>
+            ),
+            h1: ({ children, ...props }) => <h1 {...props}>{children}</h1>,
+            h2: ({ children, ...props }) => <h2 {...props}>{children}</h2>,
+            h3: ({ children, ...props }) => <h3 {...props}>{children}</h3>,
+            p: ({ children, ...props }) => <p {...props}>{children}</p>,
+            ul: ({ children, ...props }) => <ul {...props}>{children}</ul>,
+            ol: ({ children, ...props }) => <ol {...props}>{children}</ol>,
+            li: ({ children, ...props }) => <li {...props}>{children}</li>,
+            blockquote: ({ children, ...props }) => (
+              <blockquote {...props}>{children}</blockquote>
+            ),
+            code: ({ children, ...props }) => <code {...props}>{children}</code>,
+            pre: ({ children, ...props }) => <pre {...props}>{children}</pre>,
+            table: ({ children, ...props }) => <table {...props}>{children}</table>,
+            thead: ({ children, ...props }) => <thead {...props}>{children}</thead>,
+            tbody: ({ children, ...props }) => <tbody {...props}>{children}</tbody>,
+            tr: ({ children, ...props }) => <tr {...props}>{children}</tr>,
+            th: ({ children, ...props }) => <th {...props}>{children}</th>,
+            td: ({ children, ...props }) => <td {...props}>{children}</td>,
+            hr: (props) => <hr {...props} />,
+          }}
+        >
+          {changelog}
+        </ReactMarkdown>
       </div>
       <style>{`
         .changelog-markdown h1,
