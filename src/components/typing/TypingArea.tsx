@@ -49,6 +49,7 @@ interface UseTypingEngineReturn {
 }
 
 interface ResultsPayload {
+  id: string;
   wpm: number;
   accuracy: number;
   errors: number;
@@ -95,6 +96,7 @@ export default function TypingArea({
   const normalContainerRef = useRef<HTMLDivElement>(null);
   const normalMeasureRef = useRef<HTMLSpanElement>(null);
   const completionHandledRef = useRef(false);
+  const resultsIdRef = useRef<string | null>(null);
 
   // TAPE MODES: Calculate word/char positions
   const words = useMemo(() => targetText.split(" "), [targetText]);
@@ -301,9 +303,13 @@ export default function TypingArea({
     }
     if (completionHandledRef.current) return;
     completionHandledRef.current = true;
+    if (!resultsIdRef.current) {
+      resultsIdRef.current = `${Date.now()}-${Math.random()}`;
+    }
 
     if (onResultsComplete) {
       onResultsComplete({
+        id: resultsIdRef.current,
         wpm: engine.wpm,
         accuracy: engine.accuracy,
         errors: engine.errors,

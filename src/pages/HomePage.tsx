@@ -18,6 +18,7 @@ interface ContextType {
 }
 
 interface ResultsPayload {
+  id: string;
   wpm: number;
   accuracy: number;
   errors: number;

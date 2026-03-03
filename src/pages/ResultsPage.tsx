@@ -13,6 +13,7 @@ import type { Language, Mode, TypingAttempt } from "@shared-types/index";
 
 interface ResultsLocationState {
   results: {
+    id: string;
     wpm: number;
     accuracy: number;
     errors: number;
@@ -48,6 +49,7 @@ export default function ResultsPage() {
     isNewHighScore,
     isBaseline,
   } = state?.results || {
+    id: "",
     wpm: 0,
     accuracy: 0,
     errors: 0,
@@ -102,8 +104,8 @@ export default function ResultsPage() {
     hasSavedAttemptRef.current = true;
 
     const attempt: TypingAttempt = {
-      id: `${Date.now()}-${Math.random()}`,
-      timestamp: Date.now(),
+      id: state.results.id,
+      timestamp: Number(state.results.id.split("-")[0]) || Date.now(),
       wpm: stats.adjustedWpm,
       accuracy: Math.round(accuracy),
       errors,
@@ -114,7 +116,10 @@ export default function ResultsPage() {
       correctChars,
     };
 
-    setAttempts((prev) => [...prev, attempt]);
+    setAttempts((prev) => {
+      if (prev.some((existing) => existing.id === attempt.id)) return prev;
+      return [...prev, attempt];
+    });
   }, [
     state,
     setAttempts,
