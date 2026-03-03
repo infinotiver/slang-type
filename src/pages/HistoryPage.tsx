@@ -76,9 +76,9 @@ export default function HistoryPage() {
     );
 
     return (
-      <div className="min-h-screen bg-background text-foreground flex flex-col font-mono">
+      <div className="bg-background text-foreground flex flex-col font-mono">
         {/* Detail Header */}
-        <header className="px-8 sm:px-16 md:px-20 py-6 sm:py-8 border-b border-secondary/40">
+        <header className="py-4 sm:py-5 border-b border-secondary/40">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setSelectedAttemptId(null)}
@@ -100,8 +100,8 @@ export default function HistoryPage() {
         </header>
 
         {/* Detail Content */}
-        <main className="flex-1 px-8 sm:px-16 md:px-20 py-8 sm:py-10 flex items-center justify-center">
-          <div className="max-w-2xl w-full px-4 sm:px-6 md:px-8">
+        <main className="flex-1 py-4 sm:py-6 flex items-center justify-center">
+          <div className="w-full">
             {/* Test Info */}
             <div className="mb-6 pb-6 border-b border-secondary/35">
               <div className="grid grid-cols-2 gap-4">
@@ -232,9 +232,9 @@ export default function HistoryPage() {
 
   // Main history list view
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col font-mono">
+    <div className="bg-background text-foreground flex flex-col font-mono">
       {/* Header */}
-      <header className="px-8 sm:px-16 md:px-20 py-6 sm:py-8 border-b border-secondary/40">
+      <header className="py-2 sm:py-3 border-b border-secondary/40">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate("/")}
@@ -251,11 +251,11 @@ export default function HistoryPage() {
       </header>
 
       {/* Content */}
-      <main className="flex-1 px-8 sm:px-16 md:px-20 py-8 sm:py-10">
+      <main className="flex-1 py-6 sm:py-7">
         {attempts.length > 0 ? (
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8">
-            {/* Key Stats - Focused View */}
-            <div className="mb-6 p-4 border border-secondary/35 rounded-xl bg-secondary/8">
+          <div className="w-full">
+            {/* Key Stats */}
+            <div className="mb-6 p-3 border border-secondary/35 rounded-xl bg-secondary/8">
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                 <HistoryStatCard
                   label="best wpm"

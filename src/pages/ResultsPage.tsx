@@ -46,7 +46,7 @@ function CombinedPerformanceChart({
 }) {
   return (
     <div>
-      <h2 className="text-xs font-mono text-foreground/70 mb-2 tracking-wider uppercase">
+      <h2 className="text-xs font-mono text-foreground/60 mb-2 tracking-wider uppercase">
         performance
       </h2>
       <div className="border border-secondary/35 rounded-xl p-3 bg-secondary/8">
@@ -260,8 +260,8 @@ export default function ResultsPage() {
 
   return (
     <div className="flex-1 overflow-y-auto bg-background text-foreground flex flex-col font-mono">
-      <main className="px-6 sm:px-10 md:px-12 py-6 sm:py-8">
-        <div className="max-w-5xl mx-auto px-2 sm:px-4">
+      <main className="py-1">
+        <div className="w-full">
           <div className="mb-6 flex items-center gap-4">
             <button
               onClick={() => navigate("/")}
@@ -281,12 +281,12 @@ export default function ResultsPage() {
             </div>
             <div className="flex items-center gap-2">
               {isBaseline && (
-                <div className="text-xs sm:text-sm text-green-400">
+                <div className="text-xs sm:text-sm text-foreground/70">
                   baseline established
                 </div>
               )}
               {isNewHighScore && !isBaseline && (
-                <div className="text-xs sm:text-sm text-yellow-400">
+                <div className="text-xs sm:text-sm text-foreground/70">
                   new high score
                 </div>
               )}
@@ -296,7 +296,7 @@ export default function ResultsPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
             <div className="flex flex-col h-full">
               <div className="p-5 bg-highlight/10 rounded-xl flex-1 flex flex-col justify-between">
                 <div className="grid grid-cols-1 gap-6">
@@ -308,7 +308,7 @@ export default function ResultsPage() {
                   </div>
                   <div>
                     <div className="text-sm text-foreground/60">accuracy</div>
-                    <div className="text-5xl font-extrabold text-foreground px-2 py-1 inline-block leading-none">
+                    <div className="text-5xl font-extrabold text-foreground bg-highlight/25 rounded-md px-2 py-1 inline-block leading-none">
                       {stats.accuracy}%
                     </div>
                   </div>
