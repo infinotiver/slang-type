@@ -61,7 +61,8 @@ export default function ChartContainer({
                 dataKey={dataKey}
                 stroke={stroke}
                 strokeWidth={2}
-                dot={false}
+                dot={{ r: 2 }}
+                activeDot={{ r: 3 }}
               />
             </LineChart>
           </ResponsiveContainer>

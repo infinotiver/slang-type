@@ -2,7 +2,6 @@ import {
   Outlet,
   ScrollRestoration,
   useNavigate,
-  useLocation,
 } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Header } from "@components/ui/common";
@@ -15,7 +14,6 @@ import { version as appVersion } from "../../package.json";
 import { InfoIcon } from "lucide-react";
 
 export default function RootLayout() {
-  const location = useLocation();
   const navigate = useNavigate();
   const [theme, setTheme] = useLocalStorage<Theme>("slangtype_theme", "dark");
   const [displayMode, setDisplayMode] = useLocalStorage<DisplayMode>(
