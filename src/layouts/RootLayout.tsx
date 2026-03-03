@@ -4,7 +4,6 @@ import {
   useNavigate,
   useLocation,
 } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Header } from "@components/ui/common";
 import useLocalStorage from "@hooks/useLocalStorage";
@@ -51,23 +50,13 @@ export default function RootLayout() {
       </header>
       {/* Page content */}
       <main id="main-content" className="flex-1">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={location.pathname}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
-            transition={{ duration: 0.22, ease: "easeInOut" }}
-          >
-            <Outlet context={{ displayMode }} />
-          </motion.div>
-        </AnimatePresence>
+        <Outlet context={{ displayMode }} />
       </main>
       <ScrollRestoration />
       <Analytics />
       {/* FOOTER - always visible */}
       <footer className="border-t border-secondary px-8 sm:px-16 md:px-20 py-1 sm:py-2 md:py-4">
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-xs font-mono text-foreground/50">
+        <div className="flex justify-between items-center gap-2 text-xs font-mono text-foreground/50">
           <button
             type="button"
             onClick={() => setIsChangelogOpen(true)}
@@ -76,7 +65,6 @@ export default function RootLayout() {
             ver {appVersion}
           </button>
           <span className="flex items-center gap-1">
-          
             <button
               onClick={() => setIsCreditsOpen(true)}
               className="ml-1 p-1 rounded hover:bg-secondary/20 hover:text-highlight transition-colors"
