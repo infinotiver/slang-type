@@ -1,6 +1,8 @@
 # SlangType
 
-A modern typing speed test application with support for multiple languages and modes. Test your typing speed with slang, English, or code, across various time challenges and infinite mode.
+![poster](poster.png)
+
+A modern typing speed test with support for slang. Test your typing speed with slang, English, or code, across various time challenges and infinite mode.
 
 ## Features
 
