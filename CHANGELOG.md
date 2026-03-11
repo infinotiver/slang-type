@@ -1,5 +1,16 @@
 # slang-type
 
+## 0.2.1
+
+### Patch Changes
+
+- 100 new Slangs and layout refactoring
+
+  - Added 100 new slang words to the dictionary
+  - Simplify page animations and padding
+  - Remove tape modes (probably will be added in future)
+  - Minor fixes
+
 ## 0.2.0 - 2026-03-02
 
 ### Minor Changes
