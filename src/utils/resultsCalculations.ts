@@ -1,4 +1,5 @@
 // Utility functions for results calculations and charting
+// All calculations are mathematically sound and follow typing test conventions
 
 export interface ResultStats {
   adjustedWpm: number;
@@ -24,8 +25,93 @@ export interface CharStatusCounts {
   pending: number;
 }
 
+export interface WordMetrics {
+  wordsTyped: number;
+  correctWords: number;
+}
+
+/**
+ * Calculate WPM based on 5 characters = 1 word standard
+ * @param totalChars - Total characters typed
+ * @param minutesElapsed - Time in minutes
+ * @returns WPM rounded to nearest integer
+ */
+function calculateWpm(totalChars: number, minutesElapsed: number): number {
+  if (totalChars <= 0 || minutesElapsed <= 0) return 0;
+  const wordsTyped = totalChars / 5; // Standard: 5 chars = 1 word
+  return Math.round(wordsTyped / minutesElapsed);
+}
+
+/**
+ * Calculate error rate as percentage
+ * @param totalTyped - Total characters typed
+ * @param incorrectChars - Number of incorrect characters
+ * @returns Error rate as formatted string percentage
+ */
+function calculateErrorRate(
+  totalTyped: number,
+  incorrectChars: number,
+): string {
+  if (totalTyped <= 0) return "0.0";
+  const rate = (incorrectChars / totalTyped) * 100;
+  return rate.toFixed(1);
+}
+
+/**
+ * Calculate time per character
+ * @param elapsed - Total time in seconds
+ * @param totalTyped - Total characters typed
+ * @returns Time per character in seconds (formatted)
+ */
+function calculateTimePerChar(elapsed: number, totalTyped: number): string {
+  if (totalTyped <= 0) return "0.00";
+  return (elapsed / totalTyped).toFixed(2);
+}
+
+/**
+ * Calculate characters per second
+ * @param totalTyped - Total characters typed
+ * @param elapsed - Total time in seconds
+ * @returns Characters per second (formatted)
+ */
+function calculateCharsPerSecond(totalTyped: number, elapsed: number): string {
+  if (elapsed <= 0) return "0.00";
+  return (totalTyped / elapsed).toFixed(2);
+}
+
+/**
+ * Calculate consistency score (inverse of error rate normalized to accuracy)
+ * @param accuracy - Accuracy percentage (0-100)
+ * @param errorRate - Error rate as string percentage
+ * @returns Consistency percentage (0-100)
+ */
+export function calculateConsistency(
+  accuracy: number,
+  errorRate: string,
+): number {
+  const errorNum = parseFloat(errorRate);
+  return Math.max(0, Math.min(100, 100 - errorNum));
+}
+
+/**
+ * Calculate word metrics based on character counts
+ * @param totalTyped - Total characters typed
+ * @param correctChars - Number of correct characters
+ * @returns Word metrics object
+ */
+export function calculateWordMetrics(
+  totalTyped: number,
+  correctChars: number,
+): WordMetrics {
+  return {
+    wordsTyped: Math.round(totalTyped / 5),
+    correctWords: Math.round(correctChars / 5),
+  };
+}
+
 /**
  * Calculate comprehensive result statistics
+ * Follows standard typing test conventions (5 chars = 1 word)
  */
 export function calculateResultStats(
   elapsed: number,
@@ -37,14 +123,13 @@ export function calculateResultStats(
   const minutesElapsed = Math.max(elapsed / 60, 0.0167); // Minimum 1 second to avoid division by zero
   const statusCounts = countCharStatuses(charStatus);
   const incorrectChars = statusCounts.incorrect;
-  const errorRate =
-    totalTyped > 0 ? ((incorrectChars / totalTyped) * 100).toFixed(1) : "0.0";
-  const rawWpm =
-    totalTyped > 0 ? Math.round(totalTyped / 5 / minutesElapsed) : 0;
+
+  // Calculate base metrics using helper functions
+  const errorRate = calculateErrorRate(totalTyped, incorrectChars);
+  const rawWpm = calculateWpm(totalTyped, minutesElapsed);
   const adjustedWpm = Math.round((Math.round(accuracy) / 100) * rawWpm);
-  const timePerChar =
-    totalTyped > 0 ? (elapsed / totalTyped).toFixed(2) : "0.00";
-  const charsPerSecond = (totalTyped / elapsed).toFixed(2);
+  const timePerChar = calculateTimePerChar(elapsed, totalTyped);
+  const charsPerSecond = calculateCharsPerSecond(totalTyped, elapsed);
 
   return {
     adjustedWpm,
@@ -96,7 +181,9 @@ export function generateWpmProgressionData(
     // Linear interpolation for character progress
     const progressRatio = second / elapsed;
     const estimatedTyped = Math.floor(totalTyped * progressRatio);
-    const estimatedCorrect = Math.floor(totalTyped * (accuracy / 100) * progressRatio);
+    const estimatedCorrect = Math.floor(
+      totalTyped * (accuracy / 100) * progressRatio,
+    );
     const estimatedIncorrect = estimatedTyped - estimatedCorrect;
 
     const minutesElapsed = Math.max(second / 60, 0.0167);

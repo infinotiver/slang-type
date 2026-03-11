@@ -1,11 +1,7 @@
-import { useMemo, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { TbArrowLeft } from "react-icons/tb";
-import {
-  calculateResultStats,
-  generateWpmProgressionData,
-  countCharStatuses,
-} from "@utils/resultsCalculations";
+import { useResultsStats } from "@hooks/useResultsStats";
 import { Button } from "@components/ui/common";
 import useLocalStorage from "@hooks/useLocalStorage";
 import type { Language, Mode, TypingAttempt } from "@shared-types/index";
@@ -42,7 +38,12 @@ interface ResultsLocationState {
 function CombinedPerformanceChart({
   data,
 }: {
-  data: { name: number; wpm: number; accuracy: number; errorRate: number }[];
+  data: Array<{
+    name: number;
+    wpm: number;
+    accuracy: number;
+    errorRate: number;
+  }>;
 }) {
   return (
     <div>
@@ -95,7 +96,10 @@ function CombinedPerformanceChart({
                 }}
                 labelStyle={{ color: "var(--color-foreground)" }}
                 itemStyle={{ color: "var(--color-foreground)" }}
-                cursor={{ stroke: "var(--color-highlight)", strokeOpacity: 0.4 }}
+                cursor={{
+                  stroke: "var(--color-highlight)",
+                  strokeOpacity: 0.4,
+                }}
               />
               <Scatter
                 yAxisId="right"
@@ -172,49 +176,16 @@ export default function ResultsPage() {
     isBaseline: false,
   };
 
-  const stats = useMemo(
-    () =>
-      calculateResultStats(
-        elapsed,
-        totalTyped,
-        correctChars,
-        accuracy,
-        charStatus,
-      ),
-    [elapsed, totalTyped, correctChars, accuracy, charStatus],
-  );
+  const stats = useResultsStats({
+    elapsed,
+    totalTyped,
+    correctChars,
+    accuracy,
+    charStatus,
+  });
 
-  const chartData = useMemo(
-    () =>
-      generateWpmProgressionData(
-        elapsed,
-        totalTyped,
-        correctChars,
-        charStatus,
-        accuracy,
-      ),
-    [elapsed, totalTyped, correctChars, charStatus, accuracy],
-  );
-
-  const performanceData = useMemo(
-    () =>
-      chartData.map((point, idx) => ({
-        name: idx + 1,
-        wpm: point.adjustedWpm,
-        accuracy: point.accuracy,
-        errorRate: point.errorRate,
-      })),
-    [chartData],
-  );
-
-  const statusCounts = useMemo(
-    () => countCharStatuses(charStatus),
-    [charStatus],
-  );
-  const wordsTyped = Math.round(totalTyped / 5);
-  const correctWords = Math.round(statusCounts.correct / 5);
-  const netWpm = stats.adjustedWpm;
-  const grossWpm = stats.rawWpm;
+  const netWpm = stats.netWpm;
+  const grossWpm = stats.grossWpm;
 
   useEffect(() => {
     if (!state?.results || hasSavedAttemptRef.current) return;
@@ -223,7 +194,7 @@ export default function ResultsPage() {
     const attempt: TypingAttempt = {
       id: state.results.id,
       timestamp: Number(state.results.id.split("-")[0]) || Date.now(),
-      wpm: stats.adjustedWpm,
+      wpm: stats.netWpm,
       accuracy: Math.round(accuracy),
       errors,
       elapsed,
@@ -240,7 +211,7 @@ export default function ResultsPage() {
   }, [
     state,
     setAttempts,
-    stats.adjustedWpm,
+    stats.netWpm,
     accuracy,
     errors,
     elapsed,
@@ -324,19 +295,20 @@ export default function ResultsPage() {
                     </span>
                   </div>
                   <div>
-                    duration: <span className="text-foreground">{elapsed}s</span>
+                    duration:{" "}
+                    <span className="text-foreground">{elapsed}s</span>
                   </div>
                 </div>
               </div>
             </div>
-            <CombinedPerformanceChart data={performanceData} />
+            <CombinedPerformanceChart data={stats.performanceData} />
           </div>
 
           <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3">
             <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5">
               <div className="text-xs text-foreground/60">errors</div>
               <div className="text-2xl font-bold text-foreground">
-                {statusCounts.incorrect}
+                {stats.incorrectChars}
               </div>
               <div className="text-[11px] text-foreground/50 mt-1">
                 {Number(stats.errorRate).toFixed(1)}% rate
@@ -357,29 +329,29 @@ export default function ResultsPage() {
             <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5">
               <div className="text-xs text-foreground/60">consistency</div>
               <div className="text-2xl font-bold text-foreground">
-                {(100 - parseFloat(stats.errorRate)).toFixed(1)}%
+                {stats.consistency.toFixed(1)}%
               </div>
             </div>
             <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5">
               <div className="text-xs text-foreground/60">correct words</div>
               <div className="text-2xl font-bold text-foreground">
-                {correctWords}
+                {stats.correctWords}
               </div>
               <div className="text-[11px] text-foreground/50 mt-1">
-                {statusCounts.correct} chars
+                {stats.correctChars} chars
               </div>
             </div>
             <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5">
               <div className="text-xs text-foreground/60">untyped</div>
               <div className="text-2xl font-bold text-foreground">
-                {statusCounts.pending}
+                {stats.pendingChars}
               </div>
               <div className="text-[11px] text-foreground/50 mt-1">chars</div>
             </div>
             <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5">
               <div className="text-xs text-foreground/60">words typed</div>
               <div className="text-2xl font-bold text-foreground">
-                {wordsTyped}
+                {stats.wordsTyped}
               </div>
               <div className="text-[11px] text-foreground/50 mt-1">words</div>
             </div>
