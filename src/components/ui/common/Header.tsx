@@ -36,15 +36,13 @@ export default function Header({
           <div className="mx-auto">
             {/* Top row: Logo and Right controls */}
             <div className="flex items-center justify-between gap-4 mb-3">
-              <div className="flex items-center gap-1.5">
-                <Link to="/" className="flex items-center gap-2">
-                  <div className="flex items-center gap-2 pointer-events-auto">
-                    <h1 className="text-xl font-bold tracking-tighter text-highlight lowercase">
-                      slangtype
-                    </h1>
-                  </div>
-                </Link>
-              </div>
+              <Link to="/" className="flex items-center gap-2">
+                <div className="flex items-center gap-2 pointer-events-auto">
+                  <h1 className="text-2xl font-bold tracking-tighter text-highlight lowercase">
+                    slangtype
+                  </h1>
+                </div>
+              </Link>
 
               <div className="flex items-center gap-1 sm:gap-2">
                 <div className="flex items-center gap-2 text-sm font-mono">

@@ -1,8 +1,4 @@
-import {
-  Outlet,
-  ScrollRestoration,
-  useNavigate,
-} from "react-router-dom";
+import { Outlet, ScrollRestoration, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Header } from "@components/ui/common";
 import useLocalStorage from "@hooks/useLocalStorage";
@@ -37,8 +33,8 @@ export default function RootLayout() {
       </a>
       <div className="flex-1 flex flex-col">
         {/* Header always visible */}
-        <header className="px-2 ">
-          <div className="max-w-5xl mx-auto w-full">
+        <header className="px-2 py-4">
+          <div className="px-4 sm:px-8 md:px-12 mx-auto w-full">
             <Header
               theme={theme}
               onThemeChange={setTheme}
@@ -51,7 +47,7 @@ export default function RootLayout() {
         </header>
         {/* Page content */}
         <main id="main-content" className="flex-1 px-2 py-2">
-          <div className="max-w-5xl mx-auto w-full h-full">
+          <div className="px-4 sm:px-8 md:px-12 mx-auto w-full h-full">
             <Outlet context={{ displayMode }} />
           </div>
         </main>
@@ -60,27 +56,25 @@ export default function RootLayout() {
       <Analytics />
       {/* FOOTER - always visible */}
       <footer className="py-2 sm:py-4">
-        <div className="px-2">
-          <div className="max-w-5xl mx-auto w-full">
-            <div className="flex justify-between items-center gap-2 text-xs font-mono text-foreground/50">
+        <div className="px-4 sm:px-8 md:px-12 mx-auto w-full">
+          <div className="flex justify-between items-center gap-2 text-xs font-mono text-foreground/50">
+            <button
+              type="button"
+              onClick={() => setIsChangelogOpen(true)}
+              className="text-foreground/80 hover:text-highlight transition-colors font-semibold flex items-center gap-1 tracking-wide"
+            >
+              ver {appVersion}
+            </button>
+            <span className="flex items-center gap-1">
               <button
+                onClick={() => setIsCreditsOpen(true)}
+                className="ml-1 p-1 rounded hover:bg-secondary/20 hover:text-highlight transition-colors"
+                aria-label="credits"
                 type="button"
-                onClick={() => setIsChangelogOpen(true)}
-                className="text-foreground/80 hover:text-highlight transition-colors font-semibold flex items-center gap-1 tracking-wide"
               >
-                ver {appVersion}
+                <InfoIcon size={16} />
               </button>
-              <span className="flex items-center gap-1">
-                <button
-                  onClick={() => setIsCreditsOpen(true)}
-                  className="ml-1 p-1 rounded hover:bg-secondary/20 hover:text-highlight transition-colors"
-                  aria-label="credits"
-                  type="button"
-                >
-                  <InfoIcon size={16} />
-                </button>
-              </span>
-            </div>
+            </span>
           </div>
         </div>
         <CreditsModal

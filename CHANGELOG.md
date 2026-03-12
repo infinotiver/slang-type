@@ -1,6 +1,6 @@
 # slang-type
 
-## 0.2.1
+## 0.2.1 - 2026-03-11
 
 ### Patch Changes
 
