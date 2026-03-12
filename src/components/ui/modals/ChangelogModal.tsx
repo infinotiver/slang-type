@@ -20,7 +20,6 @@ export default function ChangelogModal({
       isOpen={isOpen}
       onClose={onClose}
       title={`Changelog - v${version}`}
-      maxWidth="max-w-3xl"
     >
       <div className="changelog-markdown text-xs sm:text-sm text-foreground/80 leading-relaxed">
         <ReactMarkdown
@@ -41,11 +40,19 @@ export default function ChangelogModal({
             blockquote: ({ children, ...props }) => (
               <blockquote {...props}>{children}</blockquote>
             ),
-            code: ({ children, ...props }) => <code {...props}>{children}</code>,
+            code: ({ children, ...props }) => (
+              <code {...props}>{children}</code>
+            ),
             pre: ({ children, ...props }) => <pre {...props}>{children}</pre>,
-            table: ({ children, ...props }) => <table {...props}>{children}</table>,
-            thead: ({ children, ...props }) => <thead {...props}>{children}</thead>,
-            tbody: ({ children, ...props }) => <tbody {...props}>{children}</tbody>,
+            table: ({ children, ...props }) => (
+              <table {...props}>{children}</table>
+            ),
+            thead: ({ children, ...props }) => (
+              <thead {...props}>{children}</thead>
+            ),
+            tbody: ({ children, ...props }) => (
+              <tbody {...props}>{children}</tbody>
+            ),
             tr: ({ children, ...props }) => <tr {...props}>{children}</tr>,
             th: ({ children, ...props }) => <th {...props}>{children}</th>,
             td: ({ children, ...props }) => <td {...props}>{children}</td>,
@@ -70,9 +77,28 @@ export default function ChangelogModal({
         .changelog-markdown h2 { font-size: 0.95rem; }
         .changelog-markdown h3 { font-size: 0.9rem; }
         .changelog-markdown p { margin: 0.45rem 0; }
+
+        /* lists: show a dash marker for each li */
         .changelog-markdown ul,
-        .changelog-markdown ol { margin: 0.45rem 0 0.65rem 1.1rem; }
-        .changelog-markdown li { margin: 0.2rem 0; }
+        .changelog-markdown ol {
+          margin: 0.45rem 0 0.65rem 0;
+          padding-left: 1rem;
+          list-style: none;
+        }
+        .changelog-markdown li {
+          position: relative;
+          margin: 0.2rem 0;
+          padding-left: 0.9rem;
+        }
+        .changelog-markdown li::before {
+          content: "-";
+          position: absolute;
+          left: 0;
+          top: 0;
+          color: var(--color-highlight);
+          font-weight: 700;
+          line-height: 1;
+        }
         .changelog-markdown a {
           color: var(--color-highlight);
           text-decoration: underline;
