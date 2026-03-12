@@ -88,14 +88,24 @@ function CombinedPerformanceChart({
     wpm: number;
     accuracy: number;
     errorRate: number;
+    errorsAtThisSecond?: number;
+    scaledErrors?: number;
   }>;
 }) {
+  // Transform data: convert 0 errors to null so they don't render as dots
+  const chartData = data.map((point) => ({
+    ...point,
+    errorsAtThisSecond:
+      point.errorsAtThisSecond === 0 ? null : point.errorsAtThisSecond,
+    scaledErrors: point.scaledErrors === 0 ? null : point.scaledErrors,
+  }));
+
   return (
     <div>
       <div className="border border-secondary/35 rounded-xl p-3 bg-secondary/8">
-        {data.length > 0 ? (
+        {chartData.length > 0 ? (
           <ResponsiveContainer height={200}>
-            <ComposedChart data={data} responsive={true}>
+            <ComposedChart data={chartData} responsive={true}>
               <CartesianGrid
                 strokeDasharray="3 3"
                 stroke="rgb(75, 85, 99)"
