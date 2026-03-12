@@ -33,8 +33,10 @@ export interface ComputedStats {
   performanceData: Array<{
     name: number;
     wpm: number;
+    rawWpm: number;
     accuracy: number;
     errorRate: number;
+    errorsAtThisSecond: number; // NEW
   }>;
 }
 
@@ -106,6 +108,7 @@ export function useResultsStats(data: ResultsData): ComputedStats {
         rawWpm: point.rawWpm,
         accuracy: point.accuracy,
         errorRate: point.errorRate,
+        errorsAtThisSecond: point.errorsAtThisSecond,
       })),
     [chartData],
   );

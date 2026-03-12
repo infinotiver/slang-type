@@ -17,6 +17,7 @@ export interface ChartDataPoint {
   rawWpm: number;
   errorRate: number;
   accuracy: number;
+  errorsAtThisSecond: number;
 }
 
 export interface CharStatusCounts {
@@ -168,58 +169,79 @@ export function countCharStatuses(
 export function generateWpmProgressionData(
   elapsed: number,
   totalTyped: number,
-  correctChars: number,
+  _correctChars: number,
   charStatus: Record<number, "pending" | "correct" | "incorrect">,
   accuracy: number,
 ): ChartDataPoint[] {
   const data: ChartDataPoint[] = [];
-  // Loop every second instead of intervals
+
+  let previousSecondCharCount = 0; // Track where last second ended
+
+  // Loop every second
   for (let second = 1; second <= elapsed; second++) {
-    // Calculate progress ratio
+    // Calculate progress ratio for this time point
     const progressRatio = second / elapsed;
 
     // Estimate character count at this point based on linear typing progress
     const estimatedTypedCount = Math.floor(totalTyped * progressRatio);
+
     // Skip if no characters typed yet
     if (estimatedTypedCount === 0) continue;
-    // Count actual errors UP TO this character index from charStatus
-    let estimatedCorrect = 0;
-    let estimatedIncorrect = 0;
+
+    // Count ONLY errors in THIS second (from previousSecondCharCount to estimatedTypedCount)
+    let errorsAtThisSecond = 0;
+
+    for (let i = previousSecondCharCount; i < estimatedTypedCount; i++) {
+      const status = charStatus[i];
+      if (status === "incorrect") {
+        errorsAtThisSecond++;
+      }
+    }
+
+    // Count cumulative stats up to this point (for WPM/accuracy calculation)
+    let cumulativeCorrect = 0;
+    let cumulativeIncorrect = 0;
 
     for (let i = 0; i < estimatedTypedCount; i++) {
       const status = charStatus[i];
       if (status === "correct") {
-        estimatedCorrect++;
+        cumulativeCorrect++;
       } else if (status === "incorrect") {
-        estimatedIncorrect++;
+        cumulativeIncorrect++;
       }
     }
-    const minutesElapsed = second / 60; // Each second point
 
-    // Calculate metrics at this point using ACTUAL error counts
+    const minutesElapsed = second / 60;
+
+    // Calculate metrics using CUMULATIVE data for WPM/accuracy
     const rawWpm = Math.round(estimatedTypedCount / 5 / minutesElapsed);
 
-    const actualErrorRate =
+    const cumulativeErrorRate =
       estimatedTypedCount > 0
-        ? Math.round((estimatedIncorrect / estimatedTypedCount) * 100)
+        ? Math.round((cumulativeIncorrect / estimatedTypedCount) * 100)
         : 0;
 
-    const estimatedAccuracy =
+    const cumulativeAccuracy =
       estimatedTypedCount > 0
-        ? Math.round((estimatedCorrect / estimatedTypedCount) * 100)
+        ? Math.round((cumulativeCorrect / estimatedTypedCount) * 100)
         : 0;
 
-    const adjustedWpm = Math.round((estimatedAccuracy / 100) * rawWpm);
+    const adjustedWpm = Math.round((cumulativeAccuracy / 100) * rawWpm);
+
     data.push({
       time: second,
       adjustedWpm: Math.max(0, adjustedWpm),
       rawWpm: Math.max(0, rawWpm),
-      errorRate: Math.max(0, actualErrorRate),
-      accuracy: Math.max(0, estimatedAccuracy),
+      errorRate: Math.max(0, cumulativeErrorRate), // Cumulative for trend
+      accuracy: Math.max(0, cumulativeAccuracy), // Cumulative for trend
+      errorsAtThisSecond: errorsAtThisSecond,
     });
+
+    // Update for next iteration
+    previousSecondCharCount = estimatedTypedCount;
   }
 
-  // Ensure we always have the final data point with ACTUAL final stats
+  // Ensure we always have the final data point
   if (data.length === 0 || data[data.length - 1].time !== elapsed) {
     const finalStatusCounts = countCharStatuses(charStatus);
     const finalErrorRate =
@@ -231,17 +253,32 @@ export function generateWpmProgressionData(
     const finalAdjustedWpm = Math.round(
       (Math.round(accuracy) / 100) * finalRawWpm,
     );
+
+    // Count errors in final second only
+    let finalSecondErrors = 0;
+    const startOfFinalSecond = Math.floor(
+      totalTyped * ((elapsed - 1) / elapsed),
+    );
+
+    for (let i = startOfFinalSecond; i < totalTyped; i++) {
+      if (charStatus[i] === "incorrect") {
+        finalSecondErrors++;
+      }
+    }
+
     data.push({
       time: elapsed,
       rawWpm: finalRawWpm,
       adjustedWpm: finalAdjustedWpm,
       errorRate: finalErrorRate,
       accuracy: Math.round(accuracy),
+      errorsAtThisSecond: finalSecondErrors,
     });
   }
 
   return data;
 }
+
 /**
  * Format tooltip styling for recharts
  */

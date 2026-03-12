@@ -7,8 +7,8 @@ import useLocalStorage from "@hooks/useLocalStorage";
 import type { Language, Mode, TypingAttempt } from "@shared-types/index";
 import {
   ComposedChart,
-  Scatter,
   Line,
+  Scatter,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -35,6 +35,51 @@ interface ResultsLocationState {
   highScore: number;
 }
 
+interface ChartPayload {
+  dataKey: string;
+  name: string;
+  value: number;
+}
+
+interface TooltipProps {
+  active?: boolean;
+  payload?: ChartPayload[];
+  label?: number;
+}
+
+function CustomTooltip({ active, payload, label }: TooltipProps) {
+  if (active && payload && payload.length) {
+    const colors: Record<string, string> = {
+      wpm: "#10b981",
+      accuracy: "#f59e0b",
+      errorsAtThisSecond: "rgb(239, 68, 68)",
+    };
+    const labels: Record<string, string> = {
+      wpm: "Adjusted WPM",
+      accuracy: "Accuracy",
+      errorsAtThisSecond: "Errors",
+    };
+
+    const filtered = payload.filter((entry) => labels[entry.dataKey]);
+
+    return (
+      <div className="bg-secondary border border-secondary/30 rounded-lg p-2 text-[11px] space-y-1">
+        <div className="text-foreground/70">{`s ${label}`}</div>
+        {filtered.map((entry, index) => (
+          <div key={index} className="flex items-center gap-2">
+            <div
+              className="w-2 h-2 rounded-full"
+              style={{ backgroundColor: colors[entry.dataKey] }}
+            />
+            <span className="text-foreground">{`${labels[entry.dataKey]}: ${entry.value}`}</span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+  return null;
+}
+
 function CombinedPerformanceChart({
   data,
 }: {
@@ -47,13 +92,10 @@ function CombinedPerformanceChart({
 }) {
   return (
     <div>
-      <h2 className="text-xs font-mono text-foreground/60 mb-2 tracking-wider uppercase">
-        performance
-      </h2>
       <div className="border border-secondary/35 rounded-xl p-3 bg-secondary/8">
         {data.length > 0 ? (
-          <ResponsiveContainer width="100%" height={280}>
-            <ComposedChart data={data}>
+          <ResponsiveContainer height={200}>
+            <ComposedChart data={data} responsive={true}>
               <CartesianGrid
                 strokeDasharray="3 3"
                 stroke="rgb(75, 85, 99)"
@@ -63,13 +105,11 @@ function CombinedPerformanceChart({
                 dataKey="name"
                 stroke="rgb(107, 114, 128)"
                 style={{ fontSize: "11px" }}
-                tickMargin={6}
               />
               <YAxis
                 yAxisId="left"
                 stroke="rgb(107, 114, 128)"
                 style={{ fontSize: "11px" }}
-                tickMargin={6}
                 label={{ value: "WPM", angle: -90, position: "insideLeft" }}
               />
               <YAxis
@@ -85,37 +125,15 @@ function CombinedPerformanceChart({
                   position: "insideRight",
                 }}
               />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "var(--color-background)",
-                  borderRadius: "10px",
-                  color: "var(--color-foreground)",
-                  fontSize: "11px",
-                  boxShadow: "0 8px 20px rgba(0, 0, 0, 0.25)",
-                  padding: "8px 10px",
-                }}
-                labelStyle={{ color: "var(--color-foreground)" }}
-                itemStyle={{ color: "var(--color-foreground)" }}
-                cursor={{
-                  stroke: "var(--color-highlight)",
-                  strokeOpacity: 0.4,
-                }}
-              />
-              <Scatter
-                yAxisId="right"
-                type="monotone"
-                dataKey="errorRate"
-                fill="#ef4444"
-                name="Errors"
-              />
+              <Tooltip content={<CustomTooltip />} />
+
               <Line
                 yAxisId="left"
                 type="monotone"
                 dataKey="wpm"
                 stroke="#10b981"
-                strokeWidth={2}
-                dot={{ r: 2 }}
-                activeDot={{ r: 3 }}
+                strokeWidth={2.5}
+                dot={false}
                 name="Adjusted WPM"
               />
               <Line
@@ -124,9 +142,14 @@ function CombinedPerformanceChart({
                 dataKey="accuracy"
                 stroke="#f59e0b"
                 strokeWidth={2}
-                dot={{ r: 2 }}
-                activeDot={{ r: 3 }}
-                name="Accuracy %"
+                dot={false}
+                isAnimationActive={false}
+              />
+              <Scatter
+                yAxisId="right"
+                dataKey="errorsAtThisSecond"
+                fill="rgb(239, 68, 68)"
+                isAnimationActive={false}
               />
             </ComposedChart>
           </ResponsiveContainer>
@@ -267,90 +290,85 @@ export default function ResultsPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-6">
-            <div className="flex flex-col h-full">
-              <div className="p-5 bg-highlight/10 rounded-xl flex-1 flex flex-col justify-between">
-                <div className="grid grid-cols-1 gap-6">
-                  <div>
+          <div className="flex gap-6 flex-1">
+            <div className="lg:w-[200px] flex flex-col gap-6 shrink-0">
+              <div className="p-4 bg-highlight/10 rounded-xl flex flex-col justify-between min-h-[220px]">
+                {/* Upper Stats */}
+                <div className="space-y-4">
+                  <section>
                     <div className="text-sm text-foreground/60">wpm</div>
                     <div className="text-5xl font-extrabold text-highlight leading-none">
                       {netWpm}
                     </div>
-                  </div>
-                  <div>
+                  </section>
+
+                  <section>
                     <div className="text-sm text-foreground/60">accuracy</div>
-                    <div className="text-5xl font-extrabold text-foreground py-1 inline-block leading-none">
+                    <div className="text-5xl font-extrabold text-foreground leading-none">
                       {stats.accuracy}%
                     </div>
-                  </div>
+                  </section>
                 </div>
-                <div className="text-xs text-foreground/60 mt-4 space-y-1">
-                  <div>
-                    raw wpm: <span className="text-foreground">{grossWpm}</span>
-                  </div>
-                  <div>
-                    error rate:{" "}
-                    <span className="text-foreground">
-                      {Number(stats.errorRate).toFixed(1)}%
-                    </span>
-                  </div>
-                  <div>
-                    duration:{" "}
-                    <span className="text-foreground">{elapsed}s</span>
-                  </div>
+
+                {/* Lower Metadata */}
+                <div className="text-xs text-foreground/60">
+                  raw wpm: <span className="text-foreground">{grossWpm}</span>
                 </div>
               </div>
             </div>
-            <CombinedPerformanceChart data={stats.performanceData} />
+
+            <div className="flex-1">
+              <CombinedPerformanceChart data={stats.performanceData} />
+            </div>
           </div>
 
-          <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5">
+          <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3 auto-rows-fr">
+            <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
               <div className="text-xs text-foreground/60">errors</div>
-              <div className="text-2xl font-bold text-foreground">
+              <div className="text-2xl font-bold text-foreground mt-auto">
                 {stats.incorrectChars}
               </div>
               <div className="text-[11px] text-foreground/50 mt-1">
                 {Number(stats.errorRate).toFixed(1)}% rate
               </div>
             </div>
-            <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5">
+            <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
               <div className="text-xs text-foreground/60">time / char</div>
-              <div className="text-2xl font-bold text-foreground">
+              <div className="text-2xl font-bold text-foreground mt-auto">
                 {stats.timePerChar}s
               </div>
             </div>
-            <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5">
+            <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
               <div className="text-xs text-foreground/60">chars / sec</div>
-              <div className="text-2xl font-bold text-foreground">
+              <div className="text-2xl font-bold text-foreground mt-auto">
                 {stats.charsPerSecond}
               </div>
             </div>
-            <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5">
+            <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
               <div className="text-xs text-foreground/60">consistency</div>
-              <div className="text-2xl font-bold text-foreground">
+              <div className="text-2xl font-bold text-foreground mt-auto">
                 {stats.consistency.toFixed(1)}%
               </div>
             </div>
-            <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5">
+            <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
               <div className="text-xs text-foreground/60">correct words</div>
-              <div className="text-2xl font-bold text-foreground">
+              <div className="text-2xl font-bold text-foreground mt-auto">
                 {stats.correctWords}
               </div>
               <div className="text-[11px] text-foreground/50 mt-1">
                 {stats.correctChars} chars
               </div>
             </div>
-            <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5">
+            <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
               <div className="text-xs text-foreground/60">untyped</div>
-              <div className="text-2xl font-bold text-foreground">
+              <div className="text-2xl font-bold text-foreground mt-auto">
                 {stats.pendingChars}
               </div>
               <div className="text-[11px] text-foreground/50 mt-1">chars</div>
             </div>
-            <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5">
+            <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
               <div className="text-xs text-foreground/60">words typed</div>
-              <div className="text-2xl font-bold text-foreground">
+              <div className="text-2xl font-bold text-foreground mt-auto">
                 {stats.wordsTyped}
               </div>
               <div className="text-[11px] text-foreground/50 mt-1">words</div>

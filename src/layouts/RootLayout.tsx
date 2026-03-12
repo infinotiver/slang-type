@@ -37,7 +37,7 @@ export default function RootLayout() {
       </a>
       <div className="flex-1 flex flex-col">
         {/* Header always visible */}
-        <header className="px-6 sm:px-8 md:px-12">
+        <header className="px-2 ">
           <div className="max-w-5xl mx-auto w-full">
             <Header
               theme={theme}
@@ -50,7 +50,7 @@ export default function RootLayout() {
           </div>
         </header>
         {/* Page content */}
-        <main id="main-content" className="flex-1 px-6 sm:px-8 md:px-12 py-2">
+        <main id="main-content" className="flex-1 px-2 py-2">
           <div className="max-w-5xl mx-auto w-full h-full">
             <Outlet context={{ displayMode }} />
           </div>
@@ -60,7 +60,7 @@ export default function RootLayout() {
       <Analytics />
       {/* FOOTER - always visible */}
       <footer className="py-2 sm:py-4">
-        <div className="px-6 sm:px-12 md:px-16">
+        <div className="px-2">
           <div className="max-w-5xl mx-auto w-full">
             <div className="flex justify-between items-center gap-2 text-xs font-mono text-foreground/50">
               <button
