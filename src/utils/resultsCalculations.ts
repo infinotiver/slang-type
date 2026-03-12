@@ -163,70 +163,85 @@ export function countCharStatuses(
 
 /**
  * Generate WPM progression chart data from actual typing data
- * Uses the final stats to create a simple progression curve
+ * Uses actual charStatus to calculate real error rates at each point
  */
 export function generateWpmProgressionData(
   elapsed: number,
   totalTyped: number,
-  _correctChars: number,
-  _charStatus: Record<number, "pending" | "correct" | "incorrect">,
+  correctChars: number,
+  charStatus: Record<number, "pending" | "correct" | "incorrect">,
   accuracy: number,
 ): ChartDataPoint[] {
   const data: ChartDataPoint[] = [];
-
-  // Create data points at regular intervals (every second or every 10% of test)
-  const interval = Math.max(1, Math.ceil(elapsed / 15)); // Target ~15 points max
-
-  for (let second = interval; second <= elapsed; second += interval) {
-    // Linear interpolation for character progress
+  // Loop every second instead of intervals
+  for (let second = 1; second <= elapsed; second++) {
+    // Calculate progress ratio
     const progressRatio = second / elapsed;
-    const estimatedTyped = Math.floor(totalTyped * progressRatio);
-    const estimatedCorrect = Math.floor(
-      totalTyped * (accuracy / 100) * progressRatio,
-    );
-    const estimatedIncorrect = estimatedTyped - estimatedCorrect;
 
-    const minutesElapsed = Math.max(second / 60, 0.0167);
+    // Estimate character count at this point based on linear typing progress
+    const estimatedTypedCount = Math.floor(totalTyped * progressRatio);
+    // Skip if no characters typed yet
+    if (estimatedTypedCount === 0) continue;
+    // Count actual errors UP TO this character index from charStatus
+    let estimatedCorrect = 0;
+    let estimatedIncorrect = 0;
 
-    // Calculate metrics at this point in time
-    const rawWpm =
-      estimatedTyped > 0 ? Math.round(estimatedTyped / 5 / minutesElapsed) : 0;
-    const errorRate =
-      estimatedTyped > 0
-        ? Math.round((estimatedIncorrect / estimatedTyped) * 100)
+    for (let i = 0; i < estimatedTypedCount; i++) {
+      const status = charStatus[i];
+      if (status === "correct") {
+        estimatedCorrect++;
+      } else if (status === "incorrect") {
+        estimatedIncorrect++;
+      }
+    }
+    const minutesElapsed = second / 60; // Each second point
+
+    // Calculate metrics at this point using ACTUAL error counts
+    const rawWpm = Math.round(estimatedTypedCount / 5 / minutesElapsed);
+
+    const actualErrorRate =
+      estimatedTypedCount > 0
+        ? Math.round((estimatedIncorrect / estimatedTypedCount) * 100)
         : 0;
+
     const estimatedAccuracy =
-      estimatedTyped > 0
-        ? Math.round((estimatedCorrect / estimatedTyped) * 100)
+      estimatedTypedCount > 0
+        ? Math.round((estimatedCorrect / estimatedTypedCount) * 100)
         : 0;
-    const adjustedWpm = Math.round((estimatedAccuracy / 100) * rawWpm);
 
+    const adjustedWpm = Math.round((estimatedAccuracy / 100) * rawWpm);
     data.push({
       time: second,
       adjustedWpm: Math.max(0, adjustedWpm),
       rawWpm: Math.max(0, rawWpm),
-      errorRate: Math.max(0, errorRate),
+      errorRate: Math.max(0, actualErrorRate),
       accuracy: Math.max(0, estimatedAccuracy),
     });
   }
 
-  // Ensure we have at least one data point (the final state)
-  return data.length > 0
-    ? data
-    : [
-        {
-          time: elapsed,
-          rawWpm: Math.round(totalTyped / 5 / (elapsed / 60)),
-          adjustedWpm: Math.round(
-            (Math.round(accuracy) / 100) *
-              Math.round(totalTyped / 5 / (elapsed / 60)),
-          ),
-          errorRate: Math.round((1 - accuracy / 100) * 100),
-          accuracy: Math.round(accuracy),
-        },
-      ];
-}
+  // Ensure we always have the final data point with ACTUAL final stats
+  if (data.length === 0 || data[data.length - 1].time !== elapsed) {
+    const finalStatusCounts = countCharStatuses(charStatus);
+    const finalErrorRate =
+      totalTyped > 0
+        ? Math.round((finalStatusCounts.incorrect / totalTyped) * 100)
+        : 0;
 
+    const finalRawWpm = Math.round(totalTyped / 5 / (elapsed / 60));
+    const finalAdjustedWpm = Math.round(
+      (Math.round(accuracy) / 100) * finalRawWpm,
+    );
+    data.push({
+      time: elapsed,
+      rawWpm: finalRawWpm,
+      adjustedWpm: finalAdjustedWpm,
+      errorRate: finalErrorRate,
+      accuracy: Math.round(accuracy),
+    });
+  }
+
+  return data;
+}
 /**
  * Format tooltip styling for recharts
  */

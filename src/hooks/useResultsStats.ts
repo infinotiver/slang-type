@@ -100,9 +100,10 @@ export function useResultsStats(data: ResultsData): ComputedStats {
   // Format chart data for display
   const performanceData = useMemo(
     () =>
-      chartData.map((point, idx) => ({
-        name: idx + 1,
+      chartData.map((point) => ({
+        name: point.time, // Time in seconds
         wpm: point.adjustedWpm,
+        rawWpm: point.rawWpm,
         accuracy: point.accuracy,
         errorRate: point.errorRate,
       })),
