@@ -26,6 +26,13 @@ const jsSnippets = [
   "const hasItem = set.has ( key ) ;",
 ];
 
+function normalizeText(text: string): string {
+  return text
+    .toLowerCase() // Convert to lowercase
+    .replace(/[^a-z\s]/g, "") // Remove numbers and special characters
+    .trim(); // Remove extra spaces
+}
+
 function generateJavaScriptPhrase(targetWords: number): string {
   const tokens: string[] = [];
 
@@ -59,5 +66,6 @@ export function generatePhrase(
     result.push(words[randomIndex]);
   }
 
-  return result.join(" ");
+  const phrase = result.join(" ");
+  return normalizeText(phrase); // Normalize the generated phrase
 }

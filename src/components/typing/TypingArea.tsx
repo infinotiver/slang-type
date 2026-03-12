@@ -239,7 +239,7 @@ export default function TypingArea({
 
       {/* Dev Stats */}
       {import.meta.env.MODE === "development" && engine.running && (
-        <div className="mt-12 text-xs text-foreground font-mono opacity-60 space-y-1 text-ce tracking-wide">
+        <div className="mt-12 text-xs text-foreground font-mono opacity-60 space-y-1 text-center tracking-wide">
           <div>
             wpm: {engine.wpm} | acc: {Math.round(engine.accuracy)}% | errors:{" "}
             {engine.errors}
