@@ -91,7 +91,10 @@ export function calculateConsistency(
   errorRate: string,
 ): number {
   const errorNum = parseFloat(errorRate);
-  return Math.max(0, Math.min(100, 100 - errorNum));
+  // Combine accuracy and inverse error rate for a stability/consistency score
+  const inverseError = Math.max(0, 100 - errorNum);
+  const score = Math.round((accuracy + inverseError) / 2);
+  return Math.max(0, Math.min(100, score));
 }
 
 /**

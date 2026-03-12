@@ -1,4 +1,5 @@
 import { useRef, useEffect, useMemo, useLayoutEffect } from "react";
+import type { Mode, Language, DisplayMode } from "@shared-types/index";
 import { Button } from "@components/ui/common";
 import { motion } from "framer-motion";
 
@@ -33,9 +34,10 @@ interface ResultsPayload {
   correctChars: number;
   charStatus: Record<number, "pending" | "correct" | "incorrect">;
   targetText: string;
-  mode: string;
-  language: string;
+  mode: Mode;
+  language: Language;
   isNewHighScore: boolean;
+  isBaseline: boolean;
 }
 
 interface Char {
@@ -58,8 +60,18 @@ export default function TypingArea({
 }: {
   targetText: string;
   engine: Engine;
-  mode: string;
-  language: string;
+  mode: Mode;
+  language: Language;
+  timer?: {
+    running: boolean;
+    elapsed: number;
+    start: () => void;
+    stop: () => void;
+    reset: () => void;
+    resume: () => void;
+    expired?: boolean;
+  };
+  displayMode?: DisplayMode;
   highScore: number;
   onResultsComplete?: (results: ResultsPayload) => void;
 }) {
@@ -120,6 +132,7 @@ export default function TypingArea({
       mode,
       language,
       isNewHighScore: engine.wpm > highScore,
+      isBaseline: highScore === 0,
     });
   }, [
     engine,
