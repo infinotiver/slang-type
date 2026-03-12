@@ -115,6 +115,7 @@ function CombinedPerformanceChart({
                 dataKey="name"
                 stroke="rgb(107, 114, 128)"
                 style={{ fontSize: "11px" }}
+                minTickGap={20}
               />
               <YAxis
                 yAxisId="left"
@@ -127,26 +128,25 @@ function CombinedPerformanceChart({
                 orientation="right"
                 stroke="rgb(107, 114, 128)"
                 style={{ fontSize: "11px" }}
-                domain={[0, 100]}
-                tickMargin={6}
                 label={{
-                  value: "Acc/Err %",
+                  value: "Errors",
                   angle: 90,
                   position: "insideRight",
                 }}
+                allowDecimals={false}
               />
               <Tooltip content={<CustomTooltip />} />
 
               <Line
                 yAxisId="left"
-                type="monotone"
+                type="bump"
                 dataKey="wpm"
                 stroke="#10b981"
                 strokeWidth={2.5}
                 dot={false}
                 name="Adjusted WPM"
               />
-              <Line
+              {/* <Line
                 yAxisId="right"
                 type="monotone"
                 dataKey="accuracy"
@@ -154,7 +154,7 @@ function CombinedPerformanceChart({
                 strokeWidth={2}
                 dot={false}
                 isAnimationActive={false}
-              />
+              /> */}
               <Scatter
                 yAxisId="right"
                 dataKey="errorsAtThisSecond"
