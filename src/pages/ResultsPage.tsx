@@ -120,7 +120,6 @@ function CombinedPerformanceChart({
               <YAxis
                 yAxisId="left"
                 stroke="rgb(107, 114, 128)"
-                style={{ fontSize: "11px" }}
                 label={{ value: "WPM", angle: -90, position: "insideLeft" }}
               />
               <YAxis
@@ -264,7 +263,6 @@ export default function ResultsPage() {
 
   return (
     <div className="flex-1 overflow-y-auto bg-background text-foreground flex flex-col font-mono">
-      <main className="py-1">
         <div className="w-full">
           <div className="mb-6 flex items-center gap-4">
             <button
@@ -300,9 +298,9 @@ export default function ResultsPage() {
             </div>
           </div>
 
-          <div className="flex gap-6 flex-1">
-            <div className="lg:w-[200px] flex flex-col gap-6 shrink-0">
-              <div className="p-4 bg-highlight/10 rounded-xl flex flex-col justify-between min-h-[220px]">
+          <div className="flex flex-col md:flex-row gap-6 flex-1">
+            <div className="lg:w-50 flex flex-col gap-6 shrink-0">
+              <div className="p-4 bg-highlight/10 rounded-xl flex flex-col justify-between min-h-55">
                 {/* Upper Stats */}
                 <div className="space-y-4">
                   <section>
@@ -385,7 +383,6 @@ export default function ResultsPage() {
             </div>
           </div>
         </div>
-      </main>
     </div>
   );
 }
