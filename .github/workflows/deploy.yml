@@ -1,0 +1,40 @@
+name: Deploy on Version Change
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'package.json' # Only trigger if package.json is in the commit
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # Required to compare current commit with previous
+
+      - name: Check if version changed
+        id: check_version
+        run: |
+          # Get the version from the current commit
+          NEW_VER=$(jq -r .version package.json)
+          # Get the version from the previous commit
+          OLD_VER=$(git show HEAD~1:package.json | jq -r .version)
+          
+          if [ "$NEW_VER" != "$OLD_VER" ]; then
+            echo "Version changed from $OLD_VER to $NEW_VER"
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "Version remains $NEW_VER. Skipping deploy."
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Deploy to Vercel
+        if: steps.check_version.outputs.changed == 'true'
+        uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.ORG_ID }}
+          vercel-project-id: ${{ secrets.PROJECT_ID }}
+          vercel-args: '--prod'
