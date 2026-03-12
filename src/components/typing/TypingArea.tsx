@@ -1,34 +1,8 @@
-import { useRef, useMemo, useLayoutEffect, useState, useEffect } from "react";
+import { useRef, useEffect, useMemo, useLayoutEffect } from "react";
 import { Button } from "@components/ui/common";
-import type { DisplayMode, Mode, Language } from "@shared-types/index";
 import { motion } from "framer-motion";
 
-const buildLineStarts = (text: string, lineLength: number): number[] => {
-  if (!text) return [0];
-  const starts = [0];
-  let cursor = 0;
-  let currentLineLength = 0;
-
-  while (cursor < text.length) {
-    const nextSpace = text.indexOf(" ", cursor);
-    const wordEnd = nextSpace === -1 ? text.length : nextSpace;
-    const wordLength = wordEnd - cursor;
-    const hasSpace = wordEnd < text.length;
-    const addition = wordLength + (hasSpace ? 1 : 0);
-
-    if (currentLineLength > 0 && currentLineLength + addition > lineLength) {
-      starts.push(cursor);
-      currentLineLength = 0;
-    }
-
-    currentLineLength += addition;
-    cursor = wordEnd + (hasSpace ? 1 : 0);
-  }
-
-  return starts;
-};
-
-interface UseTypingEngineReturn {
+interface Engine {
   cursor: number;
   status: Record<number, "pending" | "correct" | "incorrect">;
   errors: number;
@@ -40,9 +14,10 @@ interface UseTypingEngineReturn {
   accuracy: number;
   totalTyped: number;
   correctChars: number;
-  handleKey: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  handleKey: (
+    e: React.KeyboardEvent<HTMLInputElement> | { key: string },
+  ) => void;
   start: () => void;
-  stop: () => void;
   pause: () => void;
   resume: () => void;
   reset: () => void;
@@ -58,228 +33,94 @@ interface ResultsPayload {
   correctChars: number;
   charStatus: Record<number, "pending" | "correct" | "incorrect">;
   targetText: string;
-  mode: Mode;
-  language: Language;
+  mode: string;
+  language: string;
   isNewHighScore: boolean;
-  isBaseline: boolean;
 }
 
-interface TypingAreaProps {
-  targetText: string;
-  engine: UseTypingEngineReturn;
-  displayMode: DisplayMode;
-  mode: Mode;
-  language: Language;
-  highScore: number;
-  onResultsComplete?: (results: ResultsPayload) => void;
-  timer?: {
-    running: boolean;
-    elapsed: number;
-    start: () => void;
-    stop: () => void;
-    reset: () => void;
-    resume: () => void;
-    expired: boolean;
-  };
+interface Char {
+  char: string;
+  index: number;
+}
+
+interface Word {
+  chars: Char[];
+  spaceIndex: number | null;
 }
 
 export default function TypingArea({
   targetText,
   engine,
-  displayMode: _displayMode,
   mode,
   language,
   highScore,
   onResultsComplete,
-}: TypingAreaProps) {
+}: {
+  targetText: string;
+  engine: Engine;
+  mode: string;
+  language: string;
+  highScore: number;
+  onResultsComplete?: (results: ResultsPayload) => void;
+}) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const normalContainerRef = useRef<HTMLDivElement>(null);
-  const normalMeasureRef = useRef<HTMLSpanElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const activeCharRef = useRef<HTMLSpanElement>(null);
   const completionHandledRef = useRef(false);
-  const resultsIdRef = useRef<string | null>(null);
-
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
-  const DEFAULT_LINE_LENGTH = isMobile ? 40 : 80;
-  const DEFAULT_VISIBLE_LINES = isMobile ? 2 : 3;
-  const [normalLineLength, setNormalLineLength] =
-    useState<number>(DEFAULT_LINE_LENGTH);
-  const [normalVisibleLines, setNormalVisibleLines] = useState<number>(
-    DEFAULT_VISIBLE_LINES,
-  );
-
-  useEffect(() => {
-    if (!engine.isComplete && !engine.paused) {
-      inputRef.current?.focus();
-    }
-  }, [engine.isComplete, engine.paused, targetText]);
-
-  useLayoutEffect(() => {
-    const container = normalContainerRef.current;
-    const measure = normalMeasureRef.current;
-    if (!container || !measure) return;
-
-    const updateSizing = () => {
-      const containerWidth = container.clientWidth;
-      const sampleWidth = measure.getBoundingClientRect().width;
-      const charWidth =
-        sampleWidth > 0 ? sampleWidth / measure.textContent!.length : 0;
-
-      const computed = window.getComputedStyle(container);
-      let lineHeight = parseFloat(computed.lineHeight);
-      if (Number.isNaN(lineHeight)) {
-        const fontSize = parseFloat(computed.fontSize) || 16;
-        lineHeight = fontSize * 1.4;
-      }
-
-      const targetHeight = window.innerHeight * (isMobile ? 0.26 : 0.34);
-      const maxLines = isMobile ? 4 : 8;
-      const nextVisibleLines = Math.max(
-        DEFAULT_VISIBLE_LINES,
-        Math.min(maxLines, Math.floor(targetHeight / lineHeight)),
-      );
-
-      const nextLineLength =
-        charWidth > 0
-          ? Math.max(
-              DEFAULT_LINE_LENGTH,
-              Math.floor(containerWidth / charWidth),
-            )
-          : DEFAULT_LINE_LENGTH;
-
-      setNormalVisibleLines((prev) =>
-        prev === nextVisibleLines ? prev : nextVisibleLines,
-      );
-      setNormalLineLength((prev) =>
-        prev === nextLineLength ? prev : nextLineLength,
-      );
-    };
-
-    updateSizing();
-    const onResize = () => updateSizing();
-    window.addEventListener("resize", onResize);
-
-    const observer = new ResizeObserver(updateSizing);
-    observer.observe(container);
-
-    return () => {
-      window.removeEventListener("resize", onResize);
-      observer.disconnect();
-    };
-  }, [isMobile, DEFAULT_LINE_LENGTH, DEFAULT_VISIBLE_LINES]);
-  const lineStarts = useMemo(
-    () => buildLineStarts(targetText, normalLineLength),
-    [targetText, normalLineLength],
-  );
-  const totalLines = lineStarts.length;
-  const clampedCursor = Math.min(engine.cursor, targetText.length);
-  let cursorLine = totalLines - 1;
-  for (let i = 0; i < totalLines; i++) {
-    const nextLineStart =
-      i + 1 < totalLines ? lineStarts[i + 1] : targetText.length;
-    if (clampedCursor >= lineStarts[i] && clampedCursor < nextLineStart) {
-      cursorLine = i;
-      break;
-    }
-  }
-  const maxStartLine = Math.max(0, totalLines - normalVisibleLines);
-  const baseStartLine = Math.max(0, cursorLine - (normalVisibleLines - 1));
-  const windowStartLine = Math.min(baseStartLine, maxStartLine);
-  const windowEndLine = Math.min(
-    totalLines,
-    windowStartLine + normalVisibleLines,
-  );
-  const normalTextStart = lineStarts[windowStartLine];
-  const normalTextEnd =
-    windowEndLine < totalLines ? lineStarts[windowEndLine] : targetText.length;
-  const visibleNormalText = targetText.substring(
-    normalTextStart,
-    normalTextEnd,
-  );
-
-  // Handle starting the test
-  const handleStartClick = () => {
-    if (engine.paused) {
-      engine.resume();
-    } else {
-      engine.start();
-    }
-    inputRef.current?.focus();
-  };
-
-  // Handle special keys (Backspace, Escape) that don't trigger onChange
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Backspace" || e.key === "Escape") {
-      engine.handleKey(e);
-    }
-  };
-
-  // Handle keyboard input via onChange for better mobile support
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (!value) return;
-
-    const char = value[value.length - 1];
-    const syntheticEvent = new KeyboardEvent("keydown", {
-      key: char,
-    }) as unknown as React.KeyboardEvent<HTMLInputElement>;
-    engine.handleKey(syntheticEvent);
-    e.target.value = "";
-  };
-
-  // Pause on blur
-  const handleBlur = () => {
-    if (engine.running && !engine.paused) {
-      engine.pause();
-    }
-  };
-
-  // Resume on focus
-  const handleFocus = () => {
-    if (engine.paused && engine.cursor > 0) {
-      inputRef.current?.focus();
-      engine.resume();
-    }
-  };
-
-  // Get color based on character status
-  const getCharColor = (index: number): string => {
-    const status = engine.status[index];
-    if (status === "correct") return "text-highlight";
-    if (status === "incorrect") return "text-red-500";
-    if (index >= engine.cursor) return "text-foreground/60";
-    return "text-foreground";
-  };
-
-  // Handle completion side effects once, outside render.
-  useEffect(() => {
-    if (!engine.isComplete) {
-      completionHandledRef.current = false;
-      return;
-    }
-    if (completionHandledRef.current) return;
-    completionHandledRef.current = true;
-    if (!resultsIdRef.current) {
-      resultsIdRef.current = `${Date.now()}-${Math.random()}`;
-    }
-
-    if (onResultsComplete) {
-      onResultsComplete({
-        id: resultsIdRef.current,
-        wpm: engine.wpm,
-        accuracy: engine.accuracy,
-        errors: engine.errors,
-        elapsed: engine.elapsed,
-        totalTyped: engine.totalTyped,
-        correctChars: engine.correctChars,
-        charStatus: { ...engine.status },
-        targetText,
-        mode,
-        language,
-        isNewHighScore: engine.wpm > highScore,
-        isBaseline: highScore === 0,
+  const lastTopRef = useRef(0);
+  //  Memoize text
+  const words = useMemo((): Word[] => {
+    let charIndex = 0;
+    return targetText
+      .split(" ")
+      .map((word: string, i: number, arr: string[]) => {
+        const chars = word
+          .split("")
+          .map((char) => ({ char, index: charIndex++ }));
+        const spaceIndex = i < arr.length - 1 ? charIndex++ : null;
+        return { chars, spaceIndex };
       });
+  }, [targetText]);
+
+  // Browser-native scrolling
+  useLayoutEffect(() => {
+    if (activeCharRef.current) {
+      const charTop = activeCharRef.current.offsetTop;
+
+      // Only scroll when the cursor actually hits a new line
+      if (charTop !== lastTopRef.current) {
+        activeCharRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+        lastTopRef.current = charTop;
+      }
     }
-    engine.reset();
+  }, [engine.cursor]);
+
+  // 3. Input focus management
+  useEffect(() => {
+    if (!engine.isComplete && !engine.paused) inputRef.current?.focus();
+  }, [engine.isComplete, engine.paused]);
+
+  // 4. Completion logic
+  useEffect(() => {
+    if (!engine.isComplete || completionHandledRef.current) return;
+    completionHandledRef.current = true;
+    onResultsComplete?.({
+      id: `${Date.now()}`,
+      wpm: engine.wpm,
+      accuracy: engine.accuracy,
+      errors: engine.errors,
+      elapsed: engine.elapsed,
+      totalTyped: engine.totalTyped,
+      correctChars: engine.correctChars,
+      charStatus: { ...engine.status },
+      targetText,
+      mode,
+      language,
+      isNewHighScore: engine.wpm > highScore,
+    });
   }, [
     engine,
     engine.isComplete,
@@ -290,89 +131,125 @@ export default function TypingArea({
     targetText,
   ]);
 
+  const renderChar = (char: string, idx: number) => {
+    const status = engine.status[idx];
+    const isCurrent = idx === engine.cursor;
+
+    let color = "text-foreground/30";
+    if (status === "correct") color = "text-highlight";
+    if (status === "incorrect") color = "text-red-500";
+
+    return (
+      <span
+        key={idx}
+        ref={isCurrent ? activeCharRef : null}
+        className={`${color} whitespace-pre transition-colors duration-75 ${
+          isCurrent ? "bg-secondary border-b-2 border-highlight" : ""
+        }`}
+      >
+        {char}
+      </span>
+    );
+  };
+
   if (engine.isComplete) return null;
 
-  // Show typing test or start overlay
   return (
-    <>
+    <div className="w-full max-w-6xl mx-auto flex flex-col items-center">
       <input
         ref={inputRef}
         type="text"
-        onKeyDown={handleKeyDown}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        onFocus={handleFocus}
-        onClick={() => inputRef.current?.focus()}
-        className="fixed bottom-0 left-0 opacity-0 pointer-events-auto z-50"
+        onKeyDown={(e) =>
+          (e.key === "Backspace" || e.key === "Escape") && engine.handleKey(e)
+        }
+        onChange={(e) => {
+          const val = e.target.value;
+          engine.handleKey({
+            key: val[val.length - 1],
+          } as unknown as React.KeyboardEvent<HTMLInputElement>);
+          e.target.value = "";
+        }}
+        onBlur={() => engine.running && !engine.paused && engine.pause()}
+        onFocus={() => engine.paused && engine.cursor > 0 && engine.resume()}
+        className="fixed opacity-0 pointer-events-none"
         autoFocus
-        autoCorrect="off"
-        autoCapitalize="off"
-        spellCheck="false"
-        autoComplete="off"
-        inputMode="text"
-        aria-label="typing input"
-        style={{ position: "fixed", bottom: "50%", left: "-9999px" }}
       />
 
       <motion.div
-        className="w-full text-center relative flex flex-col items-center overflow-hidden"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="relative w-full"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
         onClick={() => inputRef.current?.focus()}
       >
-        {/* Text display */}
-        <div className="mb-2 sm:mb-4 relative w-full px-2 sm:px-4 md:px-6">
-          <div
-            ref={normalContainerRef}
-            className="text-xl sm:text-xl md:text-2xl leading-relaxed tracking-normal text-justify"
-          >
-            <span
-              ref={normalMeasureRef}
-              className="absolute opacity-0 pointer-events-none"
-            >
-              MMMMMMMMMM
-            </span>
-            {visibleNormalText.split("").map((char, idx) => {
-              const globalIdx = normalTextStart + idx;
-              return (
-                <span
-                  key={globalIdx}
-                  className={`${getCharColor(globalIdx)} transition-colors ${
-                    globalIdx === engine.cursor
-                      ? "bg-secondary border-b-2 border-highlight"
-                      : ""
-                  }`}
-                >
-                  {char}
-                </span>
-              );
-            })}
+        {/* The Scroll Window */}
+        <div
+          ref={scrollContainerRef}
+          className="h-50 overflow-hidden p-2 sm:p-4 scroll-smooth"
+        >
+          <div className="flex flex-wrap text-2xl sm:text-4xl font-mono leading-[1.8] text-justify">
+            {words.map((w: Word, wordIdx: number) => (
+              <span key={wordIdx} className="inline-block mr-[0.25em]">
+                {w.chars.map((c: Char) => renderChar(c.char, c.index))}
+                {w.spaceIndex !== null && renderChar(" ", w.spaceIndex)}
+              </span>
+            ))}
           </div>
-
-          {/* Start or Resume overlay - only show if truly paused or before start */}
-          {engine.paused && !engine.isComplete && (
-            <div className="absolute inset-0 backdrop-blur-sm bg-black/10 flex flex-col items-center justify-center rounded">
-              <Button onClick={handleStartClick} variant="primary">
-                resume
-              </Button>
-            </div>
-          )}
         </div>
-        {/* Stats - only show in development mode */}
-        {import.meta.env.MODE === "development" && engine.running && (
-          <div className="hidden sm:block text-xs text-foreground opacity-60 tracking-wide space-y-1">
-            <div>
-              wpm: {engine.wpm} | acc: {Math.round(engine.accuracy)}% | errors:{" "}
-              {engine.errors}
+
+        {/* Overlay - Start or Resume */}
+        {engine.paused && (
+          <motion.div
+            className="absolute inset-0 z-20 backdrop-blur-md bg-background/40 flex items-center justify-center rounded-xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <motion.div
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Button
+                onClick={() =>
+                  engine.cursor > 0 ? engine.resume() : engine.start()
+                }
+              >
+                {engine.cursor > 0 ? "Resume" : "Start typing"}
+              </Button>
+            </motion.div>
+          </motion.div>
+        )}
+
+        {/* Focus glow on first word before start */}
+        {engine.paused && engine.cursor === 0 && (
+          <motion.div
+            className="absolute top-8 left-4 pointer-events-none"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+          >
+            <div className="text-xs text-highlight/60 font-mono tracking-wider">
+              ↓ start here
             </div>
-            <div>
-              cursor: {engine.cursor} | typed: {engine.totalTyped} | correct:{" "}
-              {engine.correctChars} | elapsed: {engine.elapsed}s
-            </div>
-          </div>
+          </motion.div>
         )}
       </motion.div>
-    </>
+
+      {/* Dev Stats */}
+      {import.meta.env.MODE === "development" && engine.running && (
+        <div className="mt-12 text-xs text-foreground font-mono opacity-60 space-y-1 text-ce tracking-wide">
+          <div>
+            wpm: {engine.wpm} | acc: {Math.round(engine.accuracy)}% | errors:{" "}
+            {engine.errors}
+          </div>
+          <div>
+            cursor: {engine.cursor} | typed: {engine.totalTyped} | correct:{" "}
+            {engine.correctChars} | elapsed: {engine.elapsed}s
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
