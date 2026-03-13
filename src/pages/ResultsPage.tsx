@@ -92,13 +92,27 @@ function CombinedPerformanceChart({
     scaledErrors?: number;
   }>;
 }) {
-  // Transform data: convert 0 errors to null so they don't render as dots
-  const chartData = data.map((point) => ({
-    ...point,
-    errorsAtThisSecond:
-      point.errorsAtThisSecond === 0 ? null : point.errorsAtThisSecond,
-    scaledErrors: point.scaledErrors === 0 ? null : point.scaledErrors,
-  }));
+  // Transform data: hide zero dots, and fallback to error-rate deltas when
+  // per-second buckets are empty (can happen with corrected mistakes).
+  const hasPerSecondErrors = data.some(
+    (point) => (point.errorsAtThisSecond ?? 0) > 0,
+  );
+
+  const chartData = data.map((point, index) => {
+    let errorsAtThisSecond = point.errorsAtThisSecond ?? 0;
+
+    if (!hasPerSecondErrors) {
+      const previousErrorRate = index > 0 ? data[index - 1].errorRate : 0;
+      const delta = Math.max(0, point.errorRate - previousErrorRate);
+      errorsAtThisSecond = delta > 0 ? Math.max(1, Math.round(delta)) : 0;
+    }
+
+    return {
+      ...point,
+      errorsAtThisSecond: errorsAtThisSecond > 0 ? errorsAtThisSecond : null,
+      scaledErrors: point.scaledErrors === 0 ? null : point.scaledErrors,
+    };
+  });
 
   return (
     <div>
@@ -212,6 +226,7 @@ export default function ResultsPage() {
   const stats = useResultsStats({
     elapsed,
     totalTyped,
+    errors,
     correctChars,
     accuracy,
     charStatus,
@@ -335,7 +350,7 @@ export default function ResultsPage() {
             <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
               <div className="text-xs text-foreground/60">errors</div>
               <div className="text-2xl font-bold text-foreground mt-auto">
-                {stats.incorrectChars}
+                {errors}
               </div>
               <div className="text-[11px] text-foreground/50 mt-1">
                 {Number(stats.errorRate).toFixed(1)}% rate

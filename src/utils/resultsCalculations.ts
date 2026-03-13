@@ -120,6 +120,7 @@ export function calculateWordMetrics(
 export function calculateResultStats(
   elapsed: number,
   totalTyped: number,
+  totalMistakes: number,
   accuracy: number,
   charStatus: Record<number, "pending" | "correct" | "incorrect">,
 ): ResultStats {
@@ -128,7 +129,7 @@ export function calculateResultStats(
   const incorrectChars = statusCounts.incorrect;
 
   // Calculate base metrics using helper functions
-  const errorRate = calculateErrorRate(totalTyped, incorrectChars);
+  const errorRate = calculateErrorRate(totalTyped, totalMistakes);
   const rawWpm = calculateWpm(totalTyped, minutesElapsed);
   const adjustedWpm = Math.round((Math.round(accuracy) / 100) * rawWpm);
   const timePerChar = calculateTimePerChar(elapsed, totalTyped);
@@ -165,18 +166,20 @@ export function countCharStatuses(
 }
 
 /**
- * Generate WPM progression chart data from actual typing data
- * Uses actual charStatus to calculate real error rates at each point
+ * Generate WPM progression chart data.
+ * Uses keystroke mistake totals for error progression to stay consistent
+ * with final accuracy/error-rate metrics.
  */
 export function generateWpmProgressionData(
   elapsed: number,
   totalTyped: number,
+  totalMistakes: number,
   charStatus: Record<number, "pending" | "correct" | "incorrect">,
   accuracy: number,
 ): ChartDataPoint[] {
   const data: ChartDataPoint[] = [];
 
-  let previousSecondCharCount = 0; // Track where last second ended
+  let previousEstimatedMistakes = 0;
 
   // Loop every second
   for (let second = 1; second <= elapsed; second++) {
@@ -189,28 +192,17 @@ export function generateWpmProgressionData(
     // Skip if no characters typed yet
     if (estimatedTypedCount === 0) continue;
 
-    // Count ONLY errors in THIS second (from previousSecondCharCount to estimatedTypedCount)
-    let errorsAtThisSecond = 0;
+    // Estimate cumulative mistakes up to this second based on typing progress
+    const estimatedCumulativeMistakes =
+      totalTyped > 0
+        ? Math.round((totalMistakes * estimatedTypedCount) / totalTyped)
+        : 0;
 
-    for (let i = previousSecondCharCount; i < estimatedTypedCount; i++) {
-      const status = charStatus[i];
-      if (status === "incorrect") {
-        errorsAtThisSecond++;
-      }
-    }
-
-    // Count cumulative stats up to this point (for WPM/accuracy calculation)
-    let cumulativeCorrect = 0;
-    let cumulativeIncorrect = 0;
-
-    for (let i = 0; i < estimatedTypedCount; i++) {
-      const status = charStatus[i];
-      if (status === "correct") {
-        cumulativeCorrect++;
-      } else if (status === "incorrect") {
-        cumulativeIncorrect++;
-      }
-    }
+    const errorsAtThisSecond = Math.max(
+      0,
+      estimatedCumulativeMistakes - previousEstimatedMistakes,
+    );
+    previousEstimatedMistakes = estimatedCumulativeMistakes;
 
     const minutesElapsed = second / 60;
 
@@ -219,12 +211,16 @@ export function generateWpmProgressionData(
 
     const cumulativeErrorRate =
       estimatedTypedCount > 0
-        ? Math.round((cumulativeIncorrect / estimatedTypedCount) * 100)
+        ? Math.round((estimatedCumulativeMistakes / estimatedTypedCount) * 100)
         : 0;
 
     const cumulativeAccuracy =
       estimatedTypedCount > 0
-        ? Math.round((cumulativeCorrect / estimatedTypedCount) * 100)
+        ? Math.round(
+            ((estimatedTypedCount - estimatedCumulativeMistakes) /
+              estimatedTypedCount) *
+              100,
+          )
         : 0;
 
     const adjustedWpm = Math.round((cumulativeAccuracy / 100) * rawWpm);
@@ -238,34 +234,23 @@ export function generateWpmProgressionData(
       errorsAtThisSecond: errorsAtThisSecond,
     });
 
-    // Update for next iteration
-    previousSecondCharCount = estimatedTypedCount;
   }
 
   // Ensure we always have the final data point
   if (data.length === 0 || data[data.length - 1].time !== elapsed) {
-    const finalStatusCounts = countCharStatuses(charStatus);
     const finalErrorRate =
-      totalTyped > 0
-        ? Math.round((finalStatusCounts.incorrect / totalTyped) * 100)
-        : 0;
+      totalTyped > 0 ? Math.round((totalMistakes / totalTyped) * 100) : 0;
 
     const finalRawWpm = Math.round(totalTyped / 5 / (elapsed / 60));
     const finalAdjustedWpm = Math.round(
       (Math.round(accuracy) / 100) * finalRawWpm,
     );
 
-    // Count errors in final second only
-    let finalSecondErrors = 0;
-    const startOfFinalSecond = Math.floor(
-      totalTyped * ((elapsed - 1) / elapsed),
-    );
-
-    for (let i = startOfFinalSecond; i < totalTyped; i++) {
-      if (charStatus[i] === "incorrect") {
-        finalSecondErrors++;
-      }
-    }
+    // Estimate mistakes in final second only
+    const previousTyped = Math.floor(totalTyped * ((elapsed - 1) / elapsed));
+    const previousMistakes =
+      totalTyped > 0 ? Math.round((totalMistakes * previousTyped) / totalTyped) : 0;
+    const finalSecondErrors = Math.max(0, totalMistakes - previousMistakes);
 
     data.push({
       time: elapsed,
