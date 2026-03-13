@@ -8,11 +8,13 @@ import { CreditsModal, ChangelogModal } from "../components/ui/modals";
 import changelog from "../../CHANGELOG.md?raw";
 import { version as appVersion } from "../../package.json";
 import { InfoIcon } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function RootLayout() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [theme, setTheme] = useLocalStorage<Theme>("slangtype_theme", "dark");
-  const [displayMode, setDisplayMode] = useLocalStorage<DisplayMode>(
+  const [displayMode] = useLocalStorage<DisplayMode>(
     "slangtype_displayMode",
     "normal",
   );
@@ -38,10 +40,14 @@ export default function RootLayout() {
             <Header
               theme={theme}
               onThemeChange={setTheme}
-              displayMode={displayMode}
-              onDisplayModeChange={setDisplayMode}
               highScore={highScore}
-              onHistoryClick={() => navigate("/history")}
+              onHistoryClick={() => {
+                if (!user) {
+                  navigate("/login");
+                  return;
+                }
+                navigate("/history");
+              }}
             />
           </div>
         </header>

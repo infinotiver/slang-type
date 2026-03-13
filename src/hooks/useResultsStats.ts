@@ -83,13 +83,7 @@ export function useResultsStats(data: ResultsData): ComputedStats {
 
   // Generate chart data
   const chartData = useMemo(
-    () =>
-      generateWpmProgressionData(
-        elapsed,
-        totalTyped,
-        errors,
-        accuracy,
-      ),
+    () => generateWpmProgressionData(elapsed, totalTyped, errors, accuracy),
     [elapsed, totalTyped, errors, accuracy],
   );
 

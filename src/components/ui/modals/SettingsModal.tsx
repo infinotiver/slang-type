@@ -1,4 +1,4 @@
-import type { SettingsModalProps, Theme, DisplayMode } from "../../../types";
+import type { SettingsModalProps, Theme } from "../../../types";
 import ModalBase from "./ModalBase";
 import ButtonGroup from "../common/ButtonGroup";
 
@@ -7,12 +7,7 @@ export default function SettingsModal({
   onClose,
   theme,
   onThemeChange,
-  displayMode: _displayMode = "normal",
-  onDisplayModeChange: _onDisplayModeChange,
-}: SettingsModalProps & {
-  displayMode?: DisplayMode;
-  onDisplayModeChange?: (mode: DisplayMode) => void;
-}) {
+}: SettingsModalProps) {
   if (!isOpen) return null;
 
   const themes: Theme[] = [

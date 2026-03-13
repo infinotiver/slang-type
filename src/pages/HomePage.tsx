@@ -15,9 +15,11 @@ import useTypingEngine from "@hooks/useTypingEngine";
 import useTimer from "@hooks/useTimer";
 import useLocalStorage from "@hooks/useLocalStorage";
 import { createGeminiService } from "@/services/geminiService";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const context = useOutletContext<OutletContext>();
 
   const [language, setLanguage] = useState<Language>("slang");
@@ -104,7 +106,13 @@ export default function HomePage() {
           slangDisabled={false}
           onLanguageChange={handleLanguageChange}
           onModeChange={handleModeChange}
-          onRequestAIWords={() => setIsAIModalOpen(true)}
+          onRequestAIWords={() => {
+            if (!user) {
+              navigate("/login");
+              return;
+            }
+            setIsAIModalOpen(true);
+          }}
           elapsed={engine.elapsed}
           duration={durationSeconds || 0}
           isTypingRunning={engine.running}
