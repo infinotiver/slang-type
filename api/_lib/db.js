@@ -8,7 +8,7 @@ export function getPool() {
         pool = new Pool({
             connectionString: process.env.DATABASE_URL,
             ssl: { rejectUnauthorized: false }, // Required for Neon
-            max: 1, // Keep connections minimal in serverless
+            max: 5,
         });
     }
     return pool;

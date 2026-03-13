@@ -1,16 +1,9 @@
 import { getPool } from "../_lib/db.js";
 import { comparePassword, generateToken } from "../_lib/auth.js";
-import { parse } from "cookie";
 
 export default async function handler(req, res) {
     if (req.method !== "POST") {
         return res.status(405).json({ error: "method_not_allowed" });
-    }
-
-    // Allow pre-existing cookie session to auto-resolve
-    const cookies = parse(req.headers.cookie || "");
-    if (cookies.token) {
-        return res.status(200).json({ message: "Already logged in" });
     }
 
     const { email, password } = req.body || {};

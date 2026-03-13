@@ -46,11 +46,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(async (payload: LoginPayload) => {
     const data = await loginRequest(payload);
+    if (!data?.user) {
+      throw new Error("login_failed");
+    }
     setUser(data.user);
   }, []);
 
   const signup = useCallback(async (payload: SignupPayload) => {
     const data = await signupRequest(payload);
+    if (!data?.user) {
+      throw new Error("signup_failed");
+    }
     setUser(data.user);
   }, []);
 

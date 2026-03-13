@@ -7,7 +7,7 @@ const getSecret = () => {
     return new TextEncoder().encode(s);
 };
 
-export const hashPassword = (password) => bcrypt.hash(password, 12);
+export const hashPassword = (password) => bcrypt.hash(password, 10);
 export const comparePassword = (password, hash) => bcrypt.compare(password, hash);
 
 export const generateToken = async (payload) =>
