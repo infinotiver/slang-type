@@ -6,14 +6,12 @@ import {
 import "./index.css";
 import RootLayout from "../layouts/RootLayout";
 import HomePage from "@pages/HomePage";
-import HistoryPage from "@pages/HistoryPage";
 import ResultsPage from "@pages/ResultsPage";
 import NotFoundPage from "@pages/NotFoundPage";
 import LoginPage from "@/pages/LoginPage";
 import SignupPage from "@/pages/SignupPage";
 import ProfilePage from "@/pages/ProfilePage";
 import { AuthProvider } from "@/components/auth/AuthContext";
-import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 // Create router configuration
 const router = createBrowserRouter([
@@ -27,11 +25,7 @@ const router = createBrowserRouter([
       },
       {
         path: "history",
-        element: (
-          <ProtectedRoute>
-            <HistoryPage />
-          </ProtectedRoute>
-        ),
+        element: <Navigate to="/profile" replace />,
       },
       {
         path: "results",
@@ -47,11 +41,7 @@ const router = createBrowserRouter([
       },
       {
         path: "profile",
-        element: (
-          <ProtectedRoute>
-            <ProfilePage />
-          </ProtectedRoute>
-        ),
+        element: <ProfilePage />,
       },
       {
         path: "*",

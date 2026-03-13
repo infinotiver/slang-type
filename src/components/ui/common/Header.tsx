@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CircleUserIcon, Newspaper, Settings } from "lucide-react";
+import { CircleUserIcon, Settings } from "lucide-react";
 import { SettingsModal, CreditsModal } from "@components/ui/modals";
 import type { Theme } from "@shared-types/index";
 import { Link } from "react-router-dom";
@@ -10,14 +10,12 @@ interface HeaderProps {
   theme: Theme;
   onThemeChange: (theme: Theme) => void;
   highScore: number;
-  onHistoryClick?: () => void;
 }
 
 export default function Header({
   theme,
   onThemeChange,
   highScore,
-  onHistoryClick,
 }: HeaderProps) {
   const { user } = useAuth();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -55,16 +53,6 @@ export default function Header({
                 >
                   <CircleUserIcon size={20} />
                 </Link>
-                <motion.button
-                  onClick={onHistoryClick}
-                  className="p-1.5 rounded hover:bg-secondary/20 text-foreground/50 hover:text-highlight transition-colors"
-                  aria-label="history"
-                  title="history"
-                  whileHover={iconButtonMotion.whileHover}
-                  whileTap={iconButtonMotion.whileTap}
-                >
-                  <Newspaper size={20} />
-                </motion.button>
                 <motion.button
                   onClick={() => setIsSettingsOpen(true)}
                   className="p-1.5 rounded hover:bg-secondary/20 text-foreground/50 hover:text-highlight transition-colors"

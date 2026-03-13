@@ -1,4 +1,4 @@
-import { Outlet, ScrollRestoration, useNavigate } from "react-router-dom";
+import { Outlet, ScrollRestoration } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Header } from "@components/ui/common";
 import useLocalStorage from "@hooks/useLocalStorage";
@@ -8,11 +8,7 @@ import { CreditsModal, ChangelogModal } from "../components/ui/modals";
 import changelog from "../../CHANGELOG.md?raw";
 import { version as appVersion } from "../../package.json";
 import { InfoIcon } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
-
 export default function RootLayout() {
-  const navigate = useNavigate();
-  const { user } = useAuth();
   const [theme, setTheme] = useLocalStorage<Theme>("slangtype_theme", "dark");
   const [displayMode] = useLocalStorage<DisplayMode>(
     "slangtype_displayMode",
@@ -41,13 +37,6 @@ export default function RootLayout() {
               theme={theme}
               onThemeChange={setTheme}
               highScore={highScore}
-              onHistoryClick={() => {
-                if (!user) {
-                  navigate("/login");
-                  return;
-                }
-                navigate("/history");
-              }}
             />
           </div>
         </header>
