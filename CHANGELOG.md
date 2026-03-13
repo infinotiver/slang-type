@@ -1,5 +1,44 @@
 # slang-type
 
+## 0.3.0 - 2026-03-13
+
+### Minor Changes
+
+- This release delivers a major account + history upgrade focused on reliability, sync safety, and richer performance data.
+
+  ## Features
+
+  - [feat(sync): add atomic results sync and history endpoints] [6b5d6f0]
+
+    - Added server endpoints for saving and fetching typing history.
+    - Added client API + sync hook for local-to-cloud sync on login.
+    - Added atomic sync behavior so local data is only cleared after confirmed server success.
+
+  - [feat(profile): merge history into profile and remove history icon] [0b979e6]
+
+    - Merged profile and history flows into one page.
+    - Removed the separate history icon from header navigation.
+    - Added clearer sync and guest messaging UX.
+
+  - [feat(results): persist extended raw metrics and payload data] [b29ffde]
+    - Expanded persisted attempt data to include rich metrics and raw payload.
+    - Added support for `rawWpm`, `adjustedWpm`, `errorRate`, `timePerChar`, `charsPerSecond`, `consistency`, `keystrokesPerSecond`, `targetText`, `charStatus`, and `performanceData`.
+
+  ## Fixes
+
+  - [fix(auth): prevent false login success and speed up auth paths] [ad7f7ab]
+    - Fixed false-positive login flow when session payload was invalid.
+    - Improved auth-path responsiveness and reliability.
+
+  ## Others
+
+  - [feat(sync): add atomic results sync and history endpoints] [6b5d6f0]
+
+    - Added schema-tolerant handling in results history/sync APIs to reduce breakage on older databases.
+
+  - [feat(profile): merge history into profile and remove history icon] [0b979e6]
+    - Simplified routing/navigation around profile-history destination.
+
 ## 0.2.2 - 2026-03-12
 
 ### Patch Changes
