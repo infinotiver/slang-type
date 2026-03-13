@@ -1,7 +1,9 @@
-import { useRef, useEffect, useMemo, useLayoutEffect } from "react";
+import { useRef, useEffect, useMemo, useLayoutEffect, Fragment } from "react";
 import type { Mode, Language, DisplayMode } from "@shared-types/index";
 import { Button } from "@components/ui/common";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+
+// --- Interfaces ---
 
 interface Engine {
   cursor: number;
@@ -15,9 +17,7 @@ interface Engine {
   accuracy: number;
   totalTyped: number;
   correctChars: number;
-  handleKey: (
-    e: React.KeyboardEvent<HTMLInputElement> | { key: string },
-  ) => void;
+  handleKey: (e: { key: string }) => void; // Simplified for both real events and synthetic ones
   start: () => void;
   pause: () => void;
   resume: () => void;
@@ -50,18 +50,14 @@ interface Word {
   spaceIndex: number | null;
 }
 
-export default function TypingArea({
-  targetText,
-  engine,
-  mode,
-  language,
-  highScore,
-  onResultsComplete,
-}: {
+interface TypingAreaProps {
   targetText: string;
   engine: Engine;
   mode: Mode;
   language: Language;
+  highScore: number;
+  onResultsComplete?: (results: ResultsPayload) => void;
+  // Optional/unused props kept for structural integrity
   timer?: {
     running: boolean;
     elapsed: number;
@@ -72,34 +68,41 @@ export default function TypingArea({
     expired?: boolean;
   };
   displayMode?: DisplayMode;
-  highScore: number;
-  onResultsComplete?: (results: ResultsPayload) => void;
-}) {
+}
+
+// --- Component ---
+
+export default function TypingArea({
+  targetText,
+  engine,
+  mode,
+  language,
+  highScore,
+  onResultsComplete,
+}: TypingAreaProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const activeCharRef = useRef<HTMLSpanElement>(null);
   const completionHandledRef = useRef(false);
   const lastTopRef = useRef(0);
-  //  Memoize text
+
+  // 1. Memoize text processing
   const words = useMemo((): Word[] => {
     let charIndex = 0;
-    return targetText
-      .split(" ")
-      .map((word: string, i: number, arr: string[]) => {
-        const chars = word
-          .split("")
-          .map((char) => ({ char, index: charIndex++ }));
-        const spaceIndex = i < arr.length - 1 ? charIndex++ : null;
-        return { chars, spaceIndex };
-      });
+    return targetText.split(" ").map((word, i, arr) => {
+      const chars = word.split("").map((char) => ({
+        char,
+        index: charIndex++,
+      }));
+      const spaceIndex = i < arr.length - 1 ? charIndex++ : null;
+      return { chars, spaceIndex };
+    });
   }, [targetText]);
 
-  // Browser-native scrolling
+  // 2. Browser-native scrolling
   useLayoutEffect(() => {
     if (activeCharRef.current) {
       const charTop = activeCharRef.current.offsetTop;
-
-      // Only scroll when the cursor actually hits a new line
       if (charTop !== lastTopRef.current) {
         activeCharRef.current.scrollIntoView({
           behavior: "smooth",
@@ -112,15 +115,18 @@ export default function TypingArea({
 
   // 3. Input focus management
   useEffect(() => {
-    if (!engine.isComplete && !engine.paused) inputRef.current?.focus();
+    if (!engine.isComplete && !engine.paused) {
+      inputRef.current?.focus();
+    }
   }, [engine.isComplete, engine.paused]);
 
   // 4. Completion logic
   useEffect(() => {
     if (!engine.isComplete || completionHandledRef.current) return;
+
     completionHandledRef.current = true;
     onResultsComplete?.({
-      id: `${Date.now()}`,
+      id: crypto.randomUUID(), // More robust ID generation
       wpm: engine.wpm,
       accuracy: engine.accuracy,
       errors: engine.errors,
@@ -168,19 +174,23 @@ export default function TypingArea({
   if (engine.isComplete) return null;
 
   return (
-    <div className="w-full max-w-6xl mx-auto flex flex-col items-center">
+    <Fragment>
       <input
         ref={inputRef}
         type="text"
-        onKeyDown={(e) =>
-          (e.key === "Backspace" || e.key === "Escape") && engine.handleKey(e)
-        }
+        // Handle special keys like Backspace
+        onKeyDown={(e) => {
+          if (e.key === "Backspace" || e.key === "Escape") {
+            engine.handleKey(e);
+          }
+        }}
+        // Handle character input
         onChange={(e) => {
           const val = e.target.value;
-          engine.handleKey({
-            key: val[val.length - 1],
-          } as unknown as React.KeyboardEvent<HTMLInputElement>);
-          e.target.value = "";
+          if (val.length > 0) {
+            engine.handleKey({ key: val[val.length - 1] });
+            e.target.value = ""; // Reset for next char
+          }
         }}
         onBlur={() => engine.running && !engine.paused && engine.pause()}
         onFocus={() => engine.paused && engine.cursor > 0 && engine.resume()}
@@ -188,81 +198,84 @@ export default function TypingArea({
         autoFocus
       />
 
-      <motion.div
-        className="relative w-full"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
-        onClick={() => inputRef.current?.focus()}
-      >
-        {/* The Scroll Window */}
-        <div
-          ref={scrollContainerRef}
-          className="h-50 overflow-hidden p-2 sm:p-4 scroll-smooth"
+      <div className="w-full max-w-6xl mx-auto flex flex-col items-center">
+        <motion.div
+          className="relative w-full"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          onClick={() => inputRef.current?.focus()}
         >
-          <div className="flex flex-wrap text-2xl sm:text-4xl font-mono leading-[1.8] text-justify">
-            {words.map((w: Word, wordIdx: number) => (
-              <span key={wordIdx} className="inline-block mr-[0.25em]">
-                {w.chars.map((c: Char) => renderChar(c.char, c.index))}
-                {w.spaceIndex !== null && renderChar(" ", w.spaceIndex)}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Overlay - Start or Resume */}
-        {engine.paused && (
-          <motion.div
-            className="absolute inset-0 z-20 backdrop-blur-md bg-background/40 flex items-center justify-center rounded-xl"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+          <div
+            ref={scrollContainerRef}
+            className="h-50 overflow-hidden p-2 sm:p-4 scroll-smooth"
           >
-            <motion.div
-              initial={{ scale: 0.95 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Button
-                onClick={() =>
-                  engine.cursor > 0 ? engine.resume() : engine.start()
-                }
-              >
-                {engine.cursor > 0 ? "Resume" : "Start typing"}
-              </Button>
-            </motion.div>
-          </motion.div>
-        )}
-
-        {/* Focus glow on first word before start */}
-        {engine.paused && engine.cursor === 0 && (
-          <motion.div
-            className="absolute top-8 left-4 pointer-events-none"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
-          >
-            <div className="text-xs text-highlight/60 font-mono tracking-wider">
-              ↓ start here
+            <div className="flex flex-wrap text-2xl sm:text-4xl font-mono leading-[1.8] text-justify">
+              {words.map((w, wordIdx) => (
+                <span key={wordIdx} className="inline-block mr-[0.25em]">
+                  {w.chars.map((c) => renderChar(c.char, c.index))}
+                  {w.spaceIndex !== null && renderChar(" ", w.spaceIndex)}
+                </span>
+              ))}
             </div>
-          </motion.div>
-        )}
-      </motion.div>
+          </div>
 
-      {/* Dev Stats */}
-      {import.meta.env.MODE === "development" && engine.running && (
-        <div className="mt-12 text-xs text-foreground font-mono opacity-60 space-y-1 text-center tracking-wide">
-          <div>
-            wpm: {engine.wpm} | acc: {Math.round(engine.accuracy)}% | errors:{" "}
-            {engine.errors}
+          {/* Overlay - Start or Resume */}
+          <AnimatePresence>
+            {engine.paused && (
+              <motion.div
+                className="absolute inset-0 z-20 backdrop-blur-md bg-background/40 flex items-center justify-center rounded-xl"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <motion.div
+                  initial={{ scale: 0.95 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Button
+                    onClick={() =>
+                      engine.cursor > 0 ? engine.resume() : engine.start()
+                    }
+                  >
+                    {engine.cursor > 0 ? "Resume" : "Start typing"}
+                  </Button>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Focus indicator */}
+          {engine.paused && engine.cursor === 0 && (
+            <motion.div
+              className="absolute top-8 left-4 pointer-events-none"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+            >
+              <div className="text-xs text-highlight/60 font-mono tracking-wider">
+                ↓ start here
+              </div>
+            </motion.div>
+          )}
+        </motion.div>
+
+        {/* Debug Stats */}
+        {import.meta.env.MODE === "development" && engine.running && (
+          <div className="mt-12 text-xs text-foreground font-mono opacity-60 space-y-1 text-center tracking-wide">
+            <div>
+              wpm: {engine.wpm} | acc: {Math.round(engine.accuracy)}% | errors:{" "}
+              {engine.errors}
+            </div>
+            <div>
+              cursor: {engine.cursor} | typed: {engine.totalTyped} | elapsed:{" "}
+              {engine.elapsed}s
+            </div>
           </div>
-          <div>
-            cursor: {engine.cursor} | typed: {engine.totalTyped} | correct:{" "}
-            {engine.correctChars} | elapsed: {engine.elapsed}s
-          </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </Fragment>
   );
 }
