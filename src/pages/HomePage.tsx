@@ -1,16 +1,14 @@
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import { TypingStatusBar } from "@components/ui/stats";
 import TypingArea from "@components/typing/TypingArea";
+import AIWordsModal from "@components/ui/modals/AIWordsModal";
 import { generatePhrase } from "@utils/textGenerator";
-import type {
-  Language,
-  Mode,
-  DisplayMode,
-} from "@shared-types/index";
+import type { Language, Mode, DisplayMode } from "@shared-types/index";
 import useTypingEngine from "@hooks/useTypingEngine";
 import useTimer from "@hooks/useTimer";
 import useLocalStorage from "@hooks/useLocalStorage";
+import { createGeminiService } from "@/services/geminiService";
 
 interface ContextType {
   displayMode: DisplayMode;
@@ -32,12 +30,22 @@ interface ResultsPayload {
   isBaseline: boolean;
 }
 
+function getTargetWordsForMode(selectedMode: Mode): number {
+  if (selectedMode === "inf") return 50;
+  return Math.ceil((Number(selectedMode.replace("s", "")) / 15) * 100);
+}
+
 export default function HomePage() {
   const navigate = useNavigate();
   const context = useOutletContext<ContextType>();
 
   const [language, setLanguage] = useState<Language>("slang");
   const [mode, setMode] = useState<Mode>("30s");
+  const [customPassageText, setCustomPassageText] = useState<string | null>(
+    null,
+  );
+  const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+  const geminiService = useMemo(() => createGeminiService(), []);
 
   // Get high score from localStorage
   const [highScore, setHighScore] = useLocalStorage<number>(
@@ -59,14 +67,14 @@ export default function HomePage() {
     }
   }, [highScore, setHighScore]);
 
+  const targetWords = getTargetWordsForMode(mode);
+
   // Generate passage text based on language and mode
-  const passageText = useMemo(() => {
-    const targetWords =
-      mode === "inf"
-        ? 50
-        : Math.ceil((Number(mode.replace("s", "")) / 15) * 100);
+  const generatedPassageText = useMemo(() => {
     return generatePhrase(language, targetWords);
-  }, [language, mode]);
+  }, [language, targetWords]);
+
+  const passageText = customPassageText ?? generatedPassageText;
 
   // Initialize timer with duration based on mode
   const durationSeconds = mode === "inf" ? null : Number(mode.replace("s", ""));
@@ -82,6 +90,7 @@ export default function HomePage() {
   // Handle language change and stop test
   const handleLanguageChange = (lang: string) => {
     setLanguage(lang as Language);
+    setCustomPassageText(null);
     engine.stop();
     engine.reset();
   };
@@ -89,8 +98,17 @@ export default function HomePage() {
   // Handle mode change and stop test
   const handleModeChange = (newMode: string) => {
     setMode(newMode as Mode);
+    setCustomPassageText(null);
     engine.stop();
     engine.reset();
+  };
+
+  const handleAIWordsGenerated = (words: string[]) => {
+    const newText = words.join(" ");
+    setCustomPassageText(newText);
+    engine.stop();
+    engine.reset();
+    setIsAIModalOpen(false);
   };
 
   return (
@@ -105,6 +123,7 @@ export default function HomePage() {
           slangDisabled={false}
           onLanguageChange={handleLanguageChange}
           onModeChange={handleModeChange}
+          onRequestAIWords={() => setIsAIModalOpen(true)}
           elapsed={engine.elapsed}
           duration={durationSeconds || 0}
           isTypingRunning={engine.running}
@@ -134,6 +153,16 @@ export default function HomePage() {
           }}
         />
       </main>
+
+      {/* AI Words Modal */}
+      <AIWordsModal
+        isOpen={isAIModalOpen}
+        onClose={() => setIsAIModalOpen(false)}
+        onWordsGenerated={handleAIWordsGenerated}
+        geminiService={geminiService}
+        mode={mode}
+        targetWordCount={targetWords}
+      />
     </>
   );
 }
