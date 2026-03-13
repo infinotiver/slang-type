@@ -4,40 +4,21 @@ import { TypingStatusBar } from "@components/ui/stats";
 import TypingArea from "@components/typing/TypingArea";
 import AIWordsModal from "@components/ui/modals/AIWordsModal";
 import { generatePhrase } from "@utils/textGenerator";
-import type { Language, Mode, DisplayMode } from "@shared-types/index";
+import { getTargetWordsForMode } from "@utils/mode";
+import type {
+  Language,
+  Mode,
+  OutletContext,
+  ResultsPayload,
+} from "@shared-types/index";
 import useTypingEngine from "@hooks/useTypingEngine";
 import useTimer from "@hooks/useTimer";
 import useLocalStorage from "@hooks/useLocalStorage";
 import { createGeminiService } from "@/services/geminiService";
 
-interface ContextType {
-  displayMode: DisplayMode;
-}
-
-interface ResultsPayload {
-  id: string;
-  wpm: number;
-  accuracy: number;
-  errors: number;
-  elapsed: number;
-  totalTyped: number;
-  correctChars: number;
-  charStatus: Record<number, "pending" | "correct" | "incorrect">;
-  targetText: string;
-  mode: Mode;
-  language: Language;
-  isNewHighScore: boolean;
-  isBaseline: boolean;
-}
-
-function getTargetWordsForMode(selectedMode: Mode): number {
-  if (selectedMode === "inf") return 50;
-  return Math.ceil((Number(selectedMode.replace("s", "")) / 15) * 100);
-}
-
 export default function HomePage() {
   const navigate = useNavigate();
-  const context = useOutletContext<ContextType>();
+  const context = useOutletContext<OutletContext>();
 
   const [language, setLanguage] = useState<Language>("slang");
   const [mode, setMode] = useState<Mode>("30s");

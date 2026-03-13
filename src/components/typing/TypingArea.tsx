@@ -1,5 +1,10 @@
 import { useRef, useEffect, useMemo, useLayoutEffect, Fragment } from "react";
-import type { Mode, Language, DisplayMode } from "@shared-types/index";
+import type {
+  Mode,
+  Language,
+  DisplayMode,
+  ResultsPayload,
+} from "@shared-types/index";
 import { Button } from "@components/ui/common";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -22,22 +27,6 @@ interface Engine {
   pause: () => void;
   resume: () => void;
   reset: () => void;
-}
-
-interface ResultsPayload {
-  id: string;
-  wpm: number;
-  accuracy: number;
-  errors: number;
-  elapsed: number;
-  totalTyped: number;
-  correctChars: number;
-  charStatus: Record<number, "pending" | "correct" | "incorrect">;
-  targetText: string;
-  mode: Mode;
-  language: Language;
-  isNewHighScore: boolean;
-  isBaseline: boolean;
 }
 
 interface Char {

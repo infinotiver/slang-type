@@ -53,19 +53,12 @@ interface ResultsData {
  * Handles all calculation logic and returns clean, typed results
  */
 export function useResultsStats(data: ResultsData): ComputedStats {
-  const { elapsed, totalTyped, correctChars, accuracy, charStatus } = data;
+  const { elapsed, totalTyped, accuracy, charStatus } = data;
 
   // Calculate base statistics
   const stats = useMemo(
-    () =>
-      calculateResultStats(
-        elapsed,
-        totalTyped,
-        correctChars,
-        accuracy,
-        charStatus,
-      ),
-    [elapsed, totalTyped, correctChars, accuracy, charStatus],
+    () => calculateResultStats(elapsed, totalTyped, accuracy, charStatus),
+    [elapsed, totalTyped, accuracy, charStatus],
   );
 
   // Count character statuses
@@ -88,15 +81,8 @@ export function useResultsStats(data: ResultsData): ComputedStats {
 
   // Generate chart data
   const chartData = useMemo(
-    () =>
-      generateWpmProgressionData(
-        elapsed,
-        totalTyped,
-        correctChars,
-        charStatus,
-        accuracy,
-      ),
-    [elapsed, totalTyped, correctChars, charStatus, accuracy],
+    () => generateWpmProgressionData(elapsed, totalTyped, charStatus, accuracy),
+    [elapsed, totalTyped, charStatus, accuracy],
   );
 
   // Format chart data for display

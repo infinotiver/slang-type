@@ -35,6 +35,27 @@ export interface TypingAttempt {
   correctChars: number;
 }
 
+// Page state/context types
+export interface OutletContext {
+  displayMode: DisplayMode;
+}
+
+export interface ResultsPayload {
+  id: string;
+  wpm: number;
+  accuracy: number;
+  errors: number;
+  elapsed: number;
+  totalTyped: number;
+  correctChars: number;
+  charStatus: Record<number, "pending" | "correct" | "incorrect">;
+  targetText: string;
+  mode: Mode;
+  language: Language;
+  isNewHighScore: boolean;
+  isBaseline: boolean;
+}
+
 export interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;

@@ -120,7 +120,6 @@ export function calculateWordMetrics(
 export function calculateResultStats(
   elapsed: number,
   totalTyped: number,
-  _correctChars: number,
   accuracy: number,
   charStatus: Record<number, "pending" | "correct" | "incorrect">,
 ): ResultStats {
@@ -172,7 +171,6 @@ export function countCharStatuses(
 export function generateWpmProgressionData(
   elapsed: number,
   totalTyped: number,
-  _correctChars: number,
   charStatus: Record<number, "pending" | "correct" | "incorrect">,
   accuracy: number,
 ): ChartDataPoint[] {
