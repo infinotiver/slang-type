@@ -160,6 +160,9 @@ export default function TypingArea({
     );
   };
 
+  const showStartOrResumeOverlay =
+    engine.paused || (!engine.running && engine.cursor === 0);
+
   if (engine.isComplete) return null;
 
   return (
@@ -211,20 +214,22 @@ export default function TypingArea({
 
           {/* Overlay - Start or Resume */}
           <AnimatePresence>
-            {engine.paused && (
+            {showStartOrResumeOverlay && (
               <motion.div
-                className="absolute inset-0 z-20 backdrop-blur-md bg-background/40 flex items-center justify-center rounded-xl"
+                className="absolute inset-0 z-20  bg-background/80 flex items-center justify-center"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
                 <motion.div
+                  
                   initial={{ scale: 0.95 }}
                   animate={{ scale: 1 }}
                   transition={{ duration: 0.2 }}
                 >
                   <Button
+                    
                     onClick={() =>
                       engine.cursor > 0 ? engine.resume() : engine.start()
                     }
@@ -235,20 +240,6 @@ export default function TypingArea({
               </motion.div>
             )}
           </AnimatePresence>
-
-          {/* Focus indicator */}
-          {engine.paused && engine.cursor === 0 && (
-            <motion.div
-              className="absolute top-8 left-4 pointer-events-none"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
-            >
-              <div className="text-xs text-highlight/60 font-mono tracking-wider">
-                ↓ start here
-              </div>
-            </motion.div>
-          )}
         </motion.div>
 
         {/* Debug Stats */}

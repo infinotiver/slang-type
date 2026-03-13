@@ -115,12 +115,13 @@ function CombinedPerformanceChart({
                 dataKey="name"
                 stroke="rgb(107, 114, 128)"
                 style={{ fontSize: "11px" }}
-                minTickGap={20}
+                minTickGap={10}
               />
               <YAxis
                 yAxisId="left"
                 stroke="rgb(107, 114, 128)"
                 label={{ value: "WPM", angle: -90, position: "insideLeft" }}
+               
               />
               <YAxis
                 yAxisId="right"
@@ -141,8 +142,8 @@ function CombinedPerformanceChart({
                 type="bump"
                 dataKey="wpm"
                 stroke="#10b981"
-                strokeWidth={2.5}
-                dot={false}
+                strokeWidth={4}
+                dot={true}
                 name="Adjusted WPM"
               />
               {/* <Line
