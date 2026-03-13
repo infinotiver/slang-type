@@ -135,7 +135,6 @@ function CombinedPerformanceChart({
                 yAxisId="left"
                 stroke="rgb(107, 114, 128)"
                 label={{ value: "WPM", angle: -90, position: "insideLeft" }}
-               
               />
               <YAxis
                 yAxisId="right"
@@ -279,126 +278,126 @@ export default function ResultsPage() {
 
   return (
     <div className="flex-1 overflow-y-auto bg-background text-foreground flex flex-col font-mono">
-        <div className="w-full">
-          <div className="mb-6 flex items-center gap-4">
-            <button
-              onClick={() => navigate("/")}
-              className="p-2 text-foreground/60 hover:text-highlight transition-colors active:scale-95 -ml-2 shrink-0"
-              aria-label="back"
-              title="back to typing"
-            >
-              <TbArrowLeft size={24} className="text-inherit" />
-            </button>
-            <div className="flex-1 -ml-1">
-              <h2 className="text-lg sm:text-xl font-bold tracking-wider leading-tight">
-                results
-              </h2>
-              <p className="text-xs text-foreground/60 mt-1 leading-tight">
-                {language} / {mode} • {elapsed}s
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              {isBaseline && (
-                <div className="text-xs sm:text-sm text-foreground/70">
-                  baseline established
-                </div>
-              )}
-              {isNewHighScore && !isBaseline && (
-                <div className="text-xs sm:text-sm text-foreground/70">
-                  new high score
-                </div>
-              )}
-              <Button onClick={() => navigate("/")} variant="primary">
-                try again
-              </Button>
-            </div>
+      <div className="w-full">
+        <div className="mb-6 flex items-center gap-4">
+          <button
+            onClick={() => navigate("/")}
+            className="p-2 text-foreground/60 hover:text-highlight transition-colors active:scale-95 -ml-2 shrink-0"
+            aria-label="back"
+            title="back to typing"
+          >
+            <TbArrowLeft size={24} className="text-inherit" />
+          </button>
+          <div className="flex-1 -ml-1">
+            <h2 className="text-lg sm:text-xl font-bold tracking-wider leading-tight">
+              results
+            </h2>
+            <p className="text-xs text-foreground/60 mt-1 leading-tight">
+              {language} / {mode} • {elapsed}s
+            </p>
           </div>
-
-          <div className="flex flex-col md:flex-row gap-6 flex-1">
-            <div className="lg:w-50 flex flex-col gap-6 shrink-0">
-              <div className="p-4 bg-highlight/10 rounded-xl flex flex-col justify-between min-h-55">
-                {/* Upper Stats */}
-                <div className="space-y-4">
-                  <section>
-                    <div className="text-sm text-foreground/60">wpm</div>
-                    <div className="text-5xl font-extrabold text-highlight leading-none">
-                      {netWpm}
-                    </div>
-                  </section>
-
-                  <section>
-                    <div className="text-sm text-foreground/60">accuracy</div>
-                    <div className="text-5xl font-extrabold text-foreground leading-none">
-                      {stats.accuracy}%
-                    </div>
-                  </section>
-                </div>
-
-                {/* Lower Metadata */}
-                <div className="text-xs text-foreground/60">
-                  raw wpm: <span className="text-foreground">{grossWpm}</span>
-                </div>
+          <div className="flex items-center gap-2">
+            {isBaseline && (
+              <div className="text-xs sm:text-sm text-foreground/70">
+                baseline established
               </div>
-            </div>
-
-            <div className="flex-1">
-              <CombinedPerformanceChart data={stats.performanceData} />
-            </div>
-          </div>
-
-          <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3 auto-rows-fr">
-            <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
-              <div className="text-xs text-foreground/60">errors</div>
-              <div className="text-2xl font-bold text-foreground mt-auto">
-                {errors}
+            )}
+            {isNewHighScore && !isBaseline && (
+              <div className="text-xs sm:text-sm text-foreground/70">
+                new high score
               </div>
-              <div className="text-[11px] text-foreground/50 mt-1">
-                {Number(stats.errorRate).toFixed(1)}% rate
-              </div>
-            </div>
-            <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
-              <div className="text-xs text-foreground/60">time / char</div>
-              <div className="text-2xl font-bold text-foreground mt-auto">
-                {stats.timePerChar}s
-              </div>
-            </div>
-            <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
-              <div className="text-xs text-foreground/60">chars / sec</div>
-              <div className="text-2xl font-bold text-foreground mt-auto">
-                {stats.charsPerSecond}
-              </div>
-            </div>
-            <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
-              <div className="text-xs text-foreground/60">consistency</div>
-              <div className="text-2xl font-bold text-foreground mt-auto">
-                {stats.consistency.toFixed(1)}%
-              </div>
-            </div>
-            <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
-              <div className="text-xs text-foreground/60">correct words</div>
-              <div className="text-2xl font-bold text-foreground mt-auto">
-                {stats.correctWords}
-              </div>
-              <div className="text-[11px] text-foreground/50 mt-1">
-                {stats.correctChars} chars
-              </div>
-            </div>
-            <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
-              <div className="text-xs text-foreground/60">untyped</div>
-              <div className="text-2xl font-bold text-foreground mt-auto">
-                {stats.pendingChars}
-              </div>
-              <div className="text-[11px] text-foreground/50 mt-1">chars</div>
-            </div>
-            <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
-              <div className="text-xs text-foreground/60">words typed</div>
-              <div className="text-2xl font-bold text-foreground mt-auto">
-                {stats.wordsTyped}
-              </div>
-              <div className="text-[11px] text-foreground/50 mt-1">words</div>
-            </div>
+            )}
+            <Button onClick={() => navigate("/")} variant="primary">
+              try again
+            </Button>
           </div>
         </div>
+
+        <div className="flex flex-col md:flex-row gap-6 flex-1">
+          <div className="lg:w-50 flex flex-col gap-6 shrink-0">
+            <div className="p-4 bg-highlight/10 rounded-xl flex flex-col justify-between min-h-55">
+              {/* Upper Stats */}
+              <div className="space-y-4">
+                <section>
+                  <div className="text-sm text-foreground/60">wpm</div>
+                  <div className="text-5xl font-extrabold text-highlight leading-none">
+                    {netWpm}
+                  </div>
+                </section>
+
+                <section>
+                  <div className="text-sm text-foreground/60">accuracy</div>
+                  <div className="text-5xl font-extrabold text-foreground leading-none">
+                    {stats.accuracy}%
+                  </div>
+                </section>
+              </div>
+
+              {/* Lower Metadata */}
+              <div className="text-xs text-foreground/60">
+                raw wpm: <span className="text-foreground">{grossWpm}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex-1">
+            <CombinedPerformanceChart data={stats.performanceData} />
+          </div>
+        </div>
+
+        <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3 auto-rows-fr">
+          <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
+            <div className="text-xs text-foreground/60">errors</div>
+            <div className="text-2xl font-bold text-foreground mt-auto">
+              {errors}
+            </div>
+            <div className="text-[11px] text-foreground/50 mt-1">
+              {Number(stats.errorRate).toFixed(1)}% rate
+            </div>
+          </div>
+          <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
+            <div className="text-xs text-foreground/60">time / char</div>
+            <div className="text-2xl font-bold text-foreground mt-auto">
+              {stats.timePerChar}s
+            </div>
+          </div>
+          <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
+            <div className="text-xs text-foreground/60">chars / sec</div>
+            <div className="text-2xl font-bold text-foreground mt-auto">
+              {stats.charsPerSecond}
+            </div>
+          </div>
+          <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
+            <div className="text-xs text-foreground/60">consistency</div>
+            <div className="text-2xl font-bold text-foreground mt-auto">
+              {stats.consistency.toFixed(1)}%
+            </div>
+          </div>
+          <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
+            <div className="text-xs text-foreground/60">correct words</div>
+            <div className="text-2xl font-bold text-foreground mt-auto">
+              {stats.correctWords}
+            </div>
+            <div className="text-[11px] text-foreground/50 mt-1">
+              {stats.correctChars} chars
+            </div>
+          </div>
+          <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
+            <div className="text-xs text-foreground/60">untyped</div>
+            <div className="text-2xl font-bold text-foreground mt-auto">
+              {stats.pendingChars}
+            </div>
+            <div className="text-[11px] text-foreground/50 mt-1">chars</div>
+          </div>
+          <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
+            <div className="text-xs text-foreground/60">words typed</div>
+            <div className="text-2xl font-bold text-foreground mt-auto">
+              {stats.wordsTyped}
+            </div>
+            <div className="text-[11px] text-foreground/50 mt-1">words</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

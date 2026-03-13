@@ -174,7 +174,6 @@ export function generateWpmProgressionData(
   elapsed: number,
   totalTyped: number,
   totalMistakes: number,
-  charStatus: Record<number, "pending" | "correct" | "incorrect">,
   accuracy: number,
 ): ChartDataPoint[] {
   const data: ChartDataPoint[] = [];
@@ -233,7 +232,6 @@ export function generateWpmProgressionData(
       accuracy: Math.max(0, cumulativeAccuracy), // Cumulative for trend
       errorsAtThisSecond: errorsAtThisSecond,
     });
-
   }
 
   // Ensure we always have the final data point
@@ -249,7 +247,9 @@ export function generateWpmProgressionData(
     // Estimate mistakes in final second only
     const previousTyped = Math.floor(totalTyped * ((elapsed - 1) / elapsed));
     const previousMistakes =
-      totalTyped > 0 ? Math.round((totalMistakes * previousTyped) / totalTyped) : 0;
+      totalTyped > 0
+        ? Math.round((totalMistakes * previousTyped) / totalTyped)
+        : 0;
     const finalSecondErrors = Math.max(0, totalMistakes - previousMistakes);
 
     data.push({

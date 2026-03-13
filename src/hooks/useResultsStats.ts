@@ -58,7 +58,8 @@ export function useResultsStats(data: ResultsData): ComputedStats {
 
   // Calculate base statistics
   const stats = useMemo(
-    () => calculateResultStats(elapsed, totalTyped, errors, accuracy, charStatus),
+    () =>
+      calculateResultStats(elapsed, totalTyped, errors, accuracy, charStatus),
     [elapsed, totalTyped, errors, accuracy, charStatus],
   );
 
@@ -87,10 +88,9 @@ export function useResultsStats(data: ResultsData): ComputedStats {
         elapsed,
         totalTyped,
         errors,
-        charStatus,
         accuracy,
       ),
-    [elapsed, totalTyped, errors, charStatus, accuracy],
+    [elapsed, totalTyped, errors, accuracy],
   );
 
   // Format chart data for display
