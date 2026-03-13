@@ -58,6 +58,23 @@ function json(res, status, payload) {
     res.end(JSON.stringify(payload));
 }
 
+function normalizeWordList(words, limit) {
+    return [...new Set(words
+        .slice(0, limit)
+        .filter((word) => typeof word === "string" && /^[a-z]{2,20}$/i.test(word))
+        .map((word) => word.toLowerCase()))];
+}
+
+function fallbackParseWordsFromText(text, limit) {
+    // Accept comma/newline/space separated output as fallback when model doesn't return JSON.
+    const candidates = String(text || "")
+        .replace(/[\[\]{}"']/g, " ")
+        .split(/[\s,\n\r;:|]+/)
+        .filter(Boolean);
+
+    return normalizeWordList(candidates, limit);
+}
+
 export default async function handler(req, res) {
     if (req.method !== "POST") {
         return json(res, 405, { error: "method_not_allowed" });
@@ -147,6 +164,7 @@ Response format:
                         topK: 40,
                         topP: 0.95,
                         maxOutputTokens: 1024,
+                        responseMimeType: "application/json",
                     },
                 }),
             },
@@ -167,22 +185,23 @@ Response format:
             return json(res, 502, { error: "invalid_provider_response" });
         }
 
-        const jsonMatch = content.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) {
-            return json(res, 502, { error: "invalid_provider_format" });
+        let words = [];
+        try {
+            const jsonMatch = content.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                const parsed = JSON.parse(jsonMatch[0]);
+                if (Array.isArray(parsed.words)) {
+                    words = normalizeWordList(parsed.words, requestedCount);
+                }
+            }
+        } catch {
+            // fall through to fallback parser
         }
 
-        const parsed = JSON.parse(jsonMatch[0]);
-        if (!Array.isArray(parsed.words)) {
-            return json(res, 502, { error: "invalid_provider_format" });
+        // Fallback if provider didn't return strict JSON
+        if (words.length === 0) {
+            words = fallbackParseWordsFromText(content, requestedCount);
         }
-
-        const words = [...new Set(parsed.words
-            .slice(0, requestedCount)
-            .filter(
-                (word) => typeof word === "string" && /^[a-z]{2,20}$/i.test(word),
-            )
-            .map((word) => word.toLowerCase()))];
 
         if (words.length === 0) {
             return json(res, 502, { error: "no_valid_words" });

@@ -12,6 +12,10 @@ export interface GenerateWordsResponse {
   timestamp: number;
 }
 
+interface ApiErrorResponse {
+  error?: string;
+}
+
 export class GeminiServiceError extends Error {
   public code: string;
 
@@ -23,7 +27,7 @@ export class GeminiServiceError extends Error {
 }
 
 export class GeminiService {
-  private static readonly MAX_WORDS = 1000;
+  private static readonly MAX_WORDS = 800;
   private static readonly MIN_WORDS = 5;
 
   constructor() {}
@@ -79,9 +83,20 @@ export class GeminiService {
       });
 
       if (!response.ok) {
+        const apiError = (await response
+          .json()
+          .catch(() => ({}))) as ApiErrorResponse;
+        const code = apiError.error;
+
         if (response.status === 429) {
+          if (code === "provider_rate_limited") {
+            throw new GeminiServiceError(
+              "Gemini quota/rate limit reached. Try again later.",
+              "PROVIDER_RATE_LIMIT",
+            );
+          }
           throw new GeminiServiceError(
-            "Rate limit exceeded. Please try again later.",
+            "Too many requests from this app. Please wait a minute.",
             "RATE_LIMIT",
           );
         }
@@ -89,6 +104,42 @@ export class GeminiService {
           throw new GeminiServiceError(
             "Server is not configured",
             "UNAUTHORIZED",
+          );
+        }
+        if (response.status === 400) {
+          if (code === "invalid_theme") {
+            throw new GeminiServiceError(
+              "Theme is invalid. Please use a short text theme.",
+              "INVALID_THEME",
+            );
+          }
+          if (code === "invalid_word_count") {
+            throw new GeminiServiceError(
+              "Word count is outside allowed range.",
+              "INVALID_WORD_COUNT",
+            );
+          }
+          throw new GeminiServiceError(
+            "Invalid request payload",
+            "BAD_REQUEST",
+          );
+        }
+        if (response.status === 415) {
+          throw new GeminiServiceError(
+            "Unsupported request format",
+            "UNSUPPORTED_MEDIA_TYPE",
+          );
+        }
+        if (response.status === 502) {
+          if (code === "provider_error") {
+            throw new GeminiServiceError(
+              "Gemini provider error. Please retry in a moment.",
+              "PROVIDER_ERROR",
+            );
+          }
+          throw new GeminiServiceError(
+            "Invalid response from Gemini provider.",
+            "INVALID_PROVIDER_RESPONSE",
           );
         }
         if (response.status === 500) {
