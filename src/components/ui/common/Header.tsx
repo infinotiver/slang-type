@@ -1,15 +1,14 @@
 import { useState } from "react";
-import { Newspaper, Settings } from "lucide-react";
+import { CircleUserIcon, Newspaper, Settings } from "lucide-react";
 import { SettingsModal, CreditsModal } from "@components/ui/modals";
-import type { Theme, DisplayMode } from "@shared-types/index";
+import type { Theme } from "@shared-types/index";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useAuth } from "@/hooks/useAuth";
 
 interface HeaderProps {
   theme: Theme;
   onThemeChange: (theme: Theme) => void;
-  displayMode: DisplayMode;
-  onDisplayModeChange: (mode: DisplayMode) => void;
   highScore: number;
   onHistoryClick?: () => void;
 }
@@ -17,11 +16,10 @@ interface HeaderProps {
 export default function Header({
   theme,
   onThemeChange,
-  displayMode,
-  onDisplayModeChange,
   highScore,
   onHistoryClick,
 }: HeaderProps) {
+  const { user } = useAuth();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isCreditsOpen, setIsCreditsOpen] = useState(false);
   const iconButtonMotion = {
@@ -49,6 +47,14 @@ export default function Header({
                   <span className="text-foreground/60">best</span>
                   <span className="text-highlight font-bold">{highScore}</span>
                 </div>
+                <Link
+                  to={user ? "/profile" : "/login"}
+                  className={`p-1.5 rounded hover:bg-secondary/20 transition-colors ${user ? "text-highlight" : "text-foreground/50 hover:text-highlight"}`}
+                  aria-label={user ? "profile" : "login"}
+                  title={user ? (user.username ?? user.email) : "login"}
+                >
+                  <CircleUserIcon size={20} />
+                </Link>
                 <motion.button
                   onClick={onHistoryClick}
                   className="p-1.5 rounded hover:bg-secondary/20 text-foreground/50 hover:text-highlight transition-colors"
@@ -80,8 +86,6 @@ export default function Header({
         onClose={() => setIsSettingsOpen(false)}
         theme={theme}
         onThemeChange={onThemeChange}
-        displayMode={displayMode}
-        onDisplayModeChange={onDisplayModeChange}
       />
       {/* CreditsModal will be triggered from the footer now */}
       <CreditsModal
