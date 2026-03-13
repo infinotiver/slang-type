@@ -1,5 +1,5 @@
+import { SparklesIcon } from "lucide-react";
 import type { TypingControlsOption } from "./types";
-
 interface TypingControlsPanelProps {
   language: string;
   mode: string;
@@ -7,6 +7,7 @@ interface TypingControlsPanelProps {
   controlsOptions: TypingControlsOption[];
   onLanguageChange: (lang: string) => void;
   onModeChange: (mode: string) => void;
+  onRequestAIWords?: () => void;
 }
 
 const modeOptions = ["15s", "30s", "60s", "120s", "inf"];
@@ -64,6 +65,7 @@ export default function TypingControlsPanel({
   controlsOptions,
   onLanguageChange,
   onModeChange,
+  onRequestAIWords,
 }: TypingControlsPanelProps) {
   return (
     <div className={wrapperClass}>
@@ -75,7 +77,11 @@ export default function TypingControlsPanel({
           disabled={slangDisabled && language === "slang"}
         >
           {controlsOptions.map((lang) => (
-            <option key={lang.label} value={lang.label} disabled={lang.disabled}>
+            <option
+              key={lang.label}
+              value={lang.label}
+              disabled={lang.disabled}
+            >
               {lang.label}
             </option>
           ))}
@@ -103,7 +109,14 @@ export default function TypingControlsPanel({
           selected={mode}
           onSelect={onModeChange}
         />
-      </div>
+      </div>{" "}
+      <button
+        onClick={onRequestAIWords}
+        className="px-2 py-1.5 rounded-md text-xs tracking-wide border border-secondary/40 text-foreground/70 hover:text-highlight hover:bg-secondary/25 transition-colors duration-150"
+        title="Generate words with AI"
+      >
+        <SparklesIcon size={16}/>
+      </button>{" "}
     </div>
   );
 }

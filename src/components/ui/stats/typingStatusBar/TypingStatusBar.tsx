@@ -11,6 +11,7 @@ export default function TypingStatusBar({
   slangDisabled = false,
   onLanguageChange,
   onModeChange,
+  onRequestAIWords,
   elapsed = 0,
   duration = 0,
   isTypingRunning = false,
@@ -47,6 +48,7 @@ export default function TypingStatusBar({
           controlsOptions={controlsOptions}
           onLanguageChange={onLanguageChange}
           onModeChange={onModeChange}
+          onRequestAIWords={onRequestAIWords}
         />
       )}
     </motion.div>

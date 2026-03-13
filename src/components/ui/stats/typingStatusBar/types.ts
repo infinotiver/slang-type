@@ -4,6 +4,7 @@ export interface TypingStatusBarProps extends StatsAndControlsProps {
   elapsed?: number;
   duration?: number;
   isTypingRunning?: boolean;
+  onRequestAIWords?: () => void;
 }
 
 export interface TypingControlsOption {
