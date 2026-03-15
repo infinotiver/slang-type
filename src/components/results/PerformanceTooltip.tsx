@@ -1,6 +1,7 @@
+import { formatFixed } from "@/utils/numberFormat";
+
 interface ChartPayload {
   dataKey: string;
-  name: string;
   value: number;
 }
 
@@ -20,6 +21,12 @@ const LABELS: Record<string, string> = {
   wpm: "Adjusted WPM",
   accuracy: "Accuracy",
   errorsAtThisSecond: "Errors",
+};
+
+const DIGITS: Record<string, number> = {
+  wpm: 0,
+  accuracy: 1,
+  errorsAtThisSecond: 0,
 };
 
 export default function PerformanceTooltip({
@@ -43,7 +50,9 @@ export default function PerformanceTooltip({
             className="w-2 h-2 rounded-full"
             style={{ backgroundColor: COLORS[entry.dataKey] }}
           />
-          <span className="text-foreground">{`${LABELS[entry.dataKey]}: ${entry.value}`}</span>
+          <span className="text-foreground">
+            {`${LABELS[entry.dataKey]}: ${formatFixed(entry.value, DIGITS[entry.dataKey] ?? 0)}`}
+          </span>
         </div>
       ))}
     </div>

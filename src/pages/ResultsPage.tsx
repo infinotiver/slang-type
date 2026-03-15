@@ -6,10 +6,10 @@ import { Button } from "@components/ui/common";
 import useLocalStorage from "@hooks/useLocalStorage";
 import type { ResultsPayload, TypingAttempt } from "@shared-types/index";
 import PerformanceChart from "@/components/results/PerformanceChart";
+import { formatPercent, roundTo } from "@/utils/numberFormat";
 
 interface ResultsLocationState {
   results: ResultsPayload;
-  highScore: number;
 }
 
 const EMPTY_RESULTS: ResultsPayload = {
@@ -75,18 +75,18 @@ export default function ResultsPage() {
       wpm: stats.netWpm,
       rawWpm: stats.grossWpm,
       adjustedWpm: stats.netWpm,
-      accuracy: Math.round(accuracy),
+      accuracy: roundTo(accuracy),
       errors,
-      errorRate: Number.parseFloat(stats.errorRate),
+      errorRate: roundTo(stats.errorRate, 1),
       elapsed,
       mode,
       language,
       totalTyped,
       correctChars,
-      timePerChar: Number.parseFloat(stats.timePerChar),
-      charsPerSecond: Number.parseFloat(stats.charsPerSecond),
-      consistency: stats.consistency,
-      keystrokesPerSecond: Number.parseFloat(stats.keystrokesPerSecond),
+      timePerChar: roundTo(stats.timePerChar, 2),
+      charsPerSecond: roundTo(stats.charsPerSecond, 2),
+      consistency: roundTo(stats.consistency, 1),
+      keystrokesPerSecond: roundTo(stats.keystrokesPerSecond, 2),
       targetText: results.targetText,
       charStatus: results.charStatus,
       performanceData: stats.performanceData,
@@ -177,7 +177,7 @@ export default function ResultsPage() {
                 <section>
                   <div className="text-sm text-foreground/60">accuracy</div>
                   <div className="text-5xl font-extrabold text-foreground leading-none">
-                    {stats.accuracy}%
+                    {formatPercent(stats.accuracy)}
                   </div>
                 </section>
               </div>
@@ -201,7 +201,7 @@ export default function ResultsPage() {
               {errors}
             </div>
             <div className="text-[11px] text-foreground/50 mt-1">
-              {Number(stats.errorRate).toFixed(1)}% rate
+              {formatPercent(stats.errorRate, 1)} rate
             </div>
           </div>
           <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
@@ -219,7 +219,7 @@ export default function ResultsPage() {
           <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
             <div className="text-xs text-foreground/60">consistency</div>
             <div className="text-2xl font-bold text-foreground mt-auto">
-              {stats.consistency.toFixed(1)}%
+              {formatPercent(stats.consistency, 1)}
             </div>
           </div>
           <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { formatPercent } from "@/utils/numberFormat";
 
 interface LiveMetricsProps {
   wpm: number;
@@ -38,7 +39,7 @@ export default function LiveMetrics({
           acc
         </span>
         <span className="text-lg sm:text-xl font-bold text-foreground">
-          {Math.round(accuracy)}%
+          {formatPercent(accuracy)}
         </span>
       </div>
       <div className="w-px h-9 sm:h-10 bg-secondary/35" />

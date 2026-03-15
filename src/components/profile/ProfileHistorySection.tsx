@@ -8,6 +8,7 @@ import type {
   WpmProgressionPoint,
 } from "@utils/historyStats";
 import { formatDate, formatTime, getLanguageLabel, MODE_ORDER } from "./utils";
+import { formatPercent } from "@/utils/numberFormat";
 
 interface ProfileHistorySectionProps {
   attempts: TypingAttempt[];
@@ -44,7 +45,7 @@ export default function ProfileHistorySection({
           <SummaryStatCard label="avg wpm" value={stats.avgWpm} />
           <SummaryStatCard
             label="best acc"
-            value={`${Math.round(stats.bestAccuracy)}%`}
+            value={formatPercent(stats.bestAccuracy)}
           />
           <SummaryStatCard
             label="total time"

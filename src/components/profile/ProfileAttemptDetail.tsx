@@ -2,6 +2,7 @@ import { TbArrowLeft } from "react-icons/tb";
 import { Button } from "@components/ui/common";
 import type { TypingAttempt } from "@shared-types/index";
 import { formatDate, getLanguageLabel } from "./utils";
+import { formatPercent } from "@/utils/numberFormat";
 
 interface ProfileAttemptDetailProps {
   attempt: TypingAttempt;
@@ -69,7 +70,7 @@ export default function ProfileAttemptDetail({
             {[
               { label: "adjusted wpm", value: adjustedWpm, highlight: true },
               { label: "raw wpm", value: rawWpm },
-              { label: "accuracy", value: `${Math.round(attempt.accuracy)}%` },
+              { label: "accuracy", value: formatPercent(attempt.accuracy) },
               { label: "time elapsed", value: `${attempt.elapsed}s` },
             ].map(({ label, value, highlight }) => (
               <div key={label}>
@@ -107,8 +108,13 @@ export default function ProfileAttemptDetail({
                 label: "error rate",
                 value:
                   attempt.totalTyped > 0
-                    ? `${(((attempt.totalTyped - attempt.correctChars) / attempt.totalTyped) * 100).toFixed(1)}%`
-                    : "0.0%",
+                    ? formatPercent(
+                        ((attempt.totalTyped - attempt.correctChars) /
+                          attempt.totalTyped) *
+                          100,
+                        1,
+                      )
+                    : formatPercent(0, 1),
               },
             ].map(({ label, value, className }) => (
               <div key={label}>
