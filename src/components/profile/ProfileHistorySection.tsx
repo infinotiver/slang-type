@@ -7,8 +7,9 @@ import type {
   StatsByLanguage,
   WpmProgressionPoint,
 } from "@utils/historyStats";
-import { formatDate, formatTime, getLanguageLabel, MODE_ORDER } from "./utils";
+import { formatDate, getLanguageLabel, MODE_ORDER } from "./utils";
 import { formatPercent } from "@/utils/numberFormat";
+import { formatDuration } from "@/utils/timeFormat";
 
 interface ProfileHistorySectionProps {
   attempts: TypingAttempt[];
@@ -49,7 +50,7 @@ export default function ProfileHistorySection({
           />
           <SummaryStatCard
             label="total time"
-            value={formatTime(stats.totalTime)}
+            value={formatDuration(stats.totalTime)}
           />
           <SummaryStatCard label="attempts" value={stats.totalAttempts} />
         </div>
