@@ -25,7 +25,9 @@ export default function BestResultCard({
           </div>
           <div className="flex items-baseline gap-1">
             <span className="text-foreground/50 text-xs">acc</span>
-            <span className="text-sm font-semibold">{formatPercent(attempt.accuracy)}</span>
+            <span className="text-sm font-semibold">
+              {formatPercent(attempt.accuracy)}
+            </span>
           </div>
         </div>
       ) : (
