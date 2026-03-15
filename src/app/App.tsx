@@ -12,6 +12,7 @@ import LoginPage from "@/pages/LoginPage";
 import SignupPage from "@/pages/SignupPage";
 import ProfilePage from "@/pages/ProfilePage";
 import { AuthProvider } from "@/components/auth/AuthContext";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 // Create router configuration
 const router = createBrowserRouter([
@@ -41,7 +42,11 @@ const router = createBrowserRouter([
       },
       {
         path: "profile",
-        element: <ProfilePage />,
+        element: (
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "*",
