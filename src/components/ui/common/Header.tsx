@@ -45,14 +45,19 @@ export default function Header({
                   <span className="text-foreground/60">best</span>
                   <span className="text-highlight font-bold">{highScore}</span>
                 </div>
-                <Link
-                  to={user ? "/profile" : "/login"}
-                  className={`p-1.5 rounded hover:bg-secondary/20 transition-colors ${user ? "text-highlight" : "text-foreground/50 hover:text-highlight"}`}
-                  aria-label={user ? "profile" : "login"}
-                  title={user ? (user.username ?? user.email) : "login"}
-                >
-                  <CircleUserIcon size={20} />
-                </Link>
+                <div className="relative inline-flex group">
+                  <Link
+                    to={user ? "/profile" : "/login"}
+                    className={`p-1.5 rounded hover:bg-secondary/20 transition-colors ${user ? "text-highlight" : "text-foreground/50 hover:text-highlight"}`}
+                    aria-label={user ? "profile" : "login"}
+                  >
+                    <CircleUserIcon size={20} />
+                  </Link>
+                  <span className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md border border-secondary/40 bg-secondary px-2 py-1 text-[10px] text-foreground/85 shadow-md opacity-0 translate-y-1 transition-all duration-150 group-hover:opacity-100 group-hover:translate-y-0">
+                    {user ? (user.username ?? user.email) : "login"}
+                  </span>
+                 
+                </div>
                 <motion.button
                   onClick={() => setIsSettingsOpen(true)}
                   className="p-1.5 rounded hover:bg-secondary/20 text-foreground/50 hover:text-highlight transition-colors"
