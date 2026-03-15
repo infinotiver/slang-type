@@ -1,10 +1,11 @@
 import { SparklesIcon } from "lucide-react";
-import type { TypingControlsOption } from "./types";
-interface TypingControlsPanelProps {
+import type { ControlOption } from "./typingBar.types";
+
+interface ControlsPanelProps {
   language: string;
   mode: string;
   slangDisabled: boolean;
-  controlsOptions: TypingControlsOption[];
+  controlsOptions: ControlOption[];
   onLanguageChange: (lang: string) => void;
   onModeChange: (mode: string) => void;
   onRequestAIWords?: () => void;
@@ -58,7 +59,7 @@ function SegmentedButtons({
   );
 }
 
-export default function TypingControlsPanel({
+export default function ControlsPanel({
   language,
   mode,
   slangDisabled,
@@ -66,7 +67,7 @@ export default function TypingControlsPanel({
   onLanguageChange,
   onModeChange,
   onRequestAIWords,
-}: TypingControlsPanelProps) {
+}: ControlsPanelProps) {
   return (
     <div className={wrapperClass}>
       <div className={segmentClass}>
@@ -92,6 +93,7 @@ export default function TypingControlsPanel({
           onSelect={onLanguageChange}
         />
       </div>
+
       <div className={segmentClass}>
         <select
           value={mode}
@@ -109,14 +111,15 @@ export default function TypingControlsPanel({
           selected={mode}
           onSelect={onModeChange}
         />
-      </div>{" "}
+      </div>
+
       <button
         onClick={onRequestAIWords}
         className="px-2 py-1.5 rounded-md text-xs tracking-wide border border-secondary/40 text-foreground/70 hover:text-highlight hover:bg-secondary/25 transition-colors duration-150"
         title="Generate words with AI"
       >
-        <SparklesIcon size={16}/>
-      </button>{" "}
+        <SparklesIcon size={16} />
+      </button>
     </div>
   );
 }

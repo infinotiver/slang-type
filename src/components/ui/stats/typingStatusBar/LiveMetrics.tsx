@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-interface TypingMetricsDisplayProps {
+interface LiveMetricsProps {
   wpm: number;
   accuracy: number;
   remaining: number;
@@ -12,11 +12,11 @@ const formatTime = (seconds: number): string => {
   return `${mins}:${secs.toString().padStart(2, "0")}`;
 };
 
-export default function TypingMetricsDisplay({
+export default function LiveMetrics({
   wpm,
   accuracy,
   remaining,
-}: TypingMetricsDisplayProps) {
+}: LiveMetricsProps) {
   return (
     <motion.div
       className="flex items-center justify-center gap-4 sm:gap-6 h-10 sm:h-12"
@@ -28,7 +28,9 @@ export default function TypingMetricsDisplay({
         <span className="text-xs text-foreground/70 tracking-wider font-light">
           wpm
         </span>
-        <span className="text-lg sm:text-xl font-bold text-foreground">{wpm}</span>
+        <span className="text-lg sm:text-xl font-bold text-foreground">
+          {wpm}
+        </span>
       </div>
       <div className="w-px h-9 sm:h-10 bg-secondary/35" />
       <div className="flex flex-col items-center gap-1">

@@ -1,1 +1,1 @@
-export { default as TypingStatusBar } from "./TypingStatusBar";
+export { default as TypingBar } from "./TypingBar";

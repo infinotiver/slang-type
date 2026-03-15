@@ -1,14 +1,14 @@
-interface HistoryStatCardProps {
+interface SummaryStatCardProps {
   label: string;
   value: string | number;
   highlight?: boolean;
 }
 
-export default function HistoryStatCard({
+export default function SummaryStatCard({
   label,
   value,
   highlight = false,
-}: HistoryStatCardProps) {
+}: SummaryStatCardProps) {
   return (
     <div>
       <div className="text-xs text-foreground/60">{label}</div>

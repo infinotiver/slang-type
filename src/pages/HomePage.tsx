@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
-import { TypingStatusBar } from "@components/ui/stats";
+import { TypingBar } from "@components/ui/stats";
 import TypingArea from "@components/typing/TypingArea";
 import AIWordsModal from "@components/ui/modals/AIWordsModal";
 import { generatePhrase } from "@utils/textGenerator";
@@ -98,7 +98,7 @@ export default function HomePage() {
     <>
       {/* STATS & CONTROLS */}
       <div className="py-1 sm:py-2 md:py-3 flex justify-center items-center">
-        <TypingStatusBar
+        <TypingBar
           wpm={engine.wpm}
           accuracy={engine.accuracy}
           language={language}

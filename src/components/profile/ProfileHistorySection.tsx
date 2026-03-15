@@ -1,4 +1,4 @@
-import { HistoryStatCard, StatBreakdownCard } from "@components/ui/stats";
+import { SummaryStatCard, BestResultCard } from "@components/ui/stats";
 import { ChartContainer } from "@components/ui/charts";
 import { AttemptListItem } from "@components/ui/lists";
 import type { TypingAttempt } from "@shared-types/index";
@@ -40,17 +40,17 @@ export default function ProfileHistorySection({
     <>
       <div className="p-3 border border-secondary/35 rounded-xl bg-secondary/8">
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-          <HistoryStatCard label="best wpm" value={stats.bestWpm} highlight />
-          <HistoryStatCard label="avg wpm" value={stats.avgWpm} />
-          <HistoryStatCard
+          <SummaryStatCard label="best wpm" value={stats.bestWpm} highlight />
+          <SummaryStatCard label="avg wpm" value={stats.avgWpm} />
+          <SummaryStatCard
             label="best acc"
             value={`${Math.round(stats.bestAccuracy)}%`}
           />
-          <HistoryStatCard
+          <SummaryStatCard
             label="total time"
             value={formatTime(stats.totalTime)}
           />
-          <HistoryStatCard label="attempts" value={stats.totalAttempts} />
+          <SummaryStatCard label="attempts" value={stats.totalAttempts} />
         </div>
       </div>
 
@@ -77,7 +77,7 @@ export default function ProfileHistorySection({
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {Object.entries(statsByLanguage).map(([language, attempt]) => (
-              <StatBreakdownCard
+              <BestResultCard
                 key={language}
                 label={getLanguageLabel(language)}
                 attempt={attempt}
@@ -94,7 +94,7 @@ export default function ProfileHistorySection({
             {Object.entries(statsByMode)
               .sort(([a], [b]) => (MODE_ORDER[a] ?? 99) - (MODE_ORDER[b] ?? 99))
               .map(([mode, attempt]) => (
-                <StatBreakdownCard key={mode} label={mode} attempt={attempt} />
+                <BestResultCard key={mode} label={mode} attempt={attempt} />
               ))}
           </div>
         </div>

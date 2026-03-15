@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
-import TypingMetricsDisplay from "./TypingMetricsDisplay";
-import TypingControlsPanel from "./TypingControlsPanel";
-import type { TypingStatusBarProps } from "./types";
+import LiveMetrics from "./LiveMetrics";
+import ControlsPanel from "./ControlsPanel";
+import type { TypingBarProps } from "./typingBar.types";
 
-export default function TypingStatusBar({
+export default function TypingBar({
   wpm = 0,
   accuracy = 0,
   language = "slang",
@@ -15,7 +15,7 @@ export default function TypingStatusBar({
   elapsed = 0,
   duration = 0,
   isTypingRunning = false,
-}: TypingStatusBarProps) {
+}: TypingBarProps) {
   const remaining = Math.max(0, duration - elapsed);
   const controlsOptions = [
     { label: "slang", disabled: slangDisabled },
@@ -33,15 +33,10 @@ export default function TypingStatusBar({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
-      {isTypingRunning && (
-        <TypingMetricsDisplay
-          wpm={wpm}
-          accuracy={accuracy}
-          remaining={remaining}
-        />
-      )}
-      {!isTypingRunning && (
-        <TypingControlsPanel
+      {isTypingRunning ? (
+        <LiveMetrics wpm={wpm} accuracy={accuracy} remaining={remaining} />
+      ) : (
+        <ControlsPanel
           language={language}
           mode={mode}
           slangDisabled={slangDisabled}

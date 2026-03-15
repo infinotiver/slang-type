@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { TbArrowLeft } from "react-icons/tb";
 import { useHistoryStats } from "@hooks/useHistoryStats";
-import { HistoryStatCard, StatBreakdownCard } from "@components/ui/stats";
+import { SummaryStatCard, BestResultCard } from "@components/ui/stats";
 import { ChartContainer } from "@components/ui/charts";
 import { AttemptListItem } from "@components/ui/lists";
 import type { TypingAttempt } from "@shared-types/index";
@@ -217,10 +217,7 @@ export default function HistoryPage() {
 
             {/* Action Button */}
             <div className="flex justify-center">
-              <Button
-                onClick={() => navigate("/")}
-                className="px-6 py-2"
-              >
+              <Button onClick={() => navigate("/")} className="px-6 py-2">
                 try again
               </Button>
             </div>
@@ -257,21 +254,21 @@ export default function HistoryPage() {
             {/* Key Stats */}
             <div className="mb-6 p-3 border border-secondary/35 rounded-xl bg-secondary/8">
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                <HistoryStatCard
+                <SummaryStatCard
                   label="best wpm"
                   value={stats.bestWpm}
                   highlight
                 />
-                <HistoryStatCard label="avg wpm" value={stats.avgWpm} />
-                <HistoryStatCard
+                <SummaryStatCard label="avg wpm" value={stats.avgWpm} />
+                <SummaryStatCard
                   label="best acc"
                   value={`${Math.round(stats.bestAccuracy)}%`}
                 />
-                <HistoryStatCard
+                <SummaryStatCard
                   label="total time"
                   value={formatTime(stats.totalTime)}
                 />
-                <HistoryStatCard label="attempts" value={stats.totalAttempts} />
+                <SummaryStatCard label="attempts" value={stats.totalAttempts} />
               </div>
             </div>
 
@@ -301,7 +298,7 @@ export default function HistoryPage() {
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {Object.entries(statsByLanguage).map(([lang, attempt]) => (
-                    <StatBreakdownCard
+                    <BestResultCard
                       key={lang}
                       label={getLanguageLabel(lang)}
                       attempt={attempt}
@@ -329,7 +326,7 @@ export default function HistoryPage() {
                       );
                     })
                     .map(([mode, attempt]) => (
-                      <StatBreakdownCard
+                      <BestResultCard
                         key={mode}
                         label={mode}
                         attempt={attempt}
