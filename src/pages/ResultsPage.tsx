@@ -4,192 +4,36 @@ import { TbArrowLeft } from "react-icons/tb";
 import { useResultsStats } from "@hooks/useResultsStats";
 import { Button } from "@components/ui/common";
 import useLocalStorage from "@hooks/useLocalStorage";
-import type { Language, Mode, TypingAttempt } from "@shared-types/index";
-import {
-  ComposedChart,
-  Line,
-  Scatter,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import type { ResultsPayload, TypingAttempt } from "@shared-types/index";
+import PerformanceChart from "@/components/results/PerformanceChart";
 
 interface ResultsLocationState {
-  results: {
-    id: string;
-    wpm: number;
-    accuracy: number;
-    errors: number;
-    elapsed: number;
-    totalTyped: number;
-    correctChars: number;
-    charStatus: Record<number, "pending" | "correct" | "incorrect">;
-    targetText: string;
-    mode: Mode;
-    language: Language;
-    isNewHighScore: boolean;
-    isBaseline: boolean;
-  };
+  results: ResultsPayload;
   highScore: number;
 }
 
-interface ChartPayload {
-  dataKey: string;
-  name: string;
-  value: number;
-}
-
-interface TooltipProps {
-  active?: boolean;
-  payload?: ChartPayload[];
-  label?: number;
-}
-
-function CustomTooltip({ active, payload, label }: TooltipProps) {
-  if (active && payload && payload.length) {
-    const colors: Record<string, string> = {
-      wpm: "#10b981",
-      accuracy: "#f59e0b",
-      errorsAtThisSecond: "rgb(239, 68, 68)",
-    };
-    const labels: Record<string, string> = {
-      wpm: "Adjusted WPM",
-      accuracy: "Accuracy",
-      errorsAtThisSecond: "Errors",
-    };
-
-    const filtered = payload.filter((entry) => labels[entry.dataKey]);
-
-    return (
-      <div className="bg-secondary border border-secondary/30 rounded-lg p-2 text-[11px] space-y-1">
-        <div className="text-foreground/70">{`s ${label}`}</div>
-        {filtered.map((entry, index) => (
-          <div key={index} className="flex items-center gap-2">
-            <div
-              className="w-2 h-2 rounded-full"
-              style={{ backgroundColor: colors[entry.dataKey] }}
-            />
-            <span className="text-foreground">{`${labels[entry.dataKey]}: ${entry.value}`}</span>
-          </div>
-        ))}
-      </div>
-    );
-  }
-  return null;
-}
-
-function CombinedPerformanceChart({
-  data,
-}: {
-  data: Array<{
-    name: number;
-    wpm: number;
-    accuracy: number;
-    errorRate: number;
-    errorsAtThisSecond?: number;
-    scaledErrors?: number;
-  }>;
-}) {
-  // Transform data: hide zero dots, and fallback to error-rate deltas when
-  // per-second buckets are empty (can happen with corrected mistakes).
-  const hasPerSecondErrors = data.some(
-    (point) => (point.errorsAtThisSecond ?? 0) > 0,
-  );
-
-  const chartData = data.map((point, index) => {
-    let errorsAtThisSecond = point.errorsAtThisSecond ?? 0;
-
-    if (!hasPerSecondErrors) {
-      const previousErrorRate = index > 0 ? data[index - 1].errorRate : 0;
-      const delta = Math.max(0, point.errorRate - previousErrorRate);
-      errorsAtThisSecond = delta > 0 ? Math.max(1, Math.round(delta)) : 0;
-    }
-
-    return {
-      ...point,
-      errorsAtThisSecond: errorsAtThisSecond > 0 ? errorsAtThisSecond : null,
-      scaledErrors: point.scaledErrors === 0 ? null : point.scaledErrors,
-    };
-  });
-
-  return (
-    <div>
-      <div className="border border-secondary/35 rounded-xl p-3 bg-secondary/8">
-        {chartData.length > 0 ? (
-          <ResponsiveContainer height={200}>
-            <ComposedChart data={chartData} responsive={true}>
-              <CartesianGrid
-                strokeDasharray="3 3"
-                stroke="rgb(75, 85, 99)"
-                opacity={0.25}
-              />
-              <XAxis
-                dataKey="name"
-                stroke="rgb(107, 114, 128)"
-                style={{ fontSize: "11px" }}
-                minTickGap={10}
-              />
-              <YAxis
-                yAxisId="left"
-                stroke="rgb(107, 114, 128)"
-                label={{ value: "WPM", angle: -90, position: "insideLeft" }}
-              />
-              <YAxis
-                yAxisId="right"
-                orientation="right"
-                stroke="rgb(107, 114, 128)"
-                style={{ fontSize: "11px" }}
-                label={{
-                  value: "Errors",
-                  angle: 90,
-                  position: "insideRight",
-                }}
-                allowDecimals={false}
-              />
-              <Tooltip content={<CustomTooltip />} />
-
-              <Line
-                yAxisId="left"
-                type="bump"
-                dataKey="wpm"
-                stroke="#10b981"
-                strokeWidth={4}
-                dot={true}
-                name="Adjusted WPM"
-              />
-              {/* <Line
-                yAxisId="right"
-                type="monotone"
-                dataKey="accuracy"
-                stroke="#f59e0b"
-                strokeWidth={2}
-                dot={false}
-                isAnimationActive={false}
-              /> */}
-              <Scatter
-                yAxisId="right"
-                dataKey="errorsAtThisSecond"
-                fill="rgb(239, 68, 68)"
-                isAnimationActive={false}
-              />
-            </ComposedChart>
-          </ResponsiveContainer>
-        ) : (
-          <div className="h-32 flex items-center justify-center text-xs text-foreground/40">
-            no data
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+const EMPTY_RESULTS: ResultsPayload = {
+  id: "",
+  wpm: 0,
+  accuracy: 0,
+  errors: 0,
+  elapsed: 0,
+  totalTyped: 0,
+  correctChars: 0,
+  charStatus: {},
+  targetText: "",
+  mode: "30s",
+  language: "slang",
+  isNewHighScore: false,
+  isBaseline: false,
+};
 
 export default function ResultsPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const state = location.state as ResultsLocationState;
+  const results = state?.results ?? EMPTY_RESULTS;
+
   const [, setAttempts] = useLocalStorage<TypingAttempt[]>(
     "slangtype_attempts",
     [],
@@ -207,20 +51,7 @@ export default function ResultsPage() {
     language,
     isNewHighScore,
     isBaseline,
-  } = state?.results || {
-    id: "",
-    wpm: 0,
-    accuracy: 0,
-    errors: 0,
-    elapsed: 0,
-    totalTyped: 0,
-    correctChars: 0,
-    charStatus: {},
-    mode: "30s",
-    language: "slang",
-    isNewHighScore: false,
-    isBaseline: false,
-  };
+  } = results;
 
   const stats = useResultsStats({
     elapsed,
@@ -239,8 +70,8 @@ export default function ResultsPage() {
     hasSavedAttemptRef.current = true;
 
     const attempt: TypingAttempt = {
-      id: state.results.id,
-      timestamp: Number(state.results.id.split("-")[0]) || Date.now(),
+      id: results.id,
+      timestamp: Number(results.id.split("-")[0]) || Date.now(),
       wpm: stats.netWpm,
       rawWpm: stats.grossWpm,
       adjustedWpm: stats.netWpm,
@@ -256,8 +87,8 @@ export default function ResultsPage() {
       charsPerSecond: Number.parseFloat(stats.charsPerSecond),
       consistency: stats.consistency,
       keystrokesPerSecond: Number.parseFloat(stats.keystrokesPerSecond),
-      targetText: state.results.targetText,
-      charStatus: state.results.charStatus,
+      targetText: results.targetText,
+      charStatus: results.charStatus,
       performanceData: stats.performanceData,
     };
 
@@ -267,6 +98,7 @@ export default function ResultsPage() {
     });
   }, [
     state,
+    results,
     setAttempts,
     stats.netWpm,
     stats.grossWpm,
@@ -358,7 +190,7 @@ export default function ResultsPage() {
           </div>
 
           <div className="flex-1">
-            <CombinedPerformanceChart data={stats.performanceData} />
+            <PerformanceChart data={stats.performanceData} />
           </div>
         </div>
 
