@@ -56,12 +56,7 @@ export default async function handler(req, res) {
         "keystrokes_per_second",
         "keystrokesPerSecond",
     ]);
-    const targetTextCol = pickColumn(columns, ["target_text", "targetText"]);
-    const charStatusCol = pickColumn(columns, ["char_status", "charStatus"]);
-    const performanceDataCol = pickColumn(columns, [
-        "performance_data",
-        "performanceData",
-    ]);
+    // Heavy payload columns intentionally omitted: target_text, char_status, performance_data
 
     const required = {
         idCol,
@@ -97,9 +92,6 @@ export default async function handler(req, res) {
             ${charsPerSecondCol ? `${q(charsPerSecondCol)}` : "NULL"} AS "charsPerSecond",
             ${consistencyCol ? `${q(consistencyCol)}` : "NULL"} AS "consistency",
             ${keystrokesPerSecondCol ? `${q(keystrokesPerSecondCol)}` : "NULL"} AS "keystrokesPerSecond",
-            ${targetTextCol ? `${q(targetTextCol)}` : "NULL"} AS "targetText",
-            ${charStatusCol ? `${q(charStatusCol)}` : "NULL"} AS "charStatus",
-            ${performanceDataCol ? `${q(performanceDataCol)}` : "NULL"} AS "performanceData",
             ${timestampCol ? `${q(timestampCol)}` : "now()"} AS "rawTimestamp"
         FROM typing_results
         WHERE ${q(userIdCol)} = $1
@@ -142,9 +134,6 @@ export default async function handler(req, res) {
                 row.keystrokesPerSecond == null
                     ? undefined
                     : Number(row.keystrokesPerSecond),
-            targetText: row.targetText == null ? undefined : String(row.targetText),
-            charStatus: row.charStatus ?? undefined,
-            performanceData: row.performanceData ?? undefined,
             timestamp,
         };
     });
