@@ -2,6 +2,8 @@ import { getPool } from "./db.js";
 
 const DEFAULT_DAILY_LIMIT = Number(process.env.AI_DAILY_TOKEN_LIMIT ?? 5000);
 
+const TODAY_SQL = "(now() at time zone 'UTC')::date";
+
 export function estimateTokens(theme, wordCount) {
     // simple conservative estimate
     const promptTokens = Math.ceil((String(theme ?? "").length + 220) / 4);
@@ -13,10 +15,16 @@ export async function consumeDailyTokens(userId, tokensToConsume) {
     const pool = getPool();
     const limit = DEFAULT_DAILY_LIMIT;
 
+    // Ensure stale rows are cleaned for this user (keep only today)
+    await pool.query(
+        `delete from ai_token_usage_daily where user_id = $1 and usage_date < ${TODAY_SQL}`,
+        [userId],
+    );
+
     const q = await pool.query(
         `
     insert into ai_token_usage_daily (user_id, usage_date, tokens_used)
-    values ($1, current_date, $2)
+    values ($1, ${TODAY_SQL}, $2)
     on conflict (user_id, usage_date)
     do update
       set tokens_used = ai_token_usage_daily.tokens_used + excluded.tokens_used,
@@ -39,8 +47,14 @@ export async function getDailyTokenQuota(userId) {
     const pool = getPool();
     const limit = DEFAULT_DAILY_LIMIT;
 
+    // Ensure stale rows are cleaned for this user (keep only today)
+    await pool.query(
+        `delete from ai_token_usage_daily where user_id = $1 and usage_date < ${TODAY_SQL}`,
+        [userId],
+    );
+
     const q = await pool.query(
-        `select tokens_used from ai_token_usage_daily where user_id = $1 and usage_date = current_date`,
+        `select tokens_used from ai_token_usage_daily where user_id = $1 and usage_date = ${TODAY_SQL}`,
         [userId],
     );
 
