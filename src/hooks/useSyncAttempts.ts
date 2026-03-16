@@ -34,12 +34,15 @@ export function useSyncAttempts() {
     setStatus("syncing");
     try {
       const result = await saveAttempts(local);
-      if (!result.ok || result.received !== local.length) {
+      // Server may legitimately skip duplicates (ON CONFLICT DO NOTHING),
+      // so only require ok:true — not an exact count match.
+      if (!result.ok) {
         throw new Error("sync_not_confirmed");
       }
       clearLocal();
       setStatus("done");
-    } catch {
+    } catch (err) {
+      console.error("[useSyncAttempts] sync failed:", err);
       setStatus("error");
     }
   }, []);

@@ -5,6 +5,7 @@ export interface SaveAttemptsResponse {
   ok: boolean;
   synced: number;
   received: number;
+  valid?: number;
 }
 
 export async function saveAttempts(
