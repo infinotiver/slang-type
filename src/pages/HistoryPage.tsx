@@ -1,12 +1,11 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { TbArrowLeft } from "react-icons/tb";
 import { useHistoryStats } from "@hooks/useHistoryStats";
 import { SummaryStatCard, BestResultCard } from "@components/ui/stats";
 import { ChartContainer } from "@components/ui/charts";
 import { AttemptListItem } from "@components/ui/lists";
 import type { TypingAttempt } from "@shared-types/index";
-import { Button } from "@components/ui/common";
+import { Button, TopBar } from "@components/ui/common";
 export default function HistoryPage() {
   const navigate = useNavigate();
   const [selectedAttemptId, setSelectedAttemptId] = useState<string | null>(
@@ -78,26 +77,10 @@ export default function HistoryPage() {
     return (
       <div className="bg-background text-foreground flex flex-col font-mono">
         {/* Detail Header */}
-        <header className="py-4 sm:py-5 border-b border-secondary/40">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setSelectedAttemptId(null)}
-              className="p-2 text-foreground/60 hover:text-highlight transition-colors active:scale-95 -ml-2"
-              aria-label="back"
-              title="back to history"
-            >
-              <TbArrowLeft size={24} className="text-inherit" />
-            </button>
-            <div>
-              <h1 className="text-lg sm:text-xl font-bold tracking-wider">
-                attempt details
-              </h1>
-              <p className="text-xs text-foreground/60 mt-1">
-                {formatDate(selectedAttempt.timestamp)}
-              </p>
-            </div>
-          </div>
-        </header>
+        <TopBar title="attempt details" onBack={() => setSelectedAttemptId(null)} />
+        <div className="px-2 sm:px-4 text-xs text-foreground/60 mt-1">
+          {formatDate(selectedAttempt.timestamp)}
+        </div>
 
         {/* Detail Content */}
         <main className="flex-1 py-4 sm:py-6 flex items-center justify-center">
@@ -231,21 +214,10 @@ export default function HistoryPage() {
   return (
     <div className="bg-background text-foreground flex flex-col font-mono">
       {/* Header */}
-      <header className="py-2 sm:py-3 border-b border-secondary/40">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => navigate("/")}
-            className="p-2 text-foreground/60 hover:text-highlight transition-colors active:scale-95 -ml-2"
-            aria-label="back"
-            title="back to typing"
-          >
-            <TbArrowLeft size={24} className="text-inherit" />
-          </button>
-          <h1 className="text-lg sm:text-xl font-bold tracking-wider">
-            history
-          </h1>
-        </div>
-      </header>
+      <TopBar title="history" onBack={() => navigate("/")} />
+      <div className="px-2 sm:px-4 text-xs text-foreground/60 mt-1">
+        review your typing attempts
+      </div>
 
       {/* Content */}
       <main className="flex-1 py-6 sm:py-7">

@@ -12,8 +12,8 @@ import {
   ProfileAccountCard,
   ProfileAttemptDetail,
   ProfileHistorySection,
-  ProfileTopBar,
 } from "@/components/profile";
+import { TopBar } from "@components/ui/common";
 import { fetchAiQuota, type AiQuota } from "@/api/profile";
 
 export default function ProfilePage() {
@@ -98,10 +98,7 @@ export default function ProfilePage() {
 
   return (
     <div className="bg-background text-foreground flex flex-col font-mono">
-      <ProfileTopBar
-        title={"profile"}
-        onBackHome={() => navigate("/")}
-      />
+      <TopBar title={"profile"} onBack={() => navigate("/")} />
 
       <main className="flex-1 py-4 sm:py-6 space-y-6">
         <ProfileAccountCard user={user} onLogout={handleLogout} />
