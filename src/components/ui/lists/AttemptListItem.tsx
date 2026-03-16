@@ -22,6 +22,7 @@ export default function AttemptListItem({
         <div className="text-foreground/70">{formatDate(attempt.timestamp)}</div>
         <div className="text-foreground/50 text-xs">
           {getLanguageLabel(attempt.language)} | {attempt.mode}
+          {attempt.aiGenerated ? " • AI" : ""}
         </div>
       </div>
       <div className="flex gap-4 ml-4 text-right whitespace-nowrap">

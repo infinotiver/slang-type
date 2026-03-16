@@ -26,6 +26,7 @@ const EMPTY_RESULTS: ResultsPayload = {
   language: "slang",
   isNewHighScore: false,
   isBaseline: false,
+  aiGenerated: false,
 };
 
 export default function ResultsPage() {
@@ -69,7 +70,7 @@ export default function ResultsPage() {
     if (!state?.results || hasSavedAttemptRef.current) return;
     hasSavedAttemptRef.current = true;
 
-    const attempt: TypingAttempt = {
+  const attempt: TypingAttempt = {
       id: results.id,
       timestamp: Number(results.id.split("-")[0]) || Date.now(),
       wpm: stats.netWpm,
@@ -90,6 +91,7 @@ export default function ResultsPage() {
       targetText: results.targetText,
       charStatus: results.charStatus,
       performanceData: stats.performanceData,
+      aiGenerated: Boolean(results.aiGenerated),
     };
 
     setAttempts((prev) => {
@@ -143,9 +145,15 @@ export default function ResultsPage() {
             </h2>
             <p className="text-xs text-foreground/60 mt-1 leading-tight">
               {language} / {mode} • {elapsed}s
+              {results.aiGenerated ? " • AI generated words" : ""}
             </p>
           </div>
           <div className="flex items-center gap-2">
+            {results.aiGenerated && (
+              <span className="px-3 py-1 text-[11px] uppercase tracking-[0.1em] rounded-full bg-highlight/15 text-highlight border border-highlight/40 shadow-sm">
+                AI generated
+              </span>
+            )}
             {isBaseline && (
               <div className="text-xs sm:text-sm text-foreground/70">
                 baseline established

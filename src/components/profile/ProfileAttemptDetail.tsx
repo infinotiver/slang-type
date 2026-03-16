@@ -37,6 +37,7 @@ export default function ProfileAttemptDetail({
             </h1>
             <p className="text-xs text-foreground/60 mt-1">
               {formatDate(attempt.timestamp)}
+              {attempt.aiGenerated ? " • AI generated" : ""}
             </p>
           </div>
         </div>

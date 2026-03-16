@@ -27,6 +27,7 @@ export default function HomePage() {
   const [customPassageText, setCustomPassageText] = useState<string | null>(
     null,
   );
+  const [aiGenerated, setAiGenerated] = useState(false);
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
   const geminiService = useMemo(() => createGeminiService(), []);
 
@@ -74,6 +75,7 @@ export default function HomePage() {
   const handleLanguageChange = (lang: string) => {
     setLanguage(lang as Language);
     setCustomPassageText(null);
+    setAiGenerated(false);
     engine.stop();
     engine.reset();
   };
@@ -82,6 +84,7 @@ export default function HomePage() {
   const handleModeChange = (newMode: string) => {
     setMode(newMode as Mode);
     setCustomPassageText(null);
+    setAiGenerated(false);
     engine.stop();
     engine.reset();
   };
@@ -89,6 +92,7 @@ export default function HomePage() {
   const handleAIWordsGenerated = (words: string[]) => {
     const newText = words.join(" ");
     setCustomPassageText(newText);
+    setAiGenerated(true);
     engine.stop();
     engine.reset();
     setIsAIModalOpen(false);
@@ -129,6 +133,7 @@ export default function HomePage() {
           mode={mode}
           language={language}
           highScore={highScore}
+          aiGenerated={aiGenerated}
           onResultsComplete={(resultsPayload: ResultsPayload) => {
             // Store results for high score update after navigation
             pendingResultsRef.current = resultsPayload;

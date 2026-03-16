@@ -50,6 +50,7 @@ export interface TypingAttempt {
     errorRate: number;
     errorsAtThisSecond: number;
   }>;
+  aiGenerated: boolean;
 }
 
 // Page state/context types
@@ -71,6 +72,7 @@ export interface ResultsPayload {
   language: Language;
   isNewHighScore: boolean;
   isBaseline: boolean;
+  aiGenerated?: boolean;
 }
 
 export interface SettingsModalProps {

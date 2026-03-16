@@ -45,6 +45,7 @@ interface TypingAreaProps {
   mode: Mode;
   language: Language;
   highScore: number;
+  aiGenerated?: boolean;
   onResultsComplete?: (results: ResultsPayload) => void;
   // Optional/unused props kept for structural integrity
   timer?: {
@@ -67,6 +68,7 @@ export default function TypingArea({
   mode,
   language,
   highScore,
+  aiGenerated = false,
   onResultsComplete,
 }: TypingAreaProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -128,6 +130,7 @@ export default function TypingArea({
       language,
       isNewHighScore: engine.wpm > highScore,
       isBaseline: highScore === 0,
+      aiGenerated,
     });
   }, [
     engine,
@@ -135,6 +138,7 @@ export default function TypingArea({
     highScore,
     language,
     mode,
+    aiGenerated,
     onResultsComplete,
     targetText,
   ]);
@@ -198,6 +202,13 @@ export default function TypingArea({
           transition={{ duration: 0.3, ease: "easeOut" }}
           onClick={() => inputRef.current?.focus()}
         >
+          {aiGenerated && (
+            <div className="absolute right-2 top-2 z-30">
+              <span className="px-3 py-1 text-[11px] uppercase tracking-[0.1em] rounded-full bg-highlight/15 text-highlight border border-highlight/40 shadow-sm">
+                AI generated
+              </span>
+            </div>
+          )}
           <div
             ref={scrollContainerRef}
             className="h-50 overflow-hidden p-2 sm:p-4 scroll-smooth"
