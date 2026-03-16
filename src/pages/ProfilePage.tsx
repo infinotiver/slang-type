@@ -14,11 +14,13 @@ import {
   ProfileHistorySection,
   ProfileTopBar,
 } from "@/components/profile";
+import { fetchAiQuota, type AiQuota } from "@/api/profile";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { status: syncStatus } = useSyncAttempts();
+  const [aiQuota, setAiQuota] = useState<AiQuota | null>(null);
 
   // Server attempts: null = not yet fetched, [] = empty
   const [serverAttempts, setServerAttempts] = useState<TypingAttempt[] | null>(
@@ -39,6 +41,9 @@ export default function ProfilePage() {
       .catch(() => {
         if (active) setServerAttempts([]);
       });
+    fetchAiQuota()
+      .then(setAiQuota)
+      .catch(() => setAiQuota(null));
     return () => {
       active = false;
     };
@@ -94,13 +99,18 @@ export default function ProfilePage() {
   return (
     <div className="bg-background text-foreground flex flex-col font-mono">
       <ProfileTopBar
-        title={user.username ?? user.email}
+        title={"profile"}
         onBackHome={() => navigate("/")}
       />
 
       <main className="flex-1 py-4 sm:py-6 space-y-6">
         <ProfileAccountCard user={user} onLogout={handleLogout} />
-
+        {aiQuota ? (
+          <div className="text-xs text-foreground/70 font-mono">
+            AI tokens today: {aiQuota.used} / {aiQuota.limit} • remaining:{" "}
+            {aiQuota.remaining} • reset: {aiQuota.resetAt}
+          </div>
+        ): <div className="text-xs text-foreground/70 font-mono">unable to fetch ai usage stats</div>}
         {syncStatus === "syncing" ? (
           <p className="text-xs text-foreground/50 font-mono">
             syncing local data to your account…

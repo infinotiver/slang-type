@@ -1,3 +1,6 @@
+import { consumeDailyTokens, estimateTokens } from "./_lib/aiQuota.js";
+import { parse } from "cookie";
+import { verifyToken } from "./_lib/auth.js";
 const MODEL = "gemini-2.5-flash-lite";
 const MAX_WORDS = 800;
 const MIN_WORDS = 5;
@@ -126,6 +129,27 @@ export default async function handler(req, res) {
         return json(res, 400, { error: "invalid_word_count" });
     }
 
+    const cookies = parse(req.headers.cookie || "");
+    const token = cookies.token;
+    if (!token) {
+        return json(res, 401, { error: "unauthorized" });
+    }
+
+    const payload = await verifyToken(token);
+    if (!payload?.userId) {
+        return json(res, 401, { error: "unauthorized" });
+    }
+
+    const estimatedTokens = estimateTokens(sanitizedTheme, wordCount);
+
+    const quota = await consumeDailyTokens(payload.userId, estimatedTokens);
+    if (!quota.ok) {
+        return json(res, 429, {
+            error: "token_quota_exceeded",
+            remaining: 0,
+            limit: quota.limit,
+        });
+    }
     const systemPrompt = `You are a word generator for a typing test application. Generate exactly ${requestedCount} unique, common English words related to the theme: "${sanitizedTheme}".
 
 Requirements:
@@ -211,6 +235,10 @@ Response format:
             words,
             theme: sanitizedTheme,
             timestamp: Date.now(),
+            quota: {
+                remaining: quota.remaining,
+                limit: quota.limit,
+            },
         });
     } catch {
         return json(res, 500, { error: "internal_error" });
