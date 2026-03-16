@@ -1,4 +1,5 @@
 import { parse } from "cookie";
+import { randomUUID } from "crypto";
 import { verifyToken } from "../_lib/auth.js";
 import { getPool } from "../_lib/db.js";
 
@@ -18,6 +19,14 @@ function isValidAttempt(a) {
         typeof a.timestamp === "number" &&
         (typeof a.aiGenerated === "boolean" || typeof a.aiGenerated === "undefined")
     );
+}
+
+const UUID_RE =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function ensureUuid(id) {
+    if (typeof id === "string" && UUID_RE.test(id)) return id;
+    return randomUUID();
 }
 
 /** Map an information_schema data_type string to the correct unnest() cast type. */
@@ -162,8 +171,9 @@ export default async function handler(req, res) {
         const tsIsTimestamp = String(columnMap.get(timestampCol) || "").toLowerCase().includes("timestamp");
 
         for (const a of valid) {
+            const normalizedId = ensureUuid(a.id);
             let i = 0;
-            arrays[i++].push(a.id);
+            arrays[i++].push(normalizedId);
             arrays[i++].push(payload.userId);
             arrays[i++].push(a.wpm);
             arrays[i++].push(a.accuracy);
