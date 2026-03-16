@@ -1,5 +1,9 @@
 {
   "git": {
     "deploymentEnabled": false
-  }
+  },
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
 }
