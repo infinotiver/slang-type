@@ -8,6 +8,6 @@ export interface OverviewStats {
 }
 
 export async function fetchOverviewStats(): Promise<OverviewStats> {
-  const { data } = await axios.get<OverviewStats>("/stats/overview");
+  const { data } = await axios.get<OverviewStats>("/stats");
   return data;
 }
