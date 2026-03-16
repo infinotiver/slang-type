@@ -1,5 +1,25 @@
 # slang-type
 
+## 0.3.0 - 2026-03-[insert date]
+
+### Minor Changes
+
+- ## Features
+
+  - Add full auth flow (JWT-based server routes, AuthProvider, protected pages, login/signup UI) [#0f36b29] [#4348626] [#cfb26f0] [#db84700] [#6a32f75]
+  - Add Gemini word generation proxy with daily token quota and profile quota display [#36dfd34] [#52ad829] [#7e19f11]
+  - Add overview stats API/typing stats improvements and shared top bar component reused across pages [#64fc0a8] [#7a15724]
+
+  ## Fixes
+
+  - Use POSTGRES_URL connection string and align stats endpoint paths [#cde4762] [#2e7f142]
+  - Tolerate duplicate result syncs and improve logging during sync [#b3d931e]
+
+  ## Others
+
+  - Drop heavy result payload fields to cut DB/storage bloat [#e595370]
+  - Standardize numeric/accuracy formatting and profile duration formatting [#8bf5f41] [#29fabf0] [#fec6f97]
+
 ## 0.2.2 - 2026-03-12
 
 ### Patch Changes
