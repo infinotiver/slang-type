@@ -1,6 +1,6 @@
 # slang-type
 
-## 0.3.0 - 2026-03-[insert date]
+## 0.3.0 - 2026-03-16
 
 ### Minor Changes
 
