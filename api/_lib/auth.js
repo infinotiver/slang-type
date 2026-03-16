@@ -24,3 +24,9 @@ export const verifyToken = async (token) => {
         return null;
     }
 };
+
+export const requireUser = async (req) => {
+    const token = req.cookies.token;
+    if (!token) return null;
+    return await verifyToken(token);
+};
