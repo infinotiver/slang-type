@@ -1,6 +1,6 @@
 // Language and Mode types
-export type Language = "slang" | "english" | "code";
-export type Mode = "15s" | "30s" | "60s" | "120s" | "inf";
+export type Language = "slang" | "english" | "code" | "ai";
+export type Mode = "15s" | "30s" | "60s" | "120s" | "inf" | "ai";
 export type Theme =
   | "dark"
   | "light"
@@ -17,7 +17,6 @@ export interface StatsAndControlsProps {
   accuracy: number;
   language: Language;
   mode: Mode;
-  slangDisabled: boolean;
   onLanguageChange: (lang: string) => void;
   onModeChange: (mode: string) => void;
 }

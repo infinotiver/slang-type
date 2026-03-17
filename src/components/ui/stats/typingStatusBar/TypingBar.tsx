@@ -8,7 +8,6 @@ export default function TypingBar({
   accuracy = 0,
   language = "slang",
   mode = "30s",
-  slangDisabled = false,
   onLanguageChange,
   onModeChange,
   onRequestAIWords,
@@ -18,9 +17,10 @@ export default function TypingBar({
 }: TypingBarProps) {
   const remaining = Math.max(0, duration - elapsed);
   const controlsOptions = [
-    { label: "slang", disabled: slangDisabled },
+    { label: "slang", disabled: false },
     { label: "english", disabled: false },
     { label: "code", disabled: false },
+    { label: "ai", disabled: false },
   ];
 
   const layoutClass =
@@ -39,7 +39,6 @@ export default function TypingBar({
         <ControlsPanel
           language={language}
           mode={mode}
-          slangDisabled={slangDisabled}
           controlsOptions={controlsOptions}
           onLanguageChange={onLanguageChange}
           onModeChange={onModeChange}

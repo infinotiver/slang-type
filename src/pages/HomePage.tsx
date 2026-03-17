@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
+import { Button } from "@components/ui/common";
 import { TypingBar } from "@components/ui/stats";
 import TypingArea from "@components/typing/TypingArea";
 import AIWordsModal from "@components/ui/modals/AIWordsModal";
@@ -52,13 +53,20 @@ export default function HomePage() {
   }, [highScore, setHighScore]);
 
   const targetWords = getTargetWordsForMode(mode);
+  const isAIMode = language === "ai";
+  const aiWordsReady = Boolean(customPassageText?.trim());
 
   // Generate passage text based on language and mode
   const generatedPassageText = useMemo(() => {
+    if (isAIMode) {
+      return "";
+    }
     return generatePhrase(language, targetWords);
-  }, [language, targetWords]);
+  }, [language, targetWords, isAIMode]);
 
-  const passageText = customPassageText ?? generatedPassageText;
+  const passageText = isAIMode
+    ? (customPassageText ?? "")
+    : (customPassageText ?? generatedPassageText);
 
   // Initialize timer with duration based on mode
   const durationSeconds = mode === "inf" ? null : Number(mode.replace("s", ""));
@@ -98,6 +106,21 @@ export default function HomePage() {
     setIsAIModalOpen(false);
   };
 
+  const openAIModal = () => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    setIsAIModalOpen(true);
+  };
+
+  // Automatically open AI modal when AI mode is selected and no words are ready
+  useEffect(() => {
+    if (isAIMode && !aiWordsReady && user) {
+      setTimeout(() => setIsAIModalOpen(true), 0);
+    }
+  }, [isAIMode, aiWordsReady, user]);
+
   return (
     <>
       {/* STATS & CONTROLS */}
@@ -107,16 +130,9 @@ export default function HomePage() {
           accuracy={engine.accuracy}
           language={language}
           mode={mode}
-          slangDisabled={false}
           onLanguageChange={handleLanguageChange}
           onModeChange={handleModeChange}
-          onRequestAIWords={() => {
-            if (!user) {
-              navigate("/login");
-              return;
-            }
-            setIsAIModalOpen(true);
-          }}
+          onRequestAIWords={openAIModal}
           elapsed={engine.elapsed}
           duration={durationSeconds || 0}
           isTypingRunning={engine.running}
@@ -125,27 +141,39 @@ export default function HomePage() {
 
       {/* TYPING AREA */}
       <main className="flex-1 flex flex-col items-center justify-center py-2 sm:py-3 md:py-4">
-        <TypingArea
-          targetText={passageText}
-          engine={engine}
-          timer={timer}
-          displayMode={context.displayMode}
-          mode={mode}
-          language={language}
-          highScore={highScore}
-          aiGenerated={aiGenerated}
-          onResultsComplete={(resultsPayload: ResultsPayload) => {
-            // Store results for high score update after navigation
-            pendingResultsRef.current = resultsPayload;
-            // Navigate to results page with state
-            navigate("/results", {
-              state: {
-                results: resultsPayload,
-                highScore: Math.max(highScore, resultsPayload.wpm),
-              },
-            });
-          }}
-        />
+        {isAIMode && !aiWordsReady ? (
+          <div className="w-full h-full my-auto max-w-3xl text-center px-4 space-y-3 flex  flex-col items-center justify-center">
+            <p className="text-xs">ai mode requires you to enter a prompt to generate test words. ai mode uses external llm api (google's gemini)</p>
+            <Button
+              onClick={openAIModal}
+              className="px-4 py-2 rounded-lg bg-highlight/10 text-highlight border border-highlight/40 text-sm font-semibold"
+            >
+              Generate with AI
+            </Button>
+          </div>
+        ) : (
+          <TypingArea
+            targetText={passageText}
+            engine={engine}
+            timer={timer}
+            displayMode={context.displayMode}
+            mode={mode}
+            language={language}
+            highScore={highScore}
+            aiGenerated={aiGenerated}
+            onResultsComplete={(resultsPayload: ResultsPayload) => {
+              // Store results for high score update after navigation
+              pendingResultsRef.current = resultsPayload;
+              // Navigate to results page with state
+              navigate("/results", {
+                state: {
+                  results: resultsPayload,
+                  highScore: Math.max(highScore, resultsPayload.wpm),
+                },
+              });
+            }}
+          />
+        )}
       </main>
 
       {/* AI Words Modal */}
