@@ -204,7 +204,7 @@ export default function TypingArea({
         >
           {aiGenerated && (
             <div className="absolute right-2 top-2 z-30">
-              <span className="px-3 py-1 text-[11px] uppercase tracking-[0.1em] rounded-full bg-highlight/15 text-highlight border border-highlight/40 shadow-sm">
+              <span className="px-3 py-1 text-xs uppercase rounded-md bg-highlight/15 text-highlight border border-highlight/10">
                 AI generated
               </span>
             </div>

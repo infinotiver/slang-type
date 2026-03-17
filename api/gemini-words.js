@@ -1,4 +1,4 @@
-import { consumeDailyTokens, estimateTokens } from "./_lib/aiQuota.js";
+import { consumeDailyRequests } from "./_lib/aiQuota.js";
 import { parse } from "cookie";
 import { verifyToken } from "./_lib/auth.js";
 const MODEL = "gemini-2.5-flash-lite";
@@ -140,12 +140,10 @@ export default async function handler(req, res) {
         return json(res, 401, { error: "unauthorized" });
     }
 
-    const estimatedTokens = estimateTokens(sanitizedTheme, wordCount);
-
-    const quota = await consumeDailyTokens(payload.userId, estimatedTokens);
+    const quota = await consumeDailyRequests(payload.userId);
     if (!quota.ok) {
         return json(res, 429, {
-            error: "token_quota_exceeded",
+            error: "request_quota_exceeded",
             remaining: 0,
             limit: quota.limit,
         });

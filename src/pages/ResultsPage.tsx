@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { TbArrowLeft } from "react-icons/tb";
 import { useResultsStats } from "@hooks/useResultsStats";
@@ -53,6 +53,7 @@ export default function ResultsPage() {
     isNewHighScore,
     isBaseline,
   } = results;
+  const [rejectReason, setRejectReason] = useState<string | null>(null);
 
   const stats = useResultsStats({
     elapsed,
@@ -70,7 +71,16 @@ export default function ResultsPage() {
     if (!state?.results || hasSavedAttemptRef.current) return;
     hasSavedAttemptRef.current = true;
 
-  const attempt: TypingAttempt = {
+    const reject = getRejectReason({
+      accuracy,
+      netWpm,
+      elapsed,
+      totalTyped,
+    });
+    setRejectReason(reject);
+    if (reject) return;
+
+    const attempt: TypingAttempt = {
       id: results.id,
       timestamp: Number(results.id.split("-")[0]) || Date.now(),
       wpm: stats.netWpm,
