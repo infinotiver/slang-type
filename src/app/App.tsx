@@ -8,8 +8,7 @@ import RootLayout from "../layouts/RootLayout";
 import HomePage from "@pages/HomePage";
 import ResultsPage from "@pages/ResultsPage";
 import NotFoundPage from "@pages/NotFoundPage";
-import LoginPage from "@/pages/LoginPage";
-import SignupPage from "@/pages/SignupPage";
+import AuthPage from "@/pages/AuthPage";
 import ProfilePage from "@/pages/ProfilePage";
 import { AuthProvider } from "@/components/auth/AuthContext";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
@@ -34,11 +33,11 @@ const router = createBrowserRouter([
       },
       {
         path: "login",
-        element: <LoginPage />,
+        element: <AuthPage />,
       },
       {
         path: "signup",
-        element: <SignupPage />,
+        element: <AuthPage />,
       },
       {
         path: "profile",
