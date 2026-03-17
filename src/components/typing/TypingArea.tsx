@@ -213,7 +213,7 @@ export default function TypingArea({
             ref={scrollContainerRef}
             className="h-50 overflow-hidden p-2 sm:p-4 scroll-smooth"
           >
-            <div className="flex flex-wrap text-2xl sm:text-4xl font-mono leading-[1.8] text-justify">
+            <div className="flex flex-wrap text-4xl font-mono leading-[1.8] text-justify">
               {words.map((w, wordIdx) => (
                 <span key={wordIdx} className="inline-block mr-[0.25em]">
                   {w.chars.map((c) => renderChar(c.char, c.index))}

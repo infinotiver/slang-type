@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { TbArrowLeft } from "react-icons/tb";
 import { useResultsStats } from "@hooks/useResultsStats";
@@ -77,7 +77,6 @@ export default function ResultsPage() {
     isNewHighScore,
     isBaseline,
   } = results;
-  const [rejectReason, setRejectReason] = useState<string | null>(null);
 
   const stats = useResultsStats({
     elapsed,
@@ -91,18 +90,16 @@ export default function ResultsPage() {
   const netWpm = stats.netWpm;
   const grossWpm = stats.grossWpm;
 
+  const rejectReason = useMemo(
+    () => getRejectReason({ accuracy, netWpm, elapsed, totalTyped }),
+    [accuracy, netWpm, elapsed, totalTyped],
+  );
+
   useEffect(() => {
     if (!state?.results || hasSavedAttemptRef.current) return;
     hasSavedAttemptRef.current = true;
 
-    const reject = getRejectReason({
-      accuracy,
-      netWpm,
-      elapsed,
-      totalTyped,
-    });
-    setRejectReason(reject);
-    if (reject) return;
+    if (rejectReason) return;
 
     const attempt: TypingAttempt = {
       id: results.id,
@@ -151,6 +148,7 @@ export default function ResultsPage() {
     language,
     totalTyped,
     correctChars,
+    rejectReason,
   ]);
 
   if (!state || !state.results) {
@@ -184,7 +182,7 @@ export default function ResultsPage() {
           </div>
           <div className="flex items-center gap-2">
             {results.aiGenerated && (
-              <span className="px-3 py-1 text-[11px] uppercase tracking-[0.1em] rounded-full bg-highlight/15 text-highlight border border-highlight/40 shadow-sm">
+              <span className="px-3 py-1 text-[11px] uppercase tracking-widest rounded-full bg-highlight/15 text-highlight border border-highlight/40 shadow-sm">
                 AI generated
               </span>
             )}

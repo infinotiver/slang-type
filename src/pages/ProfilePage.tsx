@@ -102,14 +102,12 @@ export default function ProfilePage() {
 
       <main className="flex-1 py-4 sm:py-6 space-y-6">
         <ProfileAccountCard user={user} onLogout={handleLogout} />
-        <div class="flex flex-wrap items-center gap-3 text-xs text-foreground/70 font-mono border border-secondary/40 bg-secondary/10 px-3 py-2 rounded-lg">
+        <div className="flex flex-wrap items-center gap-3 text-xs text-foreground/70 font-mono border border-secondary/40 bg-secondary/10 px-3 py-2 rounded-lg">
           {aiQuota ? (
             <>
-              <span class="px-2 py-1 rounded-full bg-highlight/15 text-highlight border border-highlight/30 text-[11px] tracking-wide uppercase">
-                AI requests
-              </span>
+              <span className="px-2 py-1 rounded-full">AI requests:</span>
               <span>
-                {aiQuota.used} / {aiQuota.limit} today • remaining: {aiQuota.remaining} • reset: {aiQuota.resetAt}
+                {aiQuota.used} / {aiQuota.limit} today &bull;  reset: {aiQuota.resetAt}
               </span>
             </>
           ) : (
