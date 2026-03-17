@@ -12,11 +12,11 @@ interface ControlsPanelProps {
 const modeOptions = ["15s", "30s", "60s", "120s", "inf"];
 
 const wrapperClass =
-  "w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl bg-secondary/50 px-1 py-1";
+  "w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl px-1 py-1";
 const segmentClass =
-  "w-full sm:w-auto flex items-center gap-1 rounded-lg bg-background/50 p-1";
+  "sm:w-full sm:w-auto flex items-center gap-1 rounded-lg bg-secondary/50 p-1";
 const selectClass =
-  "sm:hidden w-full px-3 py-2 bg-background/60 border border-secondary/40 text-sm font-mono text-foreground rounded-md hover:bg-secondary/15 transition-colors focus:outline-none focus:ring-1 focus:ring-highlight/20";
+  "sm:hidden w-auto px-2 py-1 bg-background border border-secondary/60 text-sm font-mono text-foreground rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-highlight/40 hover:bg-secondary/20 transition-colors";
 const baseButtonClass =
   "px-3 py-1.5 rounded-md text-xs tracking-wide border border-transparent transition-colors duration-150";
 const activeButtonClass =
@@ -107,8 +107,6 @@ export default function ControlsPanel({
           onSelect={onModeChange}
         />
       </div>
-
-     
     </div>
   );
 }
