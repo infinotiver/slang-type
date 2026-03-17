@@ -12,6 +12,30 @@ interface ResultsLocationState {
   results: ResultsPayload;
 }
 
+function getRejectReason({
+  accuracy,
+  netWpm,
+  elapsed,
+  totalTyped,
+}: {
+  accuracy: number;
+  netWpm: number;
+  elapsed: number;
+  totalTyped: number;
+}) {
+  if (accuracy < 50) {
+    return "Test accuracy is too low to keep (needs ≥50%).";
+  }
+  if (netWpm < 10) {
+    return "Speed is too low to keep (WPM under 10).";
+  }
+  const charsPerSecond = elapsed > 0 ? totalTyped / elapsed : 0;
+  if (elapsed >= 40 && charsPerSecond < 0.4) {
+    return "Too much idle time during the test.";
+  }
+  return null;
+}
+
 const EMPTY_RESULTS: ResultsPayload = {
   id: "",
   wpm: 0,
@@ -179,6 +203,11 @@ export default function ResultsPage() {
             </Button>
           </div>
         </div>
+        {rejectReason && (
+          <div className="max-w-5xl mx-auto px-4 sm:px-0 text-xs text-red-400 font-mono border border-red-400/30 bg-red-500/5 rounded-xl py-2 mb-4">
+            {rejectReason}
+          </div>
+        )}
 
         <div className="flex flex-col md:flex-row gap-6 flex-1">
           <div className="lg:w-50 flex flex-col gap-6 shrink-0">
