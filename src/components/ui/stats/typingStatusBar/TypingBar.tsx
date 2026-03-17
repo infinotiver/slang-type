@@ -18,9 +18,9 @@ export default function TypingBar({
   const remaining = Math.max(0, duration - elapsed);
   const controlsOptions = [
     { label: "slang", disabled: false },
+    { label: "ai", disabled: false },
     { label: "english", disabled: false },
     { label: "code", disabled: false },
-    { label: "ai", disabled: false },
   ];
 
   const layoutClass =

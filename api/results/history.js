@@ -56,7 +56,6 @@ export default async function handler(req, res) {
         "keystrokes_per_second",
         "keystrokesPerSecond",
     ]);
-    const aiGeneratedCol = pickColumn(columns, ["ai_generated", "aiGenerated"]);
    
 
     const required = {
@@ -93,7 +92,6 @@ export default async function handler(req, res) {
             ${charsPerSecondCol ? `${q(charsPerSecondCol)}` : "NULL"} AS "charsPerSecond",
             ${consistencyCol ? `${q(consistencyCol)}` : "NULL"} AS "consistency",
             ${keystrokesPerSecondCol ? `${q(keystrokesPerSecondCol)}` : "NULL"} AS "keystrokesPerSecond",
-            ${aiGeneratedCol ? `${q(aiGeneratedCol)}` : "false"} AS "aiGenerated",
             ${timestampCol ? `${q(timestampCol)}` : "now()"} AS "rawTimestamp"
         FROM typing_results
         WHERE ${q(userIdCol)} = $1
@@ -136,7 +134,6 @@ export default async function handler(req, res) {
                 row.keystrokesPerSecond == null
                     ? undefined
                     : Number(row.keystrokesPerSecond),
-            aiGenerated: Boolean(row.aiGenerated),
             timestamp,
         };
     });

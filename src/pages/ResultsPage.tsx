@@ -95,11 +95,27 @@ export default function ResultsPage() {
     [accuracy, netWpm, elapsed, totalTyped],
   );
 
+  const reportGlobalUsage = async () => {
+    try {
+      await fetch("/api/stats/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          elapsed,
+          totalTyped,
+        }),
+      });
+    } catch {
+      // best-effort only
+    }
+  };
+
   useEffect(() => {
     if (!state?.results || hasSavedAttemptRef.current) return;
     hasSavedAttemptRef.current = true;
 
     if (rejectReason) return;
+    void reportGlobalUsage();
 
     const attempt: TypingAttempt = {
       id: results.id,

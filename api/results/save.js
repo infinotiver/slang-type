@@ -16,8 +16,7 @@ function isValidAttempt(a) {
         typeof a.accuracy === "number" &&
         typeof a.mode === "string" &&
         typeof a.language === "string" &&
-        typeof a.timestamp === "number" &&
-        (typeof a.aiGenerated === "boolean" || typeof a.aiGenerated === "undefined")
+        typeof a.timestamp === "number"
     );
 }
 
@@ -79,7 +78,6 @@ export default async function handler(req, res) {
                 ALTER TABLE typing_results ADD COLUMN IF NOT EXISTS chars_per_second NUMERIC(10,4);
                 ALTER TABLE typing_results ADD COLUMN IF NOT EXISTS consistency NUMERIC(6,3);
                 ALTER TABLE typing_results ADD COLUMN IF NOT EXISTS keystrokes_per_second NUMERIC(10,4);
-                ALTER TABLE typing_results ADD COLUMN IF NOT EXISTS ai_generated BOOLEAN; -- <--
             EXCEPTION WHEN OTHERS THEN
                 NULL; -- Ignore permission/schema errors, proceed with existing columns.
             END;
@@ -124,7 +122,6 @@ export default async function handler(req, res) {
             "keystrokes_per_second",
             "keystrokesPerSecond",
         ]);
-        const aiGeneratedCol = pickColumn(columns, ["ai_generated", "aiGenerated"]); // <--
 
         // Heavy payload columns intentionally ignored to reduce storage:
         // target_text, char_status, performance_data
@@ -158,7 +155,6 @@ export default async function handler(req, res) {
             col(charsPerSecondCol),
             col(consistencyCol),
             col(keystrokesPerSecondCol),
-            col(aiGeneratedCol), // <--
             col(timestampCol),
         ].filter(Boolean);
 
@@ -190,7 +186,6 @@ export default async function handler(req, res) {
             if (charsPerSecondCol) arrays[i++].push(a.charsPerSecond ?? null);
             if (consistencyCol) arrays[i++].push(a.consistency ?? null);
             if (keystrokesPerSecondCol) arrays[i++].push(a.keystrokesPerSecond ?? null);
-            if (aiGeneratedCol) arrays[i++].push(Boolean(a.aiGenerated)); // <--
             if (timestampCol) arrays[i++].push(tsIsTimestamp ? new Date(a.timestamp) : a.timestamp);
         }
 
