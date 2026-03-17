@@ -50,7 +50,7 @@ export default function RootLayout() {
       <ScrollRestoration />
       <Analytics />
       {/* FOOTER - always visible */}
-      <footer className="py-2 sm:py-4">
+      <footer className="py-4 sm:py-6">
         <div className="px-4 sm:px-8 md:px-12 mx-auto w-full">
           <div className="flex justify-between items-center gap-2 text-xs font-mono text-foreground/50">
             <button
