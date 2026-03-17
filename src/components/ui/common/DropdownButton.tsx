@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import Button from "./Button";
 
 interface DropdownButtonProps {
@@ -20,7 +20,7 @@ export default function DropdownButton({
     <Button
       onClick={onClick}
       aria-label={ariaLabel}
-      className={`w-full flex items-center gap-2 text-sm py-2 font-semibold text-foreground/80 hover:text-highlight hover:bg-highlight/20 transition-colors border-none bg-transparent rounded-[inherit] ${className}`}
+      className={`w-full flex items-center gap-2 text-sm py-2 font-semibold text-foreground! bg-secondary/20  hover:bg-accent transition-colors border-none rounded-[inherit] ${className}`}
     >
       {icon}
       <span>{children}</span>
