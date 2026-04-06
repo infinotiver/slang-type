@@ -1,5 +1,28 @@
 # slang-type
 
+## 0.3.1 - 2026-04-07
+
+### Patch Changes
+
+  ### Features
+
+  - implement global usage tracking and summary table
+  - unified auth page
+  - log out using dropdown
+  - move header controls to a dropdown
+  - make AI a native mode
+  - test checks before saving
+  - migrate DB usage tracking fully to requests instead of token usage
+  - add Vercel routes for hosting
+  - flag and display AI-generated sessions across app
+
+  ### Fixes
+
+  - update class attributes
+  - standardize date handling in token queries
+  - ensure attempt IDs are converted to proper UUIDs
+  - remove routes in Vercel
+
 ## 0.3.0 - 2026-03-16
 
 ### Minor Changes
