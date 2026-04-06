@@ -20,7 +20,7 @@ export default function DropdownButton({
     <Button
       onClick={onClick}
       aria-label={ariaLabel}
-      className={`w-full flex items-center gap-2 text-sm py-2 font-semibold text-foreground! bg-secondary/20  hover:bg-accent transition-colors border-none rounded-[inherit] ${className}`}
+      className={`w-full flex items-center gap-2 px-4 py-2 text-sm font-semibold text-foreground/80 bg-secondary hover:bg-highlight/20 transition-colors border-none rounded-none ${className}`}
     >
       {icon}
       <span>{children}</span>

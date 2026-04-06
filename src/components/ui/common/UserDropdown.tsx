@@ -61,36 +61,38 @@ export default function UserDropdown({
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 8 }}
-          className="absolute right-0 top-full z-50 mt-2 w-48 bg-secondary/50 rounded-lg text-foreground flex flex-col divide-y divide-secondary items-start"
+          className="absolute right-0 top-full z-50 mt-2 w-48 text-foreground flex flex-col items-stretch"
         >
-          <div className="px-4 py-2 w-full flex items-center gap-2 text-sm  font-mono rounded-[inherit]">
-            <Trophy size={18} />
-            <span>best:</span>
+          <div className="mb-3 w-full rounded-lg border border-secondary/40 bg-secondary px-4 py-2 flex items-center gap-2 text-sm font-mono text-foreground/80">
+            <Trophy size={18} className="text-highlight shrink-0" />
+            <span className="shrink-0">best:</span>
             <span className="text-highlight font-bold">{highScore}</span>
           </div>
-          <DropdownButton
-            icon={user ? <User size={18} /> : <LogIn size={18} />}
-            onClick={() => navigate(user ? "/profile" : "/login")}
-            ariaLabel={user ? "view profile" : "sign in"}
-          >
-            {user ? "view profile" : "sign in"}
-          </DropdownButton>
-          <DropdownButton
-            icon={<Settings size={18} />}
-            onClick={onSettingsOpen}
-            ariaLabel="settings"
-          >
-            settings
-          </DropdownButton>
-          {user && (
+          <div className="w-full rounded-lg border border-secondary/40 overflow-hidden divide-y divide-secondary/40 bg-transparent">
             <DropdownButton
-              icon={<LogOutIcon size={18} />}
-              onClick={handleLogout}
-              ariaLabel="log out"
+              icon={user ? <User size={18} /> : <LogIn size={18} />}
+              onClick={() => navigate(user ? "/profile" : "/login")}
+              ariaLabel={user ? "view profile" : "sign in"}
             >
-              log out
+              {user ? "view profile" : "sign in"}
             </DropdownButton>
-          )}
+            <DropdownButton
+              icon={<Settings size={18} />}
+              onClick={onSettingsOpen}
+              ariaLabel="settings"
+            >
+              settings
+            </DropdownButton>
+            {user && (
+              <DropdownButton
+                icon={<LogOutIcon size={18} />}
+                onClick={handleLogout}
+                ariaLabel="log out"
+              >
+                log out
+              </DropdownButton>
+            )}
+          </div>
         </motion.div>
       )}
     </div>
