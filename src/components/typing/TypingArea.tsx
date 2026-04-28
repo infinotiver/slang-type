@@ -75,7 +75,6 @@ export default function TypingArea({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const activeCharRef = useRef<HTMLSpanElement>(null);
   const completionHandledRef = useRef(false);
-  const lastTopRef = useRef(0);
 
   // 1. Memoize text processing
   const words = useMemo((): Word[] => {
@@ -92,15 +91,25 @@ export default function TypingArea({
 
   // 2. Browser-native scrolling
   useLayoutEffect(() => {
-    if (activeCharRef.current) {
-      const charTop = activeCharRef.current.offsetTop;
-      if (charTop !== lastTopRef.current) {
-        activeCharRef.current.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-        lastTopRef.current = charTop;
-      }
+    const active = activeCharRef.current;
+    const container = scrollContainerRef.current;
+    if (!active || !container) return;
+
+    const activeRect = active.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+
+    const isAbove = activeRect.top < containerRect.top + 32;
+    const isBelow = activeRect.bottom > containerRect.bottom - 32;
+
+    if (isAbove || isBelow) {
+      container.scrollTo({
+        top:
+          container.scrollTop +
+          (activeRect.top - containerRect.top) -
+          container.clientHeight / 2 +
+          active.clientHeight / 2,
+        behavior: "smooth",
+      });
     }
   }, [engine.cursor]);
 
@@ -227,20 +236,19 @@ export default function TypingArea({
           <AnimatePresence>
             {showStartOrResumeOverlay && (
               <motion.div
-                className="absolute inset-0 z-20  bg-background/80 flex items-center justify-center"
+                className="absolute inset-0 z-20 bg-background/80 flex items-center justify-center"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
+                transition={{ duration: 0.15, ease: "easeOut" }}
               >
                 <motion.div
-                  
-                  initial={{ scale: 0.95 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.2 }}
+                  initial={{ scale: 0.98, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.98, opacity: 0 }}
+                  transition={{ duration: 0.15, ease: "easeOut" }}
                 >
                   <Button
-                    
                     onClick={() =>
                       engine.cursor > 0 ? engine.resume() : engine.start()
                     }
