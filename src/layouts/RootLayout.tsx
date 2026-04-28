@@ -31,14 +31,12 @@ export default function RootLayout() {
       </a>
       <div className="flex-1 flex flex-col">
         {/* Header always visible */}
-        <header className="px-2 py-4">
-          <div className="px-4 sm:px-8 md:px-12 mx-auto w-full">
-            <Header
-              theme={theme}
-              onThemeChange={setTheme}
-              highScore={highScore}
-            />
-          </div>
+        <header className="px-4 sm:px-8 md:px-12 mx-auto w-full">
+          <Header
+            theme={theme}
+            onThemeChange={setTheme}
+            highScore={highScore}
+          />
         </header>
         {/* Page content */}
         <main id="main-content" className="flex-1 px-2 py-2">

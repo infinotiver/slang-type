@@ -194,7 +194,7 @@ export default function TypingArea({
         autoFocus
       />
 
-      <div className="w-full max-w-6xl mx-auto flex flex-col items-center">
+      <div className="w-full mx-auto flex flex-col items-center">
         <motion.div
           className="relative w-full"
           initial={{ opacity: 0 }}
