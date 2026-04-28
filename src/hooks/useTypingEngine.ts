@@ -60,6 +60,23 @@ export default function useTypingEngine({
     if (!done && isComplete) setIsComplete(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cursor, length, mode, timer.expired, timer.elapsed]);
+
+  // resync on space after each word
+
+  const findNextWordStart = useCallback(
+    (fromIndex: number) => {
+      let i = fromIndex;
+
+      // move to space/end of current word
+      while (i < length && target[i] !== " ") i++;
+
+      // skip spaces
+      while (i < length && target[i] === " ") i++;
+      return i;
+    },
+    [length, target],
+  );
+
   const handleKey = useCallback(
     (e: { key: string }) => {
       if (isComplete) return;
@@ -83,6 +100,25 @@ export default function useTypingEngine({
         return;
       }
 
+      // Word-boundary resync
+      // If user presses space while misaligned, mark one error  and jump to next word.
+      if (key === " ") {
+        const idx = cursor;
+
+        if (idx < length && target[idx] == " ") {
+          statusRef.current[idx] = "correct";
+          correctRef.current += 1;
+          typedRef.current += 1;
+          setCursor((c) => c + 1);
+          return;
+        }
+        // misaligned space: fail current word, resync to next
+        typedRef.current += 1;
+        setErrors((s) => s + 1);
+        setCursor(findNextWordStart(idx));
+        return;
+      }
+      
       // start on first keystroke (only if not already started)
       if (!timer.running && !runningFlag && !paused) {
         timer.start();
