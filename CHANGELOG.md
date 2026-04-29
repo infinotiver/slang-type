@@ -1,27 +1,39 @@
 # slang-type
 
+## 0.3.2 - 2026-04-29
+
+### Patch Changes
+
+- ### Fixes
+  - An issue where typing one word wrong would shift the entire sentence and cause all subsequent words to be marked wrong, even if they were typed correctly. [#7b1bd35]
+  - Update favicon [#62fbcce]
+  - Simplify unncessarily complex words in English set [#44faf1f]
+  - Smooth scroll only when the screen is to be scrolled and not for each word typed [#a5e8de5c]
+  - Vercel routes and rewrites config
+  - Other minor fixes
+
 ## 0.3.1 - 2026-04-07
 
 ### Patch Changes
 
-  ### Features
+### Features
 
-  - implement global usage tracking and summary table
-  - unified auth page
-  - log out using dropdown
-  - move header controls to a dropdown
-  - make AI a native mode
-  - test checks before saving
-  - migrate DB usage tracking fully to requests instead of token usage
-  - add Vercel routes for hosting
-  - flag and display AI-generated sessions across app
+- implement global usage tracking and summary table
+- unified auth page
+- log out using dropdown
+- move header controls to a dropdown
+- make AI a native mode
+- test checks before saving
+- migrate DB usage tracking fully to requests instead of token usage
+- add Vercel routes for hosting
+- flag and display AI-generated sessions across app
 
-  ### Fixes
+### Fixes
 
-  - update class attributes
-  - standardize date handling in token queries
-  - ensure attempt IDs are converted to proper UUIDs
-  - remove routes in Vercel
+- update class attributes
+- standardize date handling in token queries
+- ensure attempt IDs are converted to proper UUIDs
+- remove routes in Vercel
 
 ## 0.3.0 - 2026-03-16
 
