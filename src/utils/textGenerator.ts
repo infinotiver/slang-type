@@ -1,44 +1,25 @@
 import data from "../data/data.json";
+import code_js from "../data/code_js.json";
 
 interface TokenizedData {
   slang: string[];
   english: string[];
 }
 
-const jsSnippets = [
-  "const count = items.length ;",
-  "let total = 0 ;",
-  "for ( const value of list ) total += value ;",
-  "if ( user ) return user.name ;",
-  "const isReady = status === 'ready' ;",
-  "const id = Math.random ( ) ;",
-  "try { runTask ( ) ; } catch ( err ) { log ( err ) ; }",
-  "const msg = `hello ${name}` ;",
-  "function sum ( a , b ) { return a + b ; }",
-  "const result = value ?? fallback ;",
-  "obj.key = nextValue ;",
-  "const ok = Number.isFinite ( value ) ;",
-  "setTimeout ( update , 300 ) ;",
-  "const now = Date.now ( ) ;",
-  "const json = JSON.stringify ( payload ) ;",
-  "await fetch ( url ) ;",
-  "const parsed = JSON.parse ( raw ) ;",
-  "const hasItem = set.has ( key ) ;",
-];
-
 function normalizeText(text: string): string {
   return text
-    .toLowerCase() // Convert to lowercase
-    .replace(/[^a-z\s]/g, "") // Remove numbers and special characters
-    .trim(); // Remove extra spaces
+    .toLowerCase()
+    .replace(/[^a-z\s]/g, "")
+    .trim();
 }
 
-function generateJavaScriptPhrase(targetWords: number): string {
+function generateCodePhrase(targetWords: number): string {
+  const snippets = code_js.javascript;
   const tokens: string[] = [];
 
   while (tokens.length < targetWords) {
-    const randomIndex = Math.floor(Math.random() * jsSnippets.length);
-    const snippetTokens = jsSnippets[randomIndex].split(" ");
+    const randomIndex = Math.floor(Math.random() * snippets.length);
+    const snippetTokens = snippets[randomIndex].split(" ");
     tokens.push(...snippetTokens);
   }
 
@@ -50,7 +31,7 @@ export function generatePhrase(
   targetWords: number,
 ): string {
   if (type === "code") {
-    return generateJavaScriptPhrase(targetWords);
+    return generateCodePhrase(targetWords);
   }
 
   const words = data[type as keyof TokenizedData];
@@ -67,5 +48,5 @@ export function generatePhrase(
   }
 
   const phrase = result.join(" ");
-  return normalizeText(phrase); // Normalize the generated phrase
+  return normalizeText(phrase);
 }
