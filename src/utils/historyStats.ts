@@ -8,6 +8,9 @@ export interface HistoryStats {
   bestAccuracy: number;
   avgAccuracy: number;
   totalTime: number;
+  totalErrors: number;
+  totalCorrect: number;
+  overallErrorRate: number;
 }
 
 export interface StatsByLanguage {
@@ -39,6 +42,8 @@ export function calculateAllStats(attempts: TypingAttempt[]): AllStatsResult {
   let bestAccuracy = 0;
   let totalAccuracy = 0;
   let totalTime = 0;
+  let totalErrors = 0;
+  let totalCorrect = 0;
 
   const statsByLanguage: StatsByLanguage = {
     slang: null,
@@ -54,6 +59,8 @@ export function calculateAllStats(attempts: TypingAttempt[]): AllStatsResult {
     totalWpm += attempt.wpm;
     totalAccuracy += attempt.accuracy;
     totalTime += attempt.elapsed;
+    totalErrors += attempt.errors;
+    totalCorrect += attempt.correctChars;
 
     if (attempt.wpm > bestWpm) {
       bestWpm = attempt.wpm;
@@ -81,6 +88,11 @@ export function calculateAllStats(attempts: TypingAttempt[]): AllStatsResult {
     }
   }
 
+  const overallErrorRate =
+    totalCharsTyped > 0
+      ? Math.round(((totalCharsTyped - totalCorrect) / totalCharsTyped) * 100)
+      : 0;
+
   return {
     stats: {
       totalAttempts,
@@ -91,6 +103,9 @@ export function calculateAllStats(attempts: TypingAttempt[]): AllStatsResult {
       avgAccuracy:
         totalAttempts > 0 ? Math.round(totalAccuracy / totalAttempts) : 0,
       totalTime,
+      totalErrors,
+      totalCorrect,
+      overallErrorRate,
     },
     statsByLanguage,
     statsByMode,

@@ -247,6 +247,28 @@ export default function HistoryPage() {
               </div>
             </div>
 
+            {/* Error Stats */}
+            <div className="mb-6 p-3 border border-secondary/35 rounded-xl bg-secondary/8">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <SummaryStatCard
+                  label="avg accuracy"
+                  value={`${stats.avgAccuracy}%`}
+                />
+                <SummaryStatCard
+                  label="error rate"
+                  value={`${stats.overallErrorRate}%`}
+                />
+                <SummaryStatCard
+                  label="total errors"
+                  value={stats.totalErrors}
+                />
+                <SummaryStatCard
+                  label="correct chars"
+                  value={stats.totalCorrect}
+                />
+              </div>
+            </div>
+
             {/* Charts Section */}
             <div className="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
               <ChartContainer
