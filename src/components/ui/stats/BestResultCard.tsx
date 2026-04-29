@@ -12,7 +12,7 @@ export default function BestResultCard({
 }: BestResultCardProps) {
   return (
     <div className="p-3 border border-secondary/30 rounded bg-secondary/5 hover:bg-secondary/10 hover:border-highlight transition-colors">
-      <div className="text-xs font-semibold text-foreground/70 mb-2 capitalize">
+      <div className="text-xs font-semibold text-foreground mb-2 capitalize">
         {label}
       </div>
       {attempt ? (

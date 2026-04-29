@@ -31,7 +31,7 @@ export default function ProfileHistorySection({
   if (attempts.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-60">
-        <p className="text-sm text-foreground/70 text-center">
+        <p className="text-sm text-foreground text-center">
           no attempts yet — start typing to build your history!
         </p>
       </div>
@@ -74,7 +74,7 @@ export default function ProfileHistorySection({
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div>
-          <h2 className="text-xs font-mono text-foreground/70 mb-2 tracking-wider uppercase">
+          <h2 className="text-xs font-mono text-foreground mb-2 tracking-wider uppercase">
             by language
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -89,7 +89,7 @@ export default function ProfileHistorySection({
         </div>
 
         <div>
-          <h2 className="text-xs font-mono text-foreground/70 mb-2 tracking-wider uppercase">
+          <h2 className="text-xs font-mono text-foreground mb-2 tracking-wider uppercase">
             by mode
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -103,8 +103,8 @@ export default function ProfileHistorySection({
       </div>
 
       <div>
-        <h2 className="text-xs font-mono text-foreground/70 mb-2 tracking-wider uppercase">
-          attempts ({attempts.length})
+        <h2 className="text-xs font-mono text-foreground mb-2 tracking-wider uppercase">
+          attempts: ({attempts.length})
         </h2>
         <div className="space-y-0.5">
           {attempts.map((attempt) => (

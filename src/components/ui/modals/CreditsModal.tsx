@@ -82,7 +82,7 @@ export default function CreditsModal({ isOpen, onClose }: CreditsModalProps) {
             {technologies.map(({ label, Icon }) => (
               <li
                 key={label}
-                className="flex items-center gap-1.5 bg-secondary/10 border border-secondary/25 rounded px-2.5 py-1 text-xs font-mono text-foreground/70"
+                className="flex items-center gap-1.5 bg-secondary/10 border border-secondary/25 rounded px-2.5 py-1 text-xs font-mono text-foreground"
               >
                 <Icon size={12} className="text-highlight/80" />
                 {label}
@@ -100,20 +100,20 @@ export default function CreditsModal({ isOpen, onClose }: CreditsModalProps) {
           <p className="text-xs text-foreground/60 font-mono">loading...</p>
         ) : status === "ready" && stats ? (
           <ul className="grid grid-cols-2 gap-2">
-            <li className="flex items-center gap-1.5 bg-secondary/10 border border-secondary/25 rounded px-2.5 py-1 text-xs font-mono text-foreground/70">
+            <li className="flex items-center gap-1.5 bg-secondary/10 border border-secondary/25 rounded px-2.5 py-1 text-xs font-mono text-foreground">
               <Users size={12} className="text-highlight/80" />
               users: {stats.totalUsers}
             </li>
-            <li className="flex items-center gap-1.5 bg-secondary/10 border border-secondary/25 rounded px-2.5 py-1 text-xs font-mono text-foreground/70">
+            <li className="flex items-center gap-1.5 bg-secondary/10 border border-secondary/25 rounded px-2.5 py-1 text-xs font-mono text-foreground">
               <BarChart3 size={12} className="text-highlight/80" />
               tests: {stats.totalTests}
             </li>
-            <li className="flex items-center gap-1.5 bg-secondary/10 border border-secondary/25 rounded px-2.5 py-1 text-xs font-mono text-foreground/70">
+            <li className="flex items-center gap-1.5 bg-secondary/10 border border-secondary/25 rounded px-2.5 py-1 text-xs font-mono text-foreground">
               <Timer size={12} className="text-highlight/80" />
               typed:{" "}
               {formatDuration(stats.totalTypedSeconds, { showSeconds: false })}
             </li>
-            <li className="flex items-center gap-1.5 bg-secondary/10 border border-secondary/25 rounded px-2.5 py-1 text-xs font-mono text-foreground/70">
+            <li className="flex items-center gap-1.5 bg-secondary/10 border border-secondary/25 rounded px-2.5 py-1 text-xs font-mono text-foreground">
               <Sparkles size={12} className="text-highlight/80" />
               ai gens: {stats.totalAiGenerations}
             </li>

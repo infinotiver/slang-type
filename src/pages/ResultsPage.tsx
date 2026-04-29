@@ -170,7 +170,7 @@ export default function ResultsPage() {
   if (!state || !state.results) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <p className="text-foreground/70">No results to display</p>
+        <p className="text-foreground">No results to display</p>
       </div>
     );
   }
@@ -203,12 +203,12 @@ export default function ResultsPage() {
               </span>
             )}
             {isBaseline && (
-              <div className="text-xs sm:text-sm text-foreground/70">
+              <div className="text-xs sm:text-sm text-foreground">
                 baseline established
               </div>
             )}
             {isNewHighScore && !isBaseline && (
-              <div className="text-xs sm:text-sm text-foreground/70">
+              <div className="text-xs sm:text-sm text-foreground">
                 new high score
               </div>
             )}

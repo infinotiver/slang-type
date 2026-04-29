@@ -61,7 +61,7 @@ export default function AuthPage() {
                 Log in to unlock AI-powered features and save your results
               </p>
               <div>
-                <label className="block text-sm text-foreground/70 mb-1">
+                <label className="block text-sm text-foreground mb-1">
                   email
                 </label>
                 <input
@@ -73,7 +73,7 @@ export default function AuthPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm text-foreground/70 mb-1">
+                <label className="block text-sm text-foreground mb-1">
                   password
                 </label>
                 <input
@@ -101,7 +101,7 @@ export default function AuthPage() {
             </h2>
             <div className="space-y-3 grow">
               <div>
-                <label className="block text-sm text-foreground/70 mb-1">
+                <label className="block text-sm text-foreground mb-1">
                   username (optional)
                 </label>
                 <input
@@ -112,7 +112,7 @@ export default function AuthPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm text-foreground/70 mb-1">
+                <label className="block text-sm text-foreground mb-1">
                   email
                 </label>
                 <input
@@ -124,7 +124,7 @@ export default function AuthPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm text-foreground/70 mb-1">
+                <label className="block text-sm text-foreground mb-1">
                   password
                 </label>
                 <input

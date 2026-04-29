@@ -26,7 +26,7 @@ export default function ChartContainer({
 }: ChartContainerProps) {
   return (
     <div>
-      <h2 className="text-xs font-mono text-foreground/70 mb-2 tracking-wider uppercase">
+      <h2 className="text-xs font-mono text-foreground mb-2 tracking-wider uppercase">
         {title}
       </h2>
       <div className="border border-secondary/35 rounded-xl p-3 bg-secondary/8">

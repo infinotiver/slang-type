@@ -40,9 +40,7 @@ export default function LoginPage() {
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm text-foreground/70 mb-1">
-              email
-            </label>
+            <label className="block text-sm text-foreground mb-1">email</label>
             <input
               type="email"
               value={email}
@@ -54,7 +52,7 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label className="block text-sm text-foreground/70 mb-1">
+            <label className="block text-sm text-foreground mb-1">
               password
             </label>
             <input
@@ -78,7 +76,7 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <p className="text-sm text-foreground/70 mt-4">
+        <p className="text-sm text-foreground mt-4">
           no account?{" "}
           <Link to="/signup" className="text-highlight hover:underline">
             sign up

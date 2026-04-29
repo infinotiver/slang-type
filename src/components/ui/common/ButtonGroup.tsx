@@ -33,7 +33,7 @@ export default function ButtonGroup<T extends string>({
   return (
     <div>
       {label && (
-        <label className="block text-sm font-mono text-foreground/70 mb-2 tracking-wider">
+        <label className="block text-sm font-mono text-foreground mb-2 tracking-wider">
           {label}
         </label>
       )}

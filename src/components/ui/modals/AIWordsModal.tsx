@@ -111,7 +111,7 @@ export default function AIWordsModal({
             <span className="text-xs font-mono text-foreground/40 uppercase tracking-widest">
               mode
             </span>
-            <span className="text-xs font-mono text-foreground/70">{mode}</span>
+            <span className="text-xs font-mono text-foreground">{mode}</span>
           </div>
           <div className="mt-1 flex items-center justify-between">
             <span className="text-xs font-mono text-foreground/40 uppercase tracking-widest">
@@ -129,7 +129,10 @@ export default function AIWordsModal({
             <TbLock size={12} className="shrink-0 mt-0.5" />
             <span>
               Google may use your theme to{" "}
-              <a href="https://ai.google.dev/gemini-api/terms" className="text-highlight">
+              <a
+                href="https://ai.google.dev/gemini-api/terms"
+                className="text-highlight"
+              >
                 improve their AI models.
               </a>{" "}
               Don't submit personal info.
@@ -143,7 +146,7 @@ export default function AIWordsModal({
               disabled={loading}
               className="accent-highlight"
             />
-            <span className="group-hover:text-foreground/70 transition-colors">
+            <span className="group-hover:text-foreground transition-colors">
               i understand
             </span>
           </label>

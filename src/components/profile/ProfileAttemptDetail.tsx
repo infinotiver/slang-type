@@ -37,17 +37,17 @@ export default function ProfileAttemptDetail({
             </h1>
             <p className="text-xs text-foreground/60 mt-1">
               {formatDate(attempt.timestamp)}
-              {attempt.aiGenerated ? " • AI generated" : ""}
+              {attempt.aiGenerated ? " • ai generated" : ""}
             </p>
           </div>
         </div>
       </header>
 
       <main className="flex-1 py-4 sm:py-6">
-        <div className="mb-6 pb-6 border-b border-secondary/35">
+        <div className="mb-6 pb-6 border-b border-secondary/40">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <div className="text-xs text-foreground/70 tracking-wider font-light">
+              <div className="text-xs text-foreground tracking-wider font-light">
                 test type
               </div>
               <div className="text-sm font-mono">
@@ -55,7 +55,7 @@ export default function ProfileAttemptDetail({
               </div>
             </div>
             <div>
-              <div className="text-xs text-foreground/70 tracking-wider font-light">
+              <div className="text-xs text-foreground tracking-wider font-light">
                 duration
               </div>
               <div className="text-sm font-mono">{attempt.elapsed}s</div>
@@ -64,7 +64,7 @@ export default function ProfileAttemptDetail({
         </div>
 
         <div className="mb-6">
-          <h3 className="text-sm font-mono text-foreground/70 mb-4 tracking-wider">
+          <h3 className="text-sm font-mono text-foreground mb-4 tracking-wider">
             performance
           </h3>
           <div className="grid grid-cols-2 gap-4">
@@ -75,7 +75,7 @@ export default function ProfileAttemptDetail({
               { label: "time elapsed", value: `${attempt.elapsed}s` },
             ].map(({ label, value, highlight }) => (
               <div key={label}>
-                <div className="text-xs text-foreground/70 tracking-wider font-light">
+                <div className="text-xs text-foreground tracking-wider font-light">
                   {label}
                 </div>
                 <div
@@ -89,7 +89,7 @@ export default function ProfileAttemptDetail({
         </div>
 
         <div className="mb-6">
-          <h3 className="text-sm font-mono text-foreground/70 mb-4 tracking-wider">
+          <h3 className="text-sm font-mono text-foreground mb-4 tracking-wider">
             character stats
           </h3>
           <div className="grid grid-cols-2 gap-4">
@@ -119,7 +119,7 @@ export default function ProfileAttemptDetail({
               },
             ].map(({ label, value, className }) => (
               <div key={label}>
-                <div className="text-xs text-foreground/70 tracking-wider font-light">
+                <div className="text-xs text-foreground tracking-wider font-light">
                   {label}
                 </div>
                 <div className={`text-lg font-semibold ${className ?? ""}`}>

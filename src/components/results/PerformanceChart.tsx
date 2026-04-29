@@ -75,7 +75,7 @@ export default function PerformanceChart({ data }: PerformanceChartProps) {
               dataKey="wpm"
               stroke="#10b981"
               strokeWidth={4}
-              dot={true}
+              dot={false}
               name="Adjusted WPM"
             />
             <Scatter

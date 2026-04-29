@@ -40,7 +40,7 @@ export default function PerformanceTooltip({
 
   return (
     <div className="bg-secondary border border-secondary/30 rounded-lg p-2 text-[11px] space-y-1">
-      <div className="text-foreground/70">{`s ${label}`}</div>
+      <div className="text-foreground">{`s ${label}`}</div>
       {filtered.map((entry, index) => (
         <div
           key={`${entry.dataKey}-${index}`}

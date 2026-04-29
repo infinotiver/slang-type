@@ -77,7 +77,10 @@ export default function HistoryPage() {
     return (
       <div className="bg-background text-foreground flex flex-col font-mono">
         {/* Detail Header */}
-        <TopBar title="attempt details" onBack={() => setSelectedAttemptId(null)} />
+        <TopBar
+          title="attempt details"
+          onBack={() => setSelectedAttemptId(null)}
+        />
         <div className="px-2 sm:px-4 text-xs text-foreground/60 mt-1">
           {formatDate(selectedAttempt.timestamp)}
         </div>
@@ -89,7 +92,7 @@ export default function HistoryPage() {
             <div className="mb-6 pb-6 border-b border-secondary/35">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <div className="text-xs text-foreground/70 tracking-wider font-light">
+                  <div className="text-xs text-foreground tracking-wider font-light">
                     test type
                   </div>
                   <div className="text-sm font-mono">
@@ -98,7 +101,7 @@ export default function HistoryPage() {
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs text-foreground/70 tracking-wider font-light">
+                  <div className="text-xs text-foreground tracking-wider font-light">
                     duration
                   </div>
                   <div className="text-sm font-mono">
@@ -110,12 +113,12 @@ export default function HistoryPage() {
 
             {/* Performance Stats */}
             <div className="mb-6">
-              <h3 className="text-sm font-mono text-foreground/70 mb-4 tracking-wider">
+              <h3 className="text-sm font-mono text-foreground mb-4 tracking-wider">
                 performance
               </h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <div className="text-xs text-foreground/70 tracking-wider font-light">
+                  <div className="text-xs text-foreground tracking-wider font-light">
                     adjusted wpm
                   </div>
                   <div className="text-2xl font-bold text-highlight">
@@ -123,7 +126,7 @@ export default function HistoryPage() {
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs text-foreground/70 tracking-wider font-light">
+                  <div className="text-xs text-foreground tracking-wider font-light">
                     raw wpm
                   </div>
                   <div className="text-2xl font-bold text-secondary">
@@ -131,7 +134,7 @@ export default function HistoryPage() {
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs text-foreground/70 tracking-wider font-light">
+                  <div className="text-xs text-foreground tracking-wider font-light">
                     accuracy
                   </div>
                   <div className="text-2xl font-bold text-foreground">
@@ -139,7 +142,7 @@ export default function HistoryPage() {
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs text-foreground/70 tracking-wider font-light">
+                  <div className="text-xs text-foreground tracking-wider font-light">
                     time elapsed
                   </div>
                   <div className="text-2xl font-bold text-foreground">
@@ -151,12 +154,12 @@ export default function HistoryPage() {
 
             {/* Character Stats */}
             <div className="mb-6">
-              <h3 className="text-sm font-mono text-foreground/70 mb-4 tracking-wider">
+              <h3 className="text-sm font-mono text-foreground mb-4 tracking-wider">
                 character stats
               </h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <div className="text-xs text-foreground/70 tracking-wider font-light">
+                  <div className="text-xs text-foreground tracking-wider font-light">
                     total typed
                   </div>
                   <div className="text-lg font-semibold">
@@ -164,7 +167,7 @@ export default function HistoryPage() {
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs text-foreground/70 tracking-wider font-light">
+                  <div className="text-xs text-foreground tracking-wider font-light">
                     correct
                   </div>
                   <div className="text-lg font-semibold text-highlight">
@@ -172,7 +175,7 @@ export default function HistoryPage() {
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs text-foreground/70 tracking-wider font-light">
+                  <div className="text-xs text-foreground tracking-wider font-light">
                     errors
                   </div>
                   <div className="text-lg font-semibold text-red-500">
@@ -180,7 +183,7 @@ export default function HistoryPage() {
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs text-foreground/70 tracking-wider font-light">
+                  <div className="text-xs text-foreground tracking-wider font-light">
                     error rate
                   </div>
                   <div className="text-lg font-semibold">
@@ -265,7 +268,7 @@ export default function HistoryPage() {
             <div className="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* By Language - Grid Cards */}
               <div>
-                <h2 className="text-xs font-mono text-foreground/70 mb-2 tracking-wider uppercase">
+                <h2 className="text-xs font-mono text-foreground mb-2 tracking-wider uppercase">
                   by language
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -281,7 +284,7 @@ export default function HistoryPage() {
 
               {/* By Mode - Grid Cards */}
               <div>
-                <h2 className="text-xs font-mono text-foreground/70 mb-2 tracking-wider uppercase">
+                <h2 className="text-xs font-mono text-foreground mb-2 tracking-wider uppercase">
                   by mode
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -310,7 +313,7 @@ export default function HistoryPage() {
 
             {/* All Attempts */}
             <div>
-              <h2 className="text-xs font-mono text-foreground/70 mb-2 tracking-wider uppercase">
+              <h2 className="text-xs font-mono text-foreground mb-2 tracking-wider uppercase">
                 attempts ({allAttempts.length})
               </h2>
               <div className="space-y-0.5">
@@ -328,7 +331,7 @@ export default function HistoryPage() {
           </div>
         ) : (
           <div className="flex items-center justify-center min-h-96">
-            <p className="text-sm text-foreground/70 text-center">
+            <p className="text-sm text-foreground text-center">
               no attempts yet. start typing to build your history!
             </p>
           </div>

@@ -26,7 +26,7 @@ export default function LiveMetrics({
       transition={{ duration: 0.25 }}
     >
       <div className="flex flex-col items-center gap-1">
-        <span className="text-xs text-foreground/70 tracking-wider font-light">
+        <span className="text-xs text-foreground tracking-wider font-light">
           wpm
         </span>
         <span className="text-lg sm:text-xl font-bold text-foreground">
@@ -35,7 +35,7 @@ export default function LiveMetrics({
       </div>
       <div className="w-px h-9 sm:h-10 bg-secondary/35" />
       <div className="flex flex-col items-center gap-1">
-        <span className="text-xs text-foreground/70 tracking-wider font-light">
+        <span className="text-xs text-foreground tracking-wider font-light">
           acc
         </span>
         <span className="text-lg sm:text-xl font-bold text-foreground">
@@ -44,7 +44,7 @@ export default function LiveMetrics({
       </div>
       <div className="w-px h-9 sm:h-10 bg-secondary/35" />
       <div className="flex flex-col items-center gap-1">
-        <span className="text-xs text-foreground/70 tracking-wider font-light">
+        <span className="text-xs text-foreground tracking-wider font-light">
           time
         </span>
         <span className="text-lg sm:text-xl font-bold text-highlight">
