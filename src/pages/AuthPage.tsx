@@ -3,10 +3,33 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { isAxiosError } from "axios";
 import { useAuth } from "@/hooks/useAuth";
 
+export function isValidUsername(username: string): {
+  valid: boolean;
+  error?: string;
+} {
+  if (!username || username.length < 3) {
+    return { valid: false, error: "Username must be at least 3 characters" };
+  }
+  if (username.length > 20) {
+    return { valid: false, error: "Username must be at most 20 characters" };
+  }
+  if (/\s/.test(username)) {
+    return { valid: false, error: "Username cannot contain spaces" };
+  }
+  if (!/^[a-zA-Z0-9_\-@]+$/.test(username)) {
+    return {
+      valid: false,
+      error:
+        "Username can only contain letters, numbers, underscore (_), hyphen (-), and @ symbol",
+    };
+  }
+  return { valid: true };
+}
 export default function AuthPage() {
   const navigate = useNavigate();
   const { login, signup, user, loading } = useAuth();
   const [loggingIn, setLoggingIn] = useState(false);
+  const [usernameError, setUsernameError] = useState("");
 
   if (!loading && user) {
     return <Navigate to="/" replace />;
@@ -36,6 +59,17 @@ export default function AuthPage() {
     const password = formData.get("password") as string;
     const username = (formData.get("username") as string).trim() || undefined;
 
+    // Validate username if provided
+    if (username) {
+      const validation = isValidUsername(username);
+      if (!validation.valid) {
+        setUsernameError(validation.error || "Invalid username");
+        return;
+      }
+    }
+
+    setUsernameError("");
+
     try {
       await signup({ email, password, username });
       navigate("/", { replace: true });
@@ -44,6 +78,16 @@ export default function AuthPage() {
         console.error(error.response?.data?.error || "Signup failed");
       }
     }
+  };
+
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const username = e.target.value.trim();
+    if (!username) {
+      setUsernameError("");
+      return;
+    }
+    const validation = isValidUsername(username);
+    setUsernameError(validation.valid ? "" : validation.error || "");
   };
 
   const formBaseClass =
@@ -107,9 +151,13 @@ export default function AuthPage() {
                 <input
                   name="username"
                   type="text"
+                  onChange={handleUsernameChange}
                   className="w-full px-3 py-2 bg-secondary/20 border-none rounded outline-none focus:ring-1 focus:ring-highlight"
                   autoComplete="username"
                 />
+                {usernameError && (
+                  <p className="text-xs text-red-400 mt-1">{usernameError}</p>
+                )}
               </div>
               <div>
                 <label className="block text-sm text-foreground mb-1">
