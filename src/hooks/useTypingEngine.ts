@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { calculateAccuracy, calculateWPM } from "../utils/calculateStats";
+import useSound from "use-sound";
+import singleKeySound from "/singlekey.wav";
+import errorSound from "/error.mp3";
 
 export type Mode = "timed" | "inf";
 export type CharStatus = "pending" | "correct" | "incorrect";
@@ -45,7 +48,14 @@ export default function useTypingEngine({
   const rawWpm = calculateWPM(totalTyped, timer.elapsed);
   const accuracy = calculateAccuracy(totalTyped, errors);
   const wpm = Math.round((accuracy / 100) * rawWpm);
-  // internal: when a test is considered complete
+
+  // Sound effects - keep static to avoid re-initializing
+  const [keySound] = useSound(singleKeySound, {
+    volume: 0.4,
+    playbackRate: 1,
+    interrupt: true,
+  });
+  const [errorSoundPlay] = useSound(errorSound, { volume: 0.5 });
 
   useEffect(() => {
     const passageDone = cursor >= length && mode === "inf";
@@ -81,7 +91,6 @@ export default function useTypingEngine({
     (e: { key: string }) => {
       if (isComplete) return;
       const key = e.key;
-
       // Handle Escape for pause/resume
       if (key === "Escape") {
         if (runningFlag && !paused) {
@@ -109,16 +118,18 @@ export default function useTypingEngine({
           statusRef.current[idx] = "correct";
           correctRef.current += 1;
           typedRef.current += 1;
+          keySound();
           setCursor((c) => c + 1);
           return;
         }
         // misaligned space: fail current word, resync to next
         typedRef.current += 1;
         setErrors((s) => s + 1);
+        errorSoundPlay();
         setCursor(findNextWordStart(idx));
         return;
       }
-      
+
       // start on first keystroke (only if not already started)
       if (!timer.running && !runningFlag && !paused) {
         timer.start();
@@ -132,8 +143,13 @@ export default function useTypingEngine({
         if (idx < length) {
           const isCorrect = key === expected;
           statusRef.current[idx] = isCorrect ? "correct" : "incorrect";
-          if (isCorrect) correctRef.current += 1;
-          else setErrors((s) => s + 1);
+          if (isCorrect) {
+            correctRef.current += 1;
+            keySound();
+          } else {
+            setErrors((s) => s + 1);
+            errorSoundPlay();
+          }
           typedRef.current += 1;
           setCursor((c) => c + 1);
         } else {
@@ -171,7 +187,19 @@ export default function useTypingEngine({
     },
     // dependencies: cursor and runningFlag are read inside; keep minimal by not listing mutable refs
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [cursor, length, mode, allowExtra, timer, runningFlag, isComplete, paused],
+    [
+      cursor,
+      length,
+      mode,
+      allowExtra,
+      timer,
+      runningFlag,
+      isComplete,
+      paused,
+      keySound,
+      errorSoundPlay,
+      findNextWordStart,
+    ],
   );
   // external reset/start helpers
   const reset = useCallback(() => {
