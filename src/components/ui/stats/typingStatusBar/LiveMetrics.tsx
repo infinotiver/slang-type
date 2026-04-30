@@ -1,17 +1,11 @@
 import { motion } from "framer-motion";
 import { formatPercent } from "@/utils/numberFormat";
-
+import { formatTime } from "@/utils/timeFormat";
 interface LiveMetricsProps {
   wpm: number;
   accuracy: number;
   remaining: number;
 }
-
-const formatTime = (seconds: number): string => {
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-  return `${mins}:${secs.toString().padStart(2, "0")}`;
-};
 
 export default function LiveMetrics({
   wpm,
@@ -20,34 +14,34 @@ export default function LiveMetrics({
 }: LiveMetricsProps) {
   return (
     <motion.div
-      className="flex items-center justify-center gap-4 sm:gap-6 h-10 sm:h-12"
+      className="flex items-center justify-center gap-6 sm:gap-8 h-16 sm:h-20"
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
     >
       <div className="flex flex-col items-center gap-1">
-        <span className="text-xs text-foreground tracking-wider font-light">
+        <span className="text-sm text-foreground tracking-wider">
           wpm
         </span>
-        <span className="text-lg sm:text-xl font-bold text-foreground">
+        <span className="text-3xl sm:text-4xl font-black text-foreground">
           {wpm}
         </span>
       </div>
-      <div className="w-px h-9 sm:h-10 bg-secondary/35" />
+      <div className="w-px h-12 sm:h-14 bg-secondary/35" />
       <div className="flex flex-col items-center gap-1">
-        <span className="text-xs text-foreground tracking-wider font-light">
+        <span className="text-sm text-foreground tracking-wider">
           acc
         </span>
-        <span className="text-lg sm:text-xl font-bold text-foreground">
+        <span className="text-3xl sm:text-4xl font-black text-foreground">
           {formatPercent(accuracy)}
         </span>
       </div>
-      <div className="w-px h-9 sm:h-10 bg-secondary/35" />
+      <div className="w-px h-12 sm:h-14 bg-secondary/35" />
       <div className="flex flex-col items-center gap-1">
-        <span className="text-xs text-foreground tracking-wider font-light">
+        <span className="text-sm text-foreground tracking-wider">
           time
         </span>
-        <span className="text-lg sm:text-xl font-bold text-highlight">
+        <span className="text-3xl sm:text-4xl font-black text-highlight">
           {formatTime(remaining)}
         </span>
       </div>
