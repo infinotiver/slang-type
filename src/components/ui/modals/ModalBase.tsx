@@ -23,7 +23,7 @@ export default function ModalBase({
         <>
           {/* Backdrop */}
           <motion.div
-            className="fixed inset-0 z-40 bg-linear-to-br from-background/50 via-secondary/50 to-background/50 backdrop-blur-sm"
+            className="fixed inset-0 z-40 bg-background/40 backdrop-blur-sm"
             onClick={onClose}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
