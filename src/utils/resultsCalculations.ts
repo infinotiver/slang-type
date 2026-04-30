@@ -1,14 +1,14 @@
 // Utility functions for results calculations and charting
-// All calculations are mathematically sound and follow typing test conventions
+// Single source of truth for all results metrics
 
 export interface ResultStats {
   adjustedWpm: number;
   rawWpm: number;
   accuracy: number;
-  errorRate: string;
+  errorRate: number;
   incorrectChars: number;
-  timePerChar: string;
-  charsPerSecond: string;
+  timePerChar: number;
+  charsPerSecond: number;
 }
 
 export interface ChartDataPoint {
@@ -31,6 +31,39 @@ export interface WordMetrics {
   correctWords: number;
 }
 
+export interface ComputeResultsStatsInput {
+  elapsed: number;
+  totalTyped: number;
+  errors: number;
+  correctChars: number;
+  accuracy: number;
+  charStatus: Record<number, "pending" | "correct" | "incorrect">;
+}
+
+export interface UnifiedResultsStats {
+  netWpm: number;
+  grossWpm: number;
+  accuracy: number;
+  errorRate: number;
+  correctChars: number;
+  incorrectChars: number;
+  pendingChars: number;
+  wordsTyped: number;
+  correctWords: number;
+  timePerChar: number;
+  charsPerSecond: number;
+  consistency: number;
+  keystrokesPerSecond: number;
+  performanceData: Array<{
+    name: number;
+    wpm: number;
+    rawWpm: number;
+    accuracy: number;
+    errorRate: number;
+    errorsAtThisSecond: number;
+  }>;
+}
+
 /**
  * Calculate WPM based on 5 characters = 1 word standard
  * @param totalChars - Total characters typed
@@ -43,6 +76,11 @@ function calculateWpm(totalChars: number, minutesElapsed: number): number {
   return Math.round(wordsTyped / minutesElapsed);
 }
 
+function roundTo(value: number, decimals = 2): number {
+  const factor = Math.pow(10, decimals);
+  return Math.round(value * factor) / factor;
+}
+
 /**
  * Calculate error rate as percentage
  * @param totalTyped - Total characters typed
@@ -52,10 +90,10 @@ function calculateWpm(totalChars: number, minutesElapsed: number): number {
 function calculateErrorRate(
   totalTyped: number,
   incorrectChars: number,
-): string {
-  if (totalTyped <= 0) return "0.0";
+): number {
+  if (totalTyped <= 0) return 0;
   const rate = (incorrectChars / totalTyped) * 100;
-  return rate.toFixed(1);
+  return roundTo(rate, 1);
 }
 
 /**
@@ -64,9 +102,9 @@ function calculateErrorRate(
  * @param totalTyped - Total characters typed
  * @returns Time per character in seconds (formatted)
  */
-function calculateTimePerChar(elapsed: number, totalTyped: number): string {
-  if (totalTyped <= 0) return "0.00";
-  return (elapsed / totalTyped).toFixed(2);
+function calculateTimePerChar(charsPerSecond: number): number {
+  if (charsPerSecond <= 0) return 0;
+  return roundTo(1 / charsPerSecond, 2);
 }
 
 /**
@@ -75,9 +113,9 @@ function calculateTimePerChar(elapsed: number, totalTyped: number): string {
  * @param elapsed - Total time in seconds
  * @returns Characters per second (formatted)
  */
-function calculateCharsPerSecond(totalTyped: number, elapsed: number): string {
-  if (elapsed <= 0) return "0.00";
-  return (totalTyped / elapsed).toFixed(2);
+function calculateCharsPerSecondFromAdjustedWpm(adjustedWpm: number): number {
+  if (adjustedWpm <= 0) return 0;
+  return roundTo((adjustedWpm * 5) / 60, 2);
 }
 
 /**
@@ -88,11 +126,10 @@ function calculateCharsPerSecond(totalTyped: number, elapsed: number): string {
  */
 export function calculateConsistency(
   accuracy: number,
-  errorRate: string,
+  errorRate: number,
 ): number {
-  const errorNum = parseFloat(errorRate);
   // Combine accuracy and inverse error rate for a stability/consistency score
-  const inverseError = Math.max(0, 100 - errorNum);
+  const inverseError = Math.max(0, 100 - errorRate);
   const score = Math.round((accuracy + inverseError) / 2);
   return Math.max(0, Math.min(100, score));
 }
@@ -108,8 +145,8 @@ export function calculateWordMetrics(
   correctChars: number,
 ): WordMetrics {
   return {
-    wordsTyped: Math.round(totalTyped / 5),
-    correctWords: Math.round(correctChars / 5),
+    wordsTyped: Math.floor(totalTyped / 5),
+    correctWords: Math.floor(correctChars / 5),
   };
 }
 
@@ -132,8 +169,8 @@ export function calculateResultStats(
   const errorRate = calculateErrorRate(totalTyped, totalMistakes);
   const rawWpm = calculateWpm(totalTyped, minutesElapsed);
   const adjustedWpm = Math.round((Math.round(accuracy) / 100) * rawWpm);
-  const timePerChar = calculateTimePerChar(elapsed, totalTyped);
-  const charsPerSecond = calculateCharsPerSecond(totalTyped, elapsed);
+  const charsPerSecond = calculateCharsPerSecondFromAdjustedWpm(adjustedWpm);
+  const timePerChar = calculateTimePerChar(charsPerSecond);
 
   return {
     adjustedWpm,
@@ -263,6 +300,60 @@ export function generateWpmProgressionData(
   }
 
   return data;
+}
+
+export function computeResultsStats(
+  input: ComputeResultsStatsInput,
+): UnifiedResultsStats {
+  const { elapsed, totalTyped, errors, correctChars, charStatus } = input;
+
+  const normalizedAccuracy =
+    totalTyped > 0 ? roundTo((correctChars / totalTyped) * 100, 0) : 0;
+  const normalizedIncorrectChars = Math.max(0, totalTyped - correctChars);
+
+  const baseStats = calculateResultStats(
+    elapsed,
+    totalTyped,
+    errors,
+    normalizedAccuracy,
+    charStatus,
+  );
+  const statusCounts = countCharStatuses(charStatus);
+  const wordMetrics = calculateWordMetrics(totalTyped, correctChars);
+  const consistency = calculateConsistency(
+    normalizedAccuracy,
+    baseStats.errorRate,
+  );
+  const progression = generateWpmProgressionData(
+    elapsed,
+    totalTyped,
+    errors,
+    normalizedAccuracy,
+  );
+
+  return {
+    netWpm: baseStats.adjustedWpm,
+    grossWpm: baseStats.rawWpm,
+    accuracy: normalizedAccuracy,
+    errorRate: baseStats.errorRate,
+    correctChars,
+    incorrectChars: normalizedIncorrectChars,
+    pendingChars: statusCounts.pending,
+    wordsTyped: wordMetrics.wordsTyped,
+    correctWords: wordMetrics.correctWords,
+    timePerChar: baseStats.timePerChar,
+    charsPerSecond: baseStats.charsPerSecond,
+    consistency,
+    keystrokesPerSecond: baseStats.charsPerSecond,
+    performanceData: progression.map((point) => ({
+      name: point.time,
+      wpm: point.adjustedWpm,
+      rawWpm: point.rawWpm,
+      accuracy: point.accuracy,
+      errorRate: point.errorRate,
+      errorsAtThisSecond: point.errorsAtThisSecond,
+    })),
+  };
 }
 
 /**

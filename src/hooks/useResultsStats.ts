@@ -1,135 +1,28 @@
 import { useMemo } from "react";
 import {
-  calculateResultStats,
-  generateWpmProgressionData,
-  countCharStatuses,
-  calculateConsistency,
-  calculateWordMetrics,
+  computeResultsStats,
+  type ComputeResultsStatsInput,
+  type UnifiedResultsStats,
 } from "@utils/resultsCalculations";
 
-export interface ComputedStats {
-  // Core metrics
-  netWpm: number;
-  grossWpm: number;
-  accuracy: number;
-  errorRate: string;
+export type ComputedStats = UnifiedResultsStats;
 
-  // Character metrics
-  correctChars: number;
-  incorrectChars: number;
-  pendingChars: number;
-
-  // Word metrics
-  wordsTyped: number;
-  correctWords: number;
-
-  // Derived metrics
-  timePerChar: string;
-  charsPerSecond: string;
-  consistency: number;
-  keystrokesPerSecond: string;
-
-  // Chart data
-  performanceData: Array<{
-    name: number;
-    wpm: number;
-    rawWpm: number;
-    accuracy: number;
-    errorRate: number;
-    errorsAtThisSecond: number; // NEW
-  }>;
-}
-
-interface ResultsData {
-  elapsed: number;
-  totalTyped: number;
-  errors: number;
-  correctChars: number;
-  accuracy: number;
-  charStatus: Record<number, "pending" | "correct" | "incorrect">;
-}
+type ResultsData = ComputeResultsStatsInput;
 
 /**
  * Custom hook to compute all result statistics with proper memoization
  * Handles all calculation logic and returns clean, typed results
  */
 export function useResultsStats(data: ResultsData): ComputedStats {
-  const { elapsed, totalTyped, errors, accuracy, charStatus } = data;
-
-  // Calculate base statistics
-  const stats = useMemo(
-    () =>
-      calculateResultStats(elapsed, totalTyped, errors, accuracy, charStatus),
-    [elapsed, totalTyped, errors, accuracy, charStatus],
+  return useMemo(
+    () => computeResultsStats(data),
+    [
+      data.elapsed,
+      data.totalTyped,
+      data.errors,
+      data.correctChars,
+      data.accuracy,
+      data.charStatus,
+    ],
   );
-
-  // Count character statuses
-  const statusCounts = useMemo(
-    () => countCharStatuses(charStatus),
-    [charStatus],
-  );
-
-  // Calculate word metrics
-  const wordMetrics = useMemo(
-    () => calculateWordMetrics(totalTyped, statusCounts.correct),
-    [totalTyped, statusCounts.correct],
-  );
-
-  // Calculate consistency
-  const consistency = useMemo(
-    () => calculateConsistency(accuracy, stats.errorRate),
-    [accuracy, stats.errorRate],
-  );
-
-  // Generate chart data
-  const chartData = useMemo(
-    () => generateWpmProgressionData(elapsed, totalTyped, errors, accuracy),
-    [elapsed, totalTyped, errors, accuracy],
-  );
-
-  // Format chart data for display
-  const performanceData = useMemo(
-    () =>
-      chartData.map((point) => ({
-        name: point.time, // Time in seconds
-        wpm: point.adjustedWpm,
-        rawWpm: point.rawWpm,
-        accuracy: point.accuracy,
-        errorRate: point.errorRate,
-        errorsAtThisSecond: point.errorsAtThisSecond,
-      })),
-    [chartData],
-  );
-
-  // Calculate additional derived metrics
-  const keystrokesPerSecond = useMemo(
-    () => (totalTyped / Math.max(elapsed, 0.0167)).toFixed(2),
-    [totalTyped, elapsed],
-  );
-
-  return {
-    // Core metrics
-    netWpm: stats.adjustedWpm,
-    grossWpm: stats.rawWpm,
-    accuracy: stats.accuracy,
-    errorRate: stats.errorRate,
-
-    // Character metrics
-    correctChars: statusCounts.correct,
-    incorrectChars: statusCounts.incorrect,
-    pendingChars: statusCounts.pending,
-
-    // Word metrics
-    wordsTyped: wordMetrics.wordsTyped,
-    correctWords: wordMetrics.correctWords,
-
-    // Derived metrics
-    timePerChar: stats.timePerChar,
-    charsPerSecond: stats.charsPerSecond,
-    consistency,
-    keystrokesPerSecond,
-
-    // Chart data
-    performanceData,
-  };
 }

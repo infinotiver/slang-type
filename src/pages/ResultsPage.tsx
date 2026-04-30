@@ -1,12 +1,11 @@
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef, useMemo, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { TbArrowLeft } from "react-icons/tb";
 import { useResultsStats } from "@hooks/useResultsStats";
-import { Button } from "@components/ui/common";
 import useLocalStorage from "@hooks/useLocalStorage";
 import type { ResultsPayload, TypingAttempt } from "@shared-types/index";
 import PerformanceChart from "@/components/results/PerformanceChart";
-import { formatPercent, roundTo } from "@/utils/numberFormat";
+import { formatPercent } from "@/utils/numberFormat";
 
 interface ResultsLocationState {
   results: ResultsPayload;
@@ -16,12 +15,12 @@ function getRejectReason({
   accuracy,
   netWpm,
   elapsed,
-  totalTyped,
+  charsPerSecond,
 }: {
   accuracy: number;
   netWpm: number;
   elapsed: number;
-  totalTyped: number;
+  charsPerSecond: number;
 }) {
   if (accuracy < 50) {
     return "Test accuracy is too low to keep (needs ≥50%).";
@@ -29,7 +28,6 @@ function getRejectReason({
   if (netWpm < 10) {
     return "Speed is too low to keep (WPM under 10).";
   }
-  const charsPerSecond = elapsed > 0 ? totalTyped / elapsed : 0;
   if (elapsed >= 40 && charsPerSecond < 0.4) {
     return "Too much idle time during the test.";
   }
@@ -91,11 +89,17 @@ export default function ResultsPage() {
   const grossWpm = stats.grossWpm;
 
   const rejectReason = useMemo(
-    () => getRejectReason({ accuracy, netWpm, elapsed, totalTyped }),
-    [accuracy, netWpm, elapsed, totalTyped],
+    () =>
+      getRejectReason({
+        accuracy,
+        netWpm,
+        elapsed,
+        charsPerSecond: stats.charsPerSecond,
+      }),
+    [accuracy, netWpm, elapsed, stats.charsPerSecond],
   );
 
-  const reportGlobalUsage = async () => {
+  const reportGlobalUsage = useCallback(async () => {
     try {
       await fetch("/api/stats/track", {
         method: "POST",
@@ -108,7 +112,7 @@ export default function ResultsPage() {
     } catch {
       // best-effort only
     }
-  };
+  }, [elapsed, totalTyped]);
 
   useEffect(() => {
     if (!state?.results || hasSavedAttemptRef.current) return;
@@ -119,25 +123,17 @@ export default function ResultsPage() {
 
     const attempt: TypingAttempt = {
       id: results.id,
-      timestamp: Number(results.id.split("-")[0]) || Date.now(),
+      timestamp: Date.now(),
       wpm: stats.netWpm,
-      rawWpm: stats.grossWpm,
-      adjustedWpm: stats.netWpm,
-      accuracy: roundTo(accuracy),
+      accuracy: stats.accuracy,
       errors,
-      errorRate: roundTo(stats.errorRate, 1),
       elapsed,
       mode,
       language,
       totalTyped,
       correctChars,
-      timePerChar: roundTo(stats.timePerChar, 2),
-      charsPerSecond: roundTo(stats.charsPerSecond, 2),
-      consistency: roundTo(stats.consistency, 1),
-      keystrokesPerSecond: roundTo(stats.keystrokesPerSecond, 2),
       targetText: results.targetText,
       charStatus: results.charStatus,
-      performanceData: stats.performanceData,
       aiGenerated: Boolean(results.aiGenerated),
     };
 
@@ -150,14 +146,7 @@ export default function ResultsPage() {
     results,
     setAttempts,
     stats.netWpm,
-    stats.grossWpm,
-    stats.errorRate,
-    stats.timePerChar,
-    stats.charsPerSecond,
-    stats.consistency,
-    stats.keystrokesPerSecond,
-    stats.performanceData,
-    accuracy,
+    stats.accuracy,
     errors,
     elapsed,
     mode,
@@ -165,6 +154,7 @@ export default function ResultsPage() {
     totalTyped,
     correctChars,
     rejectReason,
+    reportGlobalUsage,
   ]);
 
   if (!state || !state.results) {
@@ -212,13 +202,10 @@ export default function ResultsPage() {
                 new high score
               </div>
             )}
-            <Button onClick={() => navigate("/")} variant="primary">
-              try again
-            </Button>
           </div>
         </div>
         {rejectReason && (
-          <div className="max-w-5xl mx-auto px-4 sm:px-0 text-xs text-red-400 font-mono border border-red-400/30 bg-red-500/5 rounded-xl py-2 mb-4">
+          <div className="px-4  text-xs text-red-400 font-mono bg-secondary rounded py-2 mb-4">
             {rejectReason}
           </div>
         )}
@@ -266,15 +253,12 @@ export default function ResultsPage() {
             </div>
           </div>
           <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
-            <div className="text-xs text-foreground/60">time / char</div>
+            <div className="text-xs text-foreground/60">pace</div>
             <div className="text-2xl font-bold text-foreground mt-auto">
-              {stats.timePerChar}s
+              {stats.charsPerSecond} c/s
             </div>
-          </div>
-          <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
-            <div className="text-xs text-foreground/60">chars / sec</div>
-            <div className="text-2xl font-bold text-foreground mt-auto">
-              {stats.charsPerSecond}
+            <div className="text-[11px] text-foreground/50 mt-1">
+              {stats.timePerChar}s / char
             </div>
           </div>
           <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
@@ -284,27 +268,13 @@ export default function ResultsPage() {
             </div>
           </div>
           <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
-            <div className="text-xs text-foreground/60">correct words</div>
+            <div className="text-xs text-foreground/60">coverage</div>
             <div className="text-2xl font-bold text-foreground mt-auto">
-              {stats.correctWords}
+              {stats.correctWords} / {stats.wordsTyped}
             </div>
             <div className="text-[11px] text-foreground/50 mt-1">
-              {stats.correctChars} chars
+              words • {stats.correctChars}/{totalTyped} chars
             </div>
-          </div>
-          <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
-            <div className="text-xs text-foreground/60">untyped</div>
-            <div className="text-2xl font-bold text-foreground mt-auto">
-              {stats.pendingChars}
-            </div>
-            <div className="text-[11px] text-foreground/50 mt-1">chars</div>
-          </div>
-          <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
-            <div className="text-xs text-foreground/60">words typed</div>
-            <div className="text-2xl font-bold text-foreground mt-auto">
-              {stats.wordsTyped}
-            </div>
-            <div className="text-[11px] text-foreground/50 mt-1">words</div>
           </div>
         </div>
       </div>

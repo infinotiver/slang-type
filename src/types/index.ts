@@ -25,30 +25,15 @@ export interface TypingAttempt {
   id: string;
   timestamp: number;
   wpm: number;
-  rawWpm?: number;
-  adjustedWpm?: number;
   accuracy: number;
   errors: number;
-  errorRate?: number;
   elapsed: number;
   mode: Mode;
   language: Language;
   totalTyped: number;
   correctChars: number;
-  timePerChar?: number;
-  charsPerSecond?: number;
-  consistency?: number;
-  keystrokesPerSecond?: number;
   targetText?: string;
   charStatus?: Record<number, "pending" | "correct" | "incorrect">;
-  performanceData?: Array<{
-    name: number;
-    wpm: number;
-    rawWpm: number;
-    accuracy: number;
-    errorRate: number;
-    errorsAtThisSecond: number;
-  }>;
   aiGenerated: boolean;
 }
 
