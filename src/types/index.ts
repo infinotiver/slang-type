@@ -1,14 +1,19 @@
 // Language and Mode types
 export type Language = "slang" | "english" | "code" | "ai";
 export type Mode = "15s" | "30s" | "60s" | "120s" | "inf" | "ai";
-export type Theme =
-  | "dark"
-  | "light"
-  | "latte"
-  | "frappe"
-  | "mocha"
-  | "nord"
-  | "gruvbox";
+
+export const THEMES = [
+  "dark",
+  "light",
+  "latte",
+  "frappe",
+  "mocha",
+  "nord",
+  "gruvbox",
+  "bold",
+] as const;
+
+export type Theme = (typeof THEMES)[number];
 export type DisplayMode = "normal";
 
 // Component Props

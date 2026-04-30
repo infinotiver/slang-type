@@ -68,3 +68,11 @@
   --color-accent: #a89984;
   --color-highlight: #fabd2f;
 }
+
+[data-theme="bold"] {
+  --color-background: #1B1B1D;
+  --color-secondary: #3c3836;
+  --color-foreground: #ebdbb2;
+  --color-accent: #ffc703;
+  --color-highlight: #D71921;
+}

@@ -20,6 +20,7 @@ const themeColors: Record<string, string> = {
   mocha: "#94e2d5",
   nord: "#88c0d0",
   gruvbox: "#fabd2f",
+  bold: "#D71921",
 };
 
 export default function ButtonGroup<T extends string>({
