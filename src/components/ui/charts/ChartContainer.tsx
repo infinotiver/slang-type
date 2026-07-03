@@ -29,7 +29,7 @@ export default function ChartContainer({
       <h2 className="text-xs font-mono text-foreground mb-2 tracking-wider uppercase">
         {title}
       </h2>
-      <div className="border border-secondary/35 rounded-xl p-3 bg-secondary/8">
+      <div className="border border-secondary/35 rounded-full p-3 bg-secondary/8">
         {data.length > 0 ? (
           <ResponsiveContainer width="100%" height={190}>
             <LineChart data={data}>

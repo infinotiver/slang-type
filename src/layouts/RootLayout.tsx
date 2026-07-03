@@ -8,6 +8,7 @@ import { CreditsModal, ChangelogModal } from "../components/ui/modals";
 import changelog from "../../CHANGELOG.md?raw";
 import { version as appVersion } from "../../package.json";
 import { InfoIcon } from "lucide-react";
+
 export default function RootLayout() {
   const [theme, setTheme] = useLocalStorage<Theme>("slangtype_theme", "dark");
   const [displayMode] = useLocalStorage<DisplayMode>(
@@ -15,65 +16,59 @@ export default function RootLayout() {
     "normal",
   );
   const [highScore] = useLocalStorage<number>("slangtype_highscore", 0);
+
   const [isCreditsOpen, setIsCreditsOpen] = useState(false);
   const [isChangelogOpen, setIsChangelogOpen] = useState(false);
 
-  // Apply theme to document
   useEffect(() => {
     document.body.setAttribute("data-theme", theme);
   }, [theme]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col font-mono">
+    <div className="h-screen flex flex-col bg-background text-foreground font-mono overflow-hidden">
       {/* Skip to main content link for accessibility */}
       <a href="#main-content" className="sr-only focus:not-sr-only">
         Skip to main content
       </a>
-      <div className="flex-1 flex flex-col">
-        {/* Header always visible */}
-        <header className="px-4 sm:px-8 md:px-12 mx-auto w-full">
-          <Header
-            theme={theme}
-            onThemeChange={setTheme}
-            highScore={highScore}
-          />
-        </header>
-        {/* Page content */}
-        <main id="main-content" className="flex-1 px-2 py-2">
-          <div className="px-4 sm:px-8 md:px-12 mx-auto w-full h-full">
-            <Outlet context={{ displayMode }} />
-          </div>
-        </main>
-      </div>
-      <ScrollRestoration />
-      <Analytics />
-      {/* FOOTER - always visible */}
+
+      {/* Header */}
+      <header className="w-full px-4 sm:px-8 md:px-12">
+        <Header theme={theme} onThemeChange={setTheme} highScore={highScore} />
+      </header>
+
+      {/* Main */}
+      <main id="main-content" className="flex-1 min-h-0 flex px-2">
+        <Outlet context={{ displayMode }} />
+      </main>
+
+      {/* Footer */}
       <footer className="py-4 sm:py-6">
-        <div className="px-4 sm:px-8 md:px-12 mx-auto w-full">
-          <div className="flex justify-between items-center gap-2 text-xs font-mono text-foreground/50">
+        <div className="w-full px-4 sm:px-8 md:px-12">
+          <div className="flex items-center justify-between gap-2 text-xs font-mono text-foreground/50">
             <button
               type="button"
               onClick={() => setIsChangelogOpen(true)}
-              className="text-foreground/80 hover:text-highlight transition-colors font-semibold flex items-center gap-1 tracking-wide"
+              className="flex items-center gap-1 font-semibold tracking-wide text-foreground/80 transition-colors hover:text-highlight"
             >
               ver {appVersion}
             </button>
-            <span className="flex items-center gap-1">
-              <button
-                onClick={() => setIsCreditsOpen(true)}
-                className="ml-1 p-1 rounded hover:bg-secondary/20 hover:text-highlight transition-colors"
-                aria-label="credits"
-                type="button"
-              >
-                <InfoIcon size={16} />
-              </button>
-            </span>
+
+            <button
+              type="button"
+              aria-label="credits"
+              onClick={() => setIsCreditsOpen(true)}
+              className="rounded p-1 transition-colors hover:bg-secondary/20 hover:text-highlight"
+            >
+              <InfoIcon size={16} />
+            </button>
           </div>
         </div>
+
         <CreditsModal
           isOpen={isCreditsOpen}
           onClose={() => setIsCreditsOpen(false)}
         />
+
         <ChangelogModal
           isOpen={isChangelogOpen}
           onClose={() => setIsChangelogOpen(false)}
@@ -81,6 +76,9 @@ export default function RootLayout() {
           version={appVersion}
         />
       </footer>
+
+      <ScrollRestoration />
+      <Analytics />
     </div>
   );
 }

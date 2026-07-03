@@ -212,7 +212,7 @@ export default function ResultsPage() {
 
         <div className="flex flex-col md:flex-row gap-6 flex-1">
           <div className="lg:w-50 flex flex-col gap-6 shrink-0">
-            <div className="p-4 bg-highlight/10 rounded-xl flex flex-col justify-between min-h-55">
+            <div className="p-4 bg-highlight/10 rounded-full flex flex-col justify-between min-h-55">
               {/* Upper Stats */}
               <div className="space-y-4">
                 <section>

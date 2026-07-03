@@ -5,6 +5,7 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import DropdownButton from "./DropdownButton";
+import Button from "./Button";
 interface UserDropdownProps {
   user: { username?: string; email?: string } | null;
   highScore: number;
@@ -47,15 +48,16 @@ export default function UserDropdown({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div
-        className="flex items-center gap-2 p-1.5 rounded-full bg-background text-foreground cursor-pointer"
+      <Button
+        variant="secondary"
+        className="flex gap-1"
         aria-label={user ? "open account menu" : "open login menu"}
       >
         <CircleUserIcon size={20} />
         <span className="text-sm font-semibold">
           {user ? (user.username ?? user.email) : "login"}
         </span>
-      </div>
+      </Button>
       {open && (
         <motion.div
           initial={{ opacity: 0, y: 8 }}

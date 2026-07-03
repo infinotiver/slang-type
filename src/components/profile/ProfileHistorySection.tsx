@@ -1,4 +1,7 @@
-import { SummaryStatCard, BestResultCard } from "@components/ui/stats";
+import {
+  StatCard as SummaryStatCard,
+  ResultCard as BestResultCard,
+} from "@components/ui/stats";
 import { ChartContainer } from "@components/ui/charts";
 import { AttemptListItem } from "@components/ui/lists";
 import type { TypingAttempt } from "@shared-types/index";
@@ -40,7 +43,7 @@ export default function ProfileHistorySection({
 
   return (
     <>
-      <div className="p-3 border border-secondary/35 rounded-xl bg-secondary/8">
+      <div className="p-3 border border-secondary/35 rounded-full bg-secondary/8">
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
           <SummaryStatCard label="best wpm" value={stats.bestWpm} highlight />
           <SummaryStatCard label="avg wpm" value={stats.avgWpm} />

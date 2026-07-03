@@ -1,7 +1,10 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useHistoryStats } from "@hooks/useHistoryStats";
-import { SummaryStatCard, BestResultCard } from "@components/ui/stats";
+import {
+  StatCard as SummaryStatCard,
+  ResultCard as BestResultCard,
+} from "@components/ui/stats";
 import { ChartContainer } from "@components/ui/charts";
 import { AttemptListItem } from "@components/ui/lists";
 import type { TypingAttempt } from "@shared-types/index";
@@ -227,7 +230,7 @@ export default function HistoryPage() {
         {attempts.length > 0 ? (
           <div className="w-full">
             {/* Key Stats */}
-            <div className="mb-6 p-3 border border-secondary/35 rounded-xl bg-secondary/8">
+            <div className="mb-6 p-3 border border-secondary/35 rounded-full bg-secondary/8">
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                 <SummaryStatCard
                   label="best wpm"
@@ -248,7 +251,7 @@ export default function HistoryPage() {
             </div>
 
             {/* Error Stats */}
-            <div className="mb-6 p-3 border border-secondary/35 rounded-xl bg-secondary/8">
+            <div className="mb-6 p-3 border border-secondary/35 rounded-full bg-secondary/8">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <SummaryStatCard
                   label="avg accuracy"

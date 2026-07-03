@@ -39,7 +39,7 @@ export default function PerformanceChart({ data }: PerformanceChartProps) {
   }, [data]);
 
   return (
-    <div className="border border-secondary/35 rounded-xl p-3 bg-secondary/8">
+    <div className="border border-secondary/35 rounded-full p-3 bg-secondary/8">
       {chartData.length > 0 ? (
         <ResponsiveContainer height={200}>
           <ComposedChart data={chartData} responsive={true}>

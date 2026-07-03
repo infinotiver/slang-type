@@ -1,3 +1,2 @@
-export { default as SummaryStatCard } from "./SummaryStatCard";
-export { default as BestResultCard } from "./BestResultCard";
-export { TypingBar } from "./typingStatusBar";
+export { StatCard, ResultCard } from "./StatCard";
+export { default as TypingBar } from "./TypingBar";

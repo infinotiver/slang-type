@@ -227,7 +227,7 @@ export default function TypingArea({
         autoFocus
       />
 
-      <div className="w-full mx-auto flex flex-col items-center">
+      <div className="flex-1 w-full h-full flex flex-col items-center">
         <motion.div
           className="relative w-full"
           initial={{ opacity: 0 }}
@@ -237,7 +237,7 @@ export default function TypingArea({
         >
           {aiGenerated && (
             <div className="absolute right-2 top-2 z-30">
-              <span className="px-3 py-1 text-xs uppercase rounded-md bg-highlight/15 text-highlight border border-highlight/10">
+              <span className="px-3 py-1 text-xs uppercase rounded-full bg-highlight/15 text-highlight border border-highlight/10">
                 AI generated
               </span>
             </div>

@@ -11,7 +11,7 @@ interface ButtonProps {
 }
 
 export default function Button({
-  variant = "secondary",
+  variant = "primary",
   className = "",
   disabled = false,
   children,
@@ -19,13 +19,12 @@ export default function Button({
   type = "button",
 }: ButtonProps) {
   const baseStyles =
-    "px-2 py-1 font-mono text-sm rounded transition-colors border";
+    "px-3 py-2 font-mono text-sm rounded-full transition-colors border";
 
   const variantStyles = {
-    primary:
-      "border-highlight text-highlight bg-secondary hover:bg-highlight/20 hover:text-highlight",
+    primary: "border-highlight text-background bg-highlight",
     secondary:
-      "border-secondary text-foreground bg-secondary hover:border-highlight/10 hover:text-highlight",
+      "border-secondary text-foreground bg-secondary hover:text-highlight",
   };
 
   const disabledStyles = disabled ? "opacity-50 cursor-not-allowed" : "";
