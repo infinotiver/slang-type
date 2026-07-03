@@ -1,5 +1,3 @@
-import Button from "./Button";
-
 interface ButtonGroupOption<T> {
   label: string;
   value: T;
@@ -40,22 +38,20 @@ export default function ButtonGroup<T extends string>({
       )}
       <div className="flex flex-wrap gap-2">
         {options.map((option) => (
-          <Button
+          <button
             key={option.value}
             onClick={() => onChange(option.value)}
-            variant={value === option.value ? "primary" : "secondary"}
-            className={value === option.value ? "font-semibold" : ""}
+            className={value === option.value ? "opacity-100" : "opacity-20"}
           >
             {isThemeGroup && (
               <span
-                className="inline-block w-3 h-3 rounded-full mr-2 align-middle"
+                className="inline-block w-12 h-12 rounded-full mr-2 align-middle"
                 style={{
                   backgroundColor: themeColors[option.value] || "#fff000",
                 }}
               />
             )}
-            {option.label}
-          </Button>
+          </button>
         ))}
       </div>
     </div>

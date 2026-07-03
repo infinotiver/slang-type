@@ -1,6 +1,6 @@
 import { Outlet, ScrollRestoration } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Header } from "@components/ui/common";
+import { Button, Header } from "@components/ui/common";
 import useLocalStorage from "@hooks/useLocalStorage";
 import type { Theme, DisplayMode } from "../types";
 import { Analytics } from "@vercel/analytics/react";
@@ -45,22 +45,20 @@ export default function RootLayout() {
       <footer className="py-4 sm:py-6">
         <div className="w-full px-4 sm:px-8 md:px-12">
           <div className="flex items-center justify-between gap-2 text-xs font-mono text-foreground/50">
-            <button
-              type="button"
+            <Button
+              variant="secondary"
               onClick={() => setIsChangelogOpen(true)}
-              className="flex items-center gap-1 font-semibold tracking-wide text-foreground/80 transition-colors hover:text-highlight"
             >
               ver {appVersion}
-            </button>
+            </Button>
 
-            <button
-              type="button"
+            <Button
               aria-label="credits"
+              variant="secondary"
               onClick={() => setIsCreditsOpen(true)}
-              className="rounded p-1 transition-colors hover:bg-secondary/20 hover:text-highlight"
             >
-              <InfoIcon size={16} />
-            </button>
+              <InfoIcon size={18} />
+            </Button>
           </div>
         </div>
 

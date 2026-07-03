@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { TbX } from "react-icons/tb";
 import { AnimatePresence, motion } from "framer-motion";
+import { Button } from "../common";
 
 interface ModalBaseProps {
   isOpen: boolean;
@@ -23,7 +24,7 @@ export default function ModalBase({
         <>
           {/* Backdrop */}
           <motion.div
-            className="fixed inset-0 z-40 bg-background/40 backdrop-blur-sm"
+            className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm"
             onClick={onClose}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -39,7 +40,7 @@ export default function ModalBase({
             transition={{ duration: 0.28, ease: "anticipate" }}
           >
             <div
-              className={`bg-secondary/90 border border-secondary rounded-xl p-6 sm:p-8 w-full ${maxWidth} shadow-2xl pointer-events-auto max-h-[90vh] sm:max-h-[80vh] overflow-y-auto custom-scroll`}
+              className={`bg-secondary border border-secondary rounded-3xl p-6 sm:p-8 w-full ${maxWidth} shadow-2xl pointer-events-auto max-h-[40vh] sm:max-h-[60vh] overflow-y-auto custom-scroll`}
               style={{ scrollbarWidth: "thin", scrollbarColor: "#888 #222" }}
             >
               <style>{`
@@ -63,13 +64,13 @@ export default function ModalBase({
                 <h2 className="text-base sm:text-lg font-bold font-mono">
                   {title}
                 </h2>
-                <button
+                <Button
                   onClick={onClose}
-                  className="text-foreground/60 hover:text-highlight transition-colors active:scale-95 p-1"
+                  variant="secondary"
                   aria-label="close"
                 >
                   <TbX size={20} className="text-inherit" />
-                </button>
+                </Button>
               </div>
               {children}
             </div>
