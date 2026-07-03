@@ -1,4 +1,11 @@
-import { useRef, useEffect, useMemo, useLayoutEffect, Fragment } from "react";
+import {
+  useRef,
+  useEffect,
+  useMemo,
+  useLayoutEffect,
+  Fragment,
+  memo,
+} from "react";
 import type {
   Mode,
   Language,
@@ -60,6 +67,40 @@ interface TypingAreaProps {
   displayMode?: DisplayMode;
 }
 
+// --- Memoized character cell ---
+// Isolates re-renders to only the chars whose status/cursor actually changed,
+// instead of re-rendering the entire passage on every keystroke.
+
+interface CharCellProps {
+  char: string;
+  status: "pending" | "correct" | "incorrect" | undefined;
+  isCurrent: boolean;
+  charRef: (el: HTMLSpanElement | null) => void;
+}
+
+const CharCell = memo(
+  function CharCell({ char, status, isCurrent, charRef }: CharCellProps) {
+    let color = "text-foreground/30";
+    if (status === "correct") color = "text-highlight";
+    if (status === "incorrect") color = "text-red-500";
+
+    return (
+      <span
+        ref={isCurrent ? charRef : null}
+        className={`${color} whitespace-pre border-b-2 transition-colors duration-75 ${
+          isCurrent ? "bg-secondary border-highlight" : "border-transparent"
+        }`}
+      >
+        {char}
+      </span>
+    );
+  },
+  (prev, next) =>
+    prev.char === next.char &&
+    prev.status === next.status &&
+    prev.isCurrent === next.isCurrent,
+);
+
 // --- Component ---
 
 export default function TypingArea({
@@ -75,6 +116,7 @@ export default function TypingArea({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const activeCharRef = useRef<HTMLSpanElement>(null);
   const completionHandledRef = useRef(false);
+  const lastScrolledCursorRef = useRef<number | null>(null);
 
   // 1. Memoize text processing
   const words = useMemo((): Word[] => {
@@ -89,8 +131,15 @@ export default function TypingArea({
     });
   }, [targetText]);
 
-  // 2. Browser-native scrolling
+  // 2. Smooth, non-overlapping auto-scroll.
+  // Guards against firing a new smooth scroll while the previous one is
+  // still mid-flight (which caused the stutter), and relies on a genuinely
+  // scrollable container (overflow-y-auto) rather than overflow-hidden,
+  // which some browsers won't scroll programmatically at all.
   useLayoutEffect(() => {
+    if (lastScrolledCursorRef.current === engine.cursor) return;
+    lastScrolledCursorRef.current = engine.cursor;
+
     const active = activeCharRef.current;
     const container = scrollContainerRef.current;
     if (!active || !container) return;
@@ -102,12 +151,8 @@ export default function TypingArea({
     const isBelow = activeRect.bottom > containerRect.bottom - 32;
 
     if (isAbove || isBelow) {
-      container.scrollTo({
-        top:
-          container.scrollTop +
-          (activeRect.top - containerRect.top) -
-          container.clientHeight / 2 +
-          active.clientHeight / 2,
+      active.scrollIntoView({
+        block: "center",
         behavior: "smooth",
       });
     }
@@ -151,27 +196,6 @@ export default function TypingArea({
     onResultsComplete,
     targetText,
   ]);
-
-  const renderChar = (char: string, idx: number) => {
-    const status = engine.status[idx];
-    const isCurrent = idx === engine.cursor;
-
-    let color = "text-foreground/30";
-    if (status === "correct") color = "text-highlight";
-    if (status === "incorrect") color = "text-red-500";
-
-    return (
-      <span
-        key={idx}
-        ref={isCurrent ? activeCharRef : null}
-        className={`${color} whitespace-pre transition-colors duration-75 ${
-          isCurrent ? "bg-secondary border-b-2 border-highlight" : ""
-        }`}
-      >
-        {char}
-      </span>
-    );
-  };
 
   const showStartOrResumeOverlay =
     engine.paused || (!engine.running && engine.cursor === 0);
@@ -220,13 +244,37 @@ export default function TypingArea({
           )}
           <div
             ref={scrollContainerRef}
-            className="h-50 overflow-hidden p-2 sm:p-4 scroll-smooth"
+            className="h-50 overflow-y-auto p-2 sm:p-4 scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
           >
             <div className="flex flex-wrap text-4xl font-mono leading-[1.8] text-justify">
               {words.map((w, wordIdx) => (
                 <span key={wordIdx} className="inline-block mr-[0.25em]">
-                  {w.chars.map((c) => renderChar(c.char, c.index))}
-                  {w.spaceIndex !== null && renderChar(" ", w.spaceIndex)}
+                  {w.chars.map((c) => (
+                    <CharCell
+                      key={c.index}
+                      char={c.char}
+                      status={engine.status[c.index]}
+                      isCurrent={c.index === engine.cursor}
+                      charRef={(el) => {
+                        if (c.index === engine.cursor) {
+                          activeCharRef.current = el;
+                        }
+                      }}
+                    />
+                  ))}
+                  {w.spaceIndex !== null && (
+                    <CharCell
+                      key={w.spaceIndex}
+                      char=" "
+                      status={engine.status[w.spaceIndex]}
+                      isCurrent={w.spaceIndex === engine.cursor}
+                      charRef={(el) => {
+                        if (w.spaceIndex === engine.cursor) {
+                          activeCharRef.current = el;
+                        }
+                      }}
+                    />
+                  )}
                 </span>
               ))}
             </div>
