@@ -107,11 +107,11 @@ function ControlsPanel({
 }) {
   const modeOptions = ["15s", "30s", "60s", "120s", "inf"];
   const wrapperClass =
-    "w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-full px-1 py-1";
+    "flex w-full items-center justify-center gap-2 sm:w-auto sm:gap-3";
   const segmentClass =
-    "sm:w-full sm:w-auto flex items-center gap-1 rounded-full bg-secondary/50 p-1";
+    "flex items-center gap-1 rounded-full bg-secondary p-1.5";
   const selectClass =
-    "sm:hidden w-auto px-2 py-1 bg-background border border-secondary/60 text-sm font-mono text-foreground rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-highlight/40 hover:bg-secondary transition-colors";
+    "sm:hidden w-auto px-2 py-1 bg-secondary text-sm font-mono text-foreground rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-highlight hover:bg-secondary transition-colors";
 
   return (
     <div className={wrapperClass}>

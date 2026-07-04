@@ -28,6 +28,7 @@ export default function RootLayout() {
     "inline-flex items-stretch overflow-hidden rounded-full border border-secondary bg-secondary";
   const footerActionButton =
     "rounded-none border-0 px-3 py-2 text-xs font-mono text-foreground";
+  const pageFrame = "w-full max-w-6xl mx-auto px-4 sm:px-8 md:px-12";
 
   return (
     <div className="h-screen flex flex-col bg-background text-foreground font-mono overflow-hidden">
@@ -37,18 +38,20 @@ export default function RootLayout() {
       </a>
 
       {/* Header */}
-      <header className="w-full px-4 sm:px-8 md:px-12">
+      <div className={pageFrame}>
         <Header theme={theme} onThemeChange={setTheme} highScore={highScore} />
-      </header>
+      </div>
 
       {/* Main */}
-      <main id="main-content" className="flex-1 min-h-0 flex px-2">
-        <Outlet context={{ displayMode }} />
+      <main id="main-content" className="flex-1 min-h-0">
+        <div className={`${pageFrame} h-full`}>
+          <Outlet context={{ displayMode }} />
+        </div>
       </main>
 
       {/* Footer */}
       <footer className="py-4 sm:py-6">
-        <div className="w-full px-4 sm:px-8 md:px-12">
+        <div className={pageFrame}>
           <div className="flex items-center justify-between gap-2 text-xs font-mono text-foreground/50">
             <div className={footerActionGroup}>
               <Button

@@ -6,10 +6,10 @@ export default function NotFoundPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex-1 flex items-center justify-center py-8">
+    <div className="flex-1 min-h-0 h-full w-full flex items-center justify-center py-8">
       <div className="text-center">
         <div className="mb-6">
-          <div className="text-6xl sm:text-7xl font-bold font-mono text-highlight/50 mb-2">
+          <div className="text-6xl sm:text-7xl font-bold font-mono text-highlight mb-2">
             404
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold font-mono mb-2">
@@ -27,7 +27,7 @@ export default function NotFoundPage() {
             onClick={() => navigate("/")}
             className="flex items-center justify-center gap-2"
           >
-            <TbHome size={16} className="text-foreground/60" />
+            <TbHome size={16} className="text-background" />
             Home
           </Button>
           <Button

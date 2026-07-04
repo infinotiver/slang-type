@@ -116,8 +116,8 @@ export default function HomePage() {
   }, [isAIMode, aiWordsReady]);
 
   return (
-    <div className="flex-1 flex flex-col h-full w-full ">
-      <div className="py-1 sm:py-2 md:py-3 flex justify-center items-center">
+    <div className="flex h-full w-full flex-1 flex-col">
+      <section className="flex justify-center">
         <TypingBar
           wpm={engine.wpm}
           accuracy={engine.accuracy}
@@ -130,12 +130,12 @@ export default function HomePage() {
           duration={durationSeconds || 0}
           isTypingRunning={engine.running}
         />
-      </div>
+      </section>
 
       {/* TYPING AREA */}
-      <main className="flex-1 flex min-h-0 flex-col items-center justify-center">
+      <section className="flex min-h-0 flex-1 flex-col items-center justify-center">
         {isAIMode && !aiWordsReady ? (
-          <div className="w-full h-full my-auto max-w-3xl text-center px-4 space-y-3 flex  flex-col items-center justify-center">
+          <div className="my-auto flex h-full w-full max-w-3xl flex-col items-center justify-center space-y-3 px-4 text-center">
             <p className="text-xs">
               ai mode requires you to enter a prompt to generate test words. ai
               mode uses external llm api (google's gemini)
@@ -170,7 +170,7 @@ export default function HomePage() {
             }}
           />
         )}
-      </main>
+      </section>
 
       {/* AI Words Modal */}
       <AIWordsModal
