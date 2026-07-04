@@ -16,11 +16,9 @@ import useTypingEngine from "@hooks/useTypingEngine";
 import useTimer from "@hooks/useTimer";
 import useLocalStorage from "@hooks/useLocalStorage";
 import { createGeminiService } from "@/services/geminiService";
-import { useAuth } from "@/hooks/useAuth";
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const context = useOutletContext<OutletContext>();
 
   const [language, setLanguage] = useState<Language>("slang");
@@ -107,19 +105,15 @@ export default function HomePage() {
   };
 
   const openAIModal = () => {
-    if (!user) {
-      navigate("/login");
-      return;
-    }
     setIsAIModalOpen(true);
   };
 
   // Automatically open AI modal when AI mode is selected and no words are ready
   useEffect(() => {
-    if (isAIMode && !aiWordsReady && user) {
+    if (isAIMode && !aiWordsReady) {
       setTimeout(() => setIsAIModalOpen(true), 0);
     }
-  }, [isAIMode, aiWordsReady, user]);
+  }, [isAIMode, aiWordsReady]);
 
   return (
     <div className="flex-1 flex flex-col h-full w-full ">

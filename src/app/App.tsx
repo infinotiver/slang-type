@@ -8,10 +8,6 @@ import RootLayout from "../layouts/RootLayout";
 import HomePage from "@pages/HomePage";
 import ResultsPage from "@pages/ResultsPage";
 import NotFoundPage from "@pages/NotFoundPage";
-import AuthPage from "@/pages/AuthPage";
-import ProfilePage from "@/pages/ProfilePage";
-import { AuthProvider } from "@/components/auth/AuthContext";
-import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 // Create router configuration
 const router = createBrowserRouter([
@@ -24,28 +20,8 @@ const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
-        path: "history",
-        element: <Navigate to="/profile" replace />,
-      },
-      {
         path: "results",
         element: <ResultsPage />,
-      },
-      {
-        path: "login",
-        element: <AuthPage />,
-      },
-      {
-        path: "signup",
-        element: <AuthPage />,
-      },
-      {
-        path: "profile",
-        element: (
-          <ProtectedRoute>
-            <ProfilePage />
-          </ProtectedRoute>
-        ),
       },
       {
         path: "*",
@@ -60,11 +36,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return (
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { SettingsModal, CreditsModal } from "@components/ui/modals";
 import type { Theme } from "@shared-types/index";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import { Link } from "react-router-dom";
 import Button from "./Button";
-import { Settings, LogOutIcon, Trophy, LogIn, User } from "lucide-react";
+import { Settings, Trophy } from "lucide-react";
 
 interface HeaderProps {
   theme: Theme;
@@ -17,15 +16,8 @@ export default function Header({
   onThemeChange,
   highScore,
 }: HeaderProps) {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isCreditsOpen, setIsCreditsOpen] = useState(false);
-
-  const handleLogout = async () => {
-    await logout();
-    navigate("/", { replace: true });
-  };
 
   return (
     <>
@@ -49,19 +41,6 @@ export default function Header({
                   <span>{highScore}</span>
                 </div>
 
-                {/* Auth button */}
-                <Button
-                  variant="secondary"
-                  className="flex items-center gap-1 px-3 py-2"
-                  onClick={() => navigate(user ? "/profile" : "/login")}
-                  aria-label={user ? "view profile" : "sign in"}
-                >
-                  {user ? <User size={18} /> : <LogIn size={18} />}
-                  <span className="hidden sm:inline text-sm">
-                    {user ? "profile" : "sign in"}
-                  </span>
-                </Button>
-
                 {/* Settings button */}
                 <Button
                   variant="secondary"
@@ -71,19 +50,6 @@ export default function Header({
                 >
                   <Settings size={18} />
                 </Button>
-
-                {/* Logout button (only for authenticated users) */}
-                {user && (
-                  <Button
-                    variant="secondary"
-                    className="flex items-center gap-1 px-3 py-2"
-                    onClick={handleLogout}
-                    aria-label="log out"
-                  >
-                    <LogOutIcon size={18} />
-                    <span className="hidden sm:inline text-sm">logout</span>
-                  </Button>
-                )}
               </div>
             </div>
           </div>

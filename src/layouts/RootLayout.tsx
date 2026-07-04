@@ -24,6 +24,11 @@ export default function RootLayout() {
     document.body.setAttribute("data-theme", theme);
   }, [theme]);
 
+  const footerActionGroup =
+    "inline-flex items-stretch overflow-hidden rounded-full border border-secondary bg-secondary";
+  const footerActionButton =
+    "rounded-none border-0 px-3 py-2 text-xs font-mono text-foreground";
+
   return (
     <div className="h-screen flex flex-col bg-background text-foreground font-mono overflow-hidden">
       {/* Skip to main content link for accessibility */}
@@ -45,20 +50,24 @@ export default function RootLayout() {
       <footer className="py-4 sm:py-6">
         <div className="w-full px-4 sm:px-8 md:px-12">
           <div className="flex items-center justify-between gap-2 text-xs font-mono text-foreground/50">
-            <Button
-              variant="secondary"
-              onClick={() => setIsChangelogOpen(true)}
-            >
-              ver {appVersion}
-            </Button>
+            <div className={footerActionGroup}>
+              <Button
+                variant="secondary"
+                className={footerActionButton}
+                onClick={() => setIsChangelogOpen(true)}
+              >
+                ver {appVersion}
+              </Button>
 
-            <Button
-              aria-label="credits"
-              variant="secondary"
-              onClick={() => setIsCreditsOpen(true)}
-            >
-              <InfoIcon size={18} />
-            </Button>
+              <Button
+                aria-label="credits"
+                variant="secondary"
+                className={footerActionButton}
+                onClick={() => setIsCreditsOpen(true)}
+              >
+                <InfoIcon size={18} />
+              </Button>
+            </div>
           </div>
         </div>
 

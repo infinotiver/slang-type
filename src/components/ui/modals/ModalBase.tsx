@@ -16,7 +16,7 @@ export default function ModalBase({
   onClose,
   title,
   children,
-  maxWidth = "max-w-5xl",
+  maxWidth = "max-w-2xl",
 }: ModalBaseProps) {
   return (
     <AnimatePresence>
