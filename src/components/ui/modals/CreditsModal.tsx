@@ -1,5 +1,13 @@
 import ModalBase from "./ModalBase";
-import { Atom, FileCode2, Wind, Zap, LineChart, Shapes } from "lucide-react";
+import { Heart } from "lucide-react";
+import {
+  SiGithub,
+  SiReact,
+  SiTypescript,
+  SiTailwindcss,
+  SiVite,
+  SiLucide,
+} from "react-icons/si";
 
 interface CreditsModalProps {
   isOpen: boolean;
@@ -7,45 +15,50 @@ interface CreditsModalProps {
 }
 
 const technologies = [
-  { label: "React", Icon: Atom },
-  { label: "TypeScript", Icon: FileCode2 },
-  { label: "Tailwind CSS", Icon: Wind },
-  { label: "Vite", Icon: Zap },
-  { label: "Lucide Icons", Icon: Shapes },
-  { label: "Recharts", Icon: LineChart },
+  { label: "React", Icon: SiReact },
+  { label: "TypeScript", Icon: SiTypescript },
+  { label: "Tailwind CSS", Icon: SiTailwindcss },
+  { label: "Vite", Icon: SiVite },
+  { label: "Lucide", Icon: SiLucide },
 ];
 
 export default function CreditsModal({ isOpen, onClose }: CreditsModalProps) {
   return (
     <ModalBase isOpen={isOpen} onClose={onClose} title="credits">
-      <div className="space-y-5">
-        <div>
-          <p className="text-xs text-foreground/60 font-mono">made by</p>
+      <div className="space-y-4 font-mono">
+        <section>
           <a
             href="https://github.com/infinotiver"
-            className="mt-1 inline-flex items-center gap-2 text-highlight font-bold font-mono text-sm hover:underline"
             target="_blank"
             rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 font-semibold py-1 px-2 rounded-full bg-highlight text-background transition-opacity hover:opacity-80"
           >
+            <SiGithub size={16} />
             infinotiver
           </a>
-        </div>
+        </section>
 
-        <div>
-          <h3 className="text-highlight font-bold mb-2 font-mono text-xs">
+        <section>
+          <p className="mb-3 text-xs tracking-wider text-foreground/50">
             built with
-          </h3>
-          <ul className="flex flex-wrap justify-start gap-2">
+          </p>
+
+          <div className="flex flex-wrap gap-2">
             {technologies.map(({ label, Icon }) => (
-              <li
+              <div
                 key={label}
-                className="flex items-center gap-1.5 bg-secondary/10 border border-secondary/25 rounded px-2.5 py-1 text-xs font-mono text-foreground"
+                className="inline-flex items-center gap-2 rounded-lg border border-secondary/20 bg-background/40 px-3 py-1.5 text-xs"
               >
-                <Icon size={12} className="text-highlight/80" />
-                {label}
-              </li>
+                <Icon size={16} />
+                <span>{label}</span>
+              </div>
             ))}
-          </ul>
+          </div>
+        </section>
+
+        <div className="flex items-center justify-center gap-1 border-t border-secondary/30 pt-4 text-xs text-foreground/50">
+          made with{" "}
+          <Heart size={12} className="text-pink-600 fill-pink-600" />
         </div>
       </div>
     </ModalBase>
