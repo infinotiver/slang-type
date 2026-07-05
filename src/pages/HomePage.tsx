@@ -138,14 +138,9 @@ export default function HomePage() {
           <div className="my-auto flex h-full w-full max-w-3xl flex-col items-center justify-center space-y-3 px-4 text-center">
             <p className="text-xs">
               ai mode requires you to enter a prompt to generate test words. ai
-              mode uses external llm api (google's gemini)
+              mode uses external llm api (google's gemini) (subject to google's terms and condiitons).
             </p>
-            <Button
-              onClick={openAIModal}
-              className="px-4 py-2 rounded-lg bg-highlight/10 text-highlight border border-highlight/40 text-sm font-semibold"
-            >
-              Generate with AI
-            </Button>
+            <Button onClick={openAIModal}>Generate with AI</Button>
           </div>
         ) : (
           <TypingArea

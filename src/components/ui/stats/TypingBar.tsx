@@ -15,7 +15,97 @@ interface SegmentedOption {
   disabled?: boolean;
 }
 
-// Display live metrics during typing
+function cn(...classes: Array<string | false | null | undefined>): string {
+  return classes.filter(Boolean).join(" ");
+}
+
+function toOptions(values: string[]): SegmentedOption[] {
+  return values.map((label) => ({ label }));
+}
+
+const MODE_OPTIONS = toOptions(["15s", "30s", "60s", "120s", "inf"]);
+const LANGUAGE_OPTIONS: SegmentedOption[] = toOptions([
+  "slang",
+  "ai",
+  "english",
+  "code",
+]);
+
+const wrapperClass = "flex items-center gap-1 rounded-full bg-secondary/60 p-1";
+const btnBaseClass =
+  "px-4 py-2 rounded-full text-xs tracking-wide border border-transparent transition-colors duration-150";
+const btnActiveClass = "font-semibold bg-highlight text-background";
+const btnInactiveClass =
+  "text-foreground bg-transparent hover:bg-secondary hover:text-highlight hover:border-secondary";
+
+function MetricChip({
+  label,
+  value,
+}: {
+  label: string;
+  value: string | number;
+}) {
+  return (
+    <div className={wrapperClass}>
+      <span className={cn(btnBaseClass, btnActiveClass)}>{label}</span>
+      <span className="flex items-center gap-1 px-2">
+        {value}
+      </span>
+    </div>
+  );
+}
+
+/** Select on mobile, pill buttons on larger screens. */
+function SegmentedGroup({
+  options,
+  value,
+  onChange,
+  ariaLabel,
+}: {
+  options: SegmentedOption[];
+  value: string;
+  onChange: (value: string) => void;
+  ariaLabel: string;
+}) {
+  return (
+    <div className={wrapperClass}>
+      <select
+        aria-label={ariaLabel}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="sm:hidden w-auto px-2 py-1 text-sm font-mono text-foreground rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-highlight hover:bg-secondary transition-colors"
+      >
+        {options.map((option) => (
+          <option
+            key={option.label}
+            value={option.label}
+            disabled={option.disabled}
+          >
+            {option.label}
+          </option>
+        ))}
+      </select>
+
+      <div className="hidden sm:flex items-center gap-1.5">
+        {options.map((option) => (
+          <button
+            key={option.label}
+            type="button"
+            onClick={() => onChange(option.label)}
+            disabled={option.disabled}
+            className={cn(
+              btnBaseClass,
+              value === option.label ? btnActiveClass : btnInactiveClass,
+            )}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function LiveMetrics({
   wpm,
   accuracy,
@@ -27,140 +117,49 @@ function LiveMetrics({
 }) {
   return (
     <motion.div
-      className="flex items-center justify-center gap-6 sm:gap-8 h-16 sm:h-20"
+      className="flex items-center justify-center gap-2 sm:gap-3"
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
     >
-      <div className="flex flex-col items-center gap-1">
-        <span className="text-sm text-foreground tracking-wider">wpm</span>
-        <span className="text-3xl sm:text-4xl font-black text-foreground">
-          {wpm}
-        </span>
-      </div>
-      <div className="w-px h-12 sm:h-14 bg-secondary/35" />
-      <div className="flex flex-col items-center gap-1">
-        <span className="text-sm text-foreground tracking-wider">acc</span>
-        <span className="text-3xl sm:text-4xl font-black text-foreground">
-          {formatPercent(accuracy)}
-        </span>
-      </div>
-      <div className="w-px h-12 sm:h-14 bg-secondary/35" />
-      <div className="flex flex-col items-center gap-1">
-        <span className="text-sm text-foreground tracking-wider">time</span>
-        <span className="text-3xl sm:text-4xl font-black text-highlight">
-          {formatTime(remaining)}
-        </span>
-      </div>
+      <MetricChip label="wpm" value={wpm} />
+      <MetricChip label="acc" value={formatPercent(accuracy)} />
+      <MetricChip label="time" value={formatTime(remaining)} />
     </motion.div>
   );
 }
 
-// Segmented button controls
-function SegmentedButtons({
-  options,
-  selected,
-  onSelect,
-}: {
-  options: SegmentedOption[];
-  selected: string;
-  onSelect: (value: string) => void;
-}) {
-  const baseButtonClass =
-    "px-3 py-1.5 rounded-full text-xs tracking-wide border border-transparent transition-colors duration-150";
-  const activeButtonClass = "font-semibold bg-highlight text-background";
-  const inactiveButtonClass =
-    "text-foreground bg-transparent hover:bg-secondary/25 hover:text-highlight/90 hover:border-secondary";
-
-  return (
-    <div className="hidden sm:flex items-center gap-1.5">
-      {options.map((option) => (
-        <button
-          key={option.label}
-          onClick={() => onSelect(option.label)}
-          type="button"
-          className={`${
-            selected === option.label ? activeButtonClass : inactiveButtonClass
-          } ${baseButtonClass}`}
-          disabled={option.disabled}
-        >
-          {option.label}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-// Control panel for language and mode selection
 function ControlsPanel({
   language,
   mode,
-  controlsOptions,
+  languageOptions,
   onLanguageChange,
   onModeChange,
 }: {
   language: string;
   mode: string;
-  controlsOptions: SegmentedOption[];
+  languageOptions: SegmentedOption[];
   onLanguageChange: (lang: string) => void;
   onModeChange: (mode: string) => void;
 }) {
-  const modeOptions = ["15s", "30s", "60s", "120s", "inf"];
-  const wrapperClass =
-    "flex w-full items-center justify-center gap-2 sm:w-auto sm:gap-3";
-  const segmentClass =
-    "flex items-center gap-1 rounded-full bg-secondary p-1.5";
-  const selectClass =
-    "sm:hidden w-auto px-2 py-1 bg-secondary text-sm font-mono text-foreground rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-highlight hover:bg-secondary transition-colors";
-
   return (
-    <div className={wrapperClass}>
-      <div className={segmentClass}>
-        <select
-          value={language}
-          onChange={(e) => onLanguageChange(e.target.value)}
-          className={selectClass}
-        >
-          {controlsOptions.map((lang) => (
-            <option
-              key={lang.label}
-              value={lang.label}
-              disabled={lang.disabled}
-            >
-              {lang.label}
-            </option>
-          ))}
-        </select>
-        <SegmentedButtons
-          options={controlsOptions}
-          selected={language}
-          onSelect={onLanguageChange}
-        />
-      </div>
-
-      <div className={segmentClass}>
-        <select
-          value={mode}
-          onChange={(e) => onModeChange(e.target.value)}
-          className={selectClass}
-        >
-          {modeOptions.map((entry) => (
-            <option key={entry} value={entry}>
-              {entry}
-            </option>
-          ))}
-        </select>
-        <SegmentedButtons
-          options={modeOptions.map((entry) => ({ label: entry }))}
-          selected={mode}
-          onSelect={onModeChange}
-        />
-      </div>
+    <div className="flex w-full items-center justify-center gap-2 sm:w-auto sm:gap-3">
+      <SegmentedGroup
+        ariaLabel="Language"
+        options={languageOptions}
+        value={language}
+        onChange={onLanguageChange}
+      />
+      <SegmentedGroup
+        ariaLabel="Duration"
+        options={MODE_OPTIONS}
+        value={mode}
+        onChange={onModeChange}
+      />
     </div>
   );
 }
 
-// Main typing bar component
 export default function TypingBar({
   wpm = 0,
   accuracy = 0,
@@ -173,19 +172,10 @@ export default function TypingBar({
   isTypingRunning = false,
 }: TypingBarProps) {
   const remaining = Math.max(0, duration - elapsed);
-  const controlsOptions = [
-    { label: "slang", disabled: false },
-    { label: "ai", disabled: false },
-    { label: "english", disabled: false },
-    { label: "code", disabled: false },
-  ];
-
-  const layoutClass =
-    "flex-col sm:flex-row sm:items-center sm:justify-center gap-2 sm:gap-3 md:gap-4";
 
   return (
     <motion.div
-      className={`w-full flex ${layoutClass} font-mono`}
+      className="w-full flex flex-col sm:flex-row sm:items-center sm:justify-center gap-2 sm:gap-3 md:gap-4 font-mono"
       initial={{ opacity: 0, y: 0 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
@@ -196,7 +186,7 @@ export default function TypingBar({
         <ControlsPanel
           language={language}
           mode={mode}
-          controlsOptions={controlsOptions}
+          languageOptions={LANGUAGE_OPTIONS}
           onLanguageChange={onLanguageChange}
           onModeChange={onModeChange}
         />

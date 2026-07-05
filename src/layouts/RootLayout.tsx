@@ -50,16 +50,16 @@ export default function RootLayout() {
       </main>
 
       {/* Footer */}
-      <footer className="py-4 sm:py-6">
+      <footer className="py-2 sm:py-4">
         <div className={pageFrame}>
-          <div className="flex items-center justify-between gap-2 text-xs font-mono text-foreground/50">
+          <div className="flex items-center justify-between gap-1 text-xs font-mono text-foreground/50">
             <div className={footerActionGroup}>
               <Button
                 variant="secondary"
                 className={footerActionButton}
                 onClick={() => setIsChangelogOpen(true)}
               >
-                ver {appVersion}
+                v{appVersion}
               </Button>
 
               <Button
@@ -68,7 +68,7 @@ export default function RootLayout() {
                 className={footerActionButton}
                 onClick={() => setIsCreditsOpen(true)}
               >
-                <InfoIcon size={18} />
+                <InfoIcon size={18} className="text-foreground/50" />
               </Button>
             </div>
           </div>

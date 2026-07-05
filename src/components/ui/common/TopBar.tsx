@@ -11,7 +11,7 @@ export default function TopBar({ title, onBack }: TopBarProps) {
       <div className="flex items-center gap-4">
         <button
           onClick={onBack}
-          className="p-2 text-foreground/60 hover:text-highlight transition-colors active:scale-95 -ml-2"
+          className="p-2 text-foreground hover:text-highlight transition-colors active:scale-95 -ml-2"
           aria-label="back"
         >
           <TbArrowLeft size={24} />

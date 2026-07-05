@@ -21,7 +21,7 @@ export default function ChangelogModal({
       onClose={onClose}
       title={`Changelog - v${version}`}
     >
-      <div className="changelog-markdown text-xs sm:text-sm text-foreground/80 leading-relaxed">
+      <div className="changelog-markdown text-xs sm:text-sm text-foreground leading-relaxed">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{

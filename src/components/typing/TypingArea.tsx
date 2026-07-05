@@ -237,7 +237,7 @@ export default function TypingArea({
         >
           {aiGenerated && (
             <div className="absolute right-2 top-2 z-30">
-              <span className="px-3 py-1 text-xs uppercase rounded-full bg-highlight/15 text-highlight border border-highlight/10">
+              <span className="px-3 py-1 text-xs uppercase rounded-full bg-highlight text-highlight border border-secondary">
                 AI generated
               </span>
             </div>
@@ -310,18 +310,16 @@ export default function TypingArea({
         </motion.div>
 
         {/* Debug Stats */}
-        {import.meta.env.MODE === "development" && engine.running && (
-          <div className="mt-12 text-xs text-foreground font-mono opacity-60 space-y-1 text-center tracking-wide">
-            <div>
-              wpm: {engine.wpm} | acc: {Math.round(engine.accuracy)}% | errors:{" "}
-              {engine.errors}
-            </div>
-            <div>
-              cursor: {engine.cursor} | typed: {engine.totalTyped} | elapsed:{" "}
-              {engine.elapsed}s
-            </div>
+        {/* {import.meta.env.MODE === "development" && engine.running && ( */}
+        <div className="mt-12  text-foreground font-mono space-y-1 text-center tracking-wide">
+          <div className="text-8xl text-highlight">{engine.wpm}</div>
+          <div className="text-xs opacity-60">
+            acc: {Math.round(engine.accuracy)}% | errors: {engine.errors} |
+            cursor: {engine.cursor} | typed: {engine.totalTyped} | elapsed:{" "}
+            {engine.elapsed}s
           </div>
-        )}
+        </div>
+        {/* )} */}
       </div>
     </Fragment>
   );
