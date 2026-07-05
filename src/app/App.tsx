@@ -7,6 +7,7 @@ import "./index.css";
 import RootLayout from "../layouts/RootLayout";
 import HomePage from "@pages/HomePage";
 import ResultsPage from "@pages/ResultsPage";
+import HistoryPage from "@pages/HistoryPage";
 import NotFoundPage from "@pages/NotFoundPage";
 
 // Create router configuration
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />,
+      },
+      {
+        path: "history",
+        element: <HistoryPage />,
       },
       {
         path: "results",

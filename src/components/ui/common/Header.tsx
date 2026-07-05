@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { SettingsModal } from "@components/ui/modals";
 import type { Theme } from "@shared-types/index";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "./Button";
-import { Settings, Trophy } from "lucide-react";
+import { Settings, Trophy, HistoryIcon } from "lucide-react";
 
 interface HeaderProps {
   theme: Theme;
@@ -16,6 +16,7 @@ export default function Header({
   onThemeChange,
   highScore,
 }: HeaderProps) {
+  const navigate = useNavigate();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   return (
@@ -33,6 +34,15 @@ export default function Header({
               <Trophy size={16} className="text-highlight" />
               <span>{highScore}</span>
             </div>
+
+            <Button
+              variant="secondary"
+              className="group flex items-center gap-1 px-3 py-2"
+              onClick={() => navigate("/history")}
+              aria-label="history"
+            >
+              <HistoryIcon size={18} />
+            </Button>
 
             <Button
               variant="secondary"

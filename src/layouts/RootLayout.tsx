@@ -43,8 +43,8 @@ export default function RootLayout() {
       </div>
 
       {/* Main */}
-      <main id="main-content" className="flex-1 min-h-0">
-        <div className={`${pageFrame} h-full`}>
+      <main id="main-content" className="flex-1 min-h-0 flex">
+        <div className={`${pageFrame} h-full flex flex-col`}>
           <Outlet context={{ displayMode }} />
         </div>
       </main>

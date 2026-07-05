@@ -78,21 +78,21 @@ export default function HistoryPage() {
     );
 
     return (
-      <div className="bg-background text-foreground flex flex-col font-mono">
+      <div className="bg-background text-foreground flex-1 h-full min-h-0 flex flex-col font-mono">
         {/* Detail Header */}
         <TopBar
           title="attempt details"
           onBack={() => setSelectedAttemptId(null)}
         />
-        <div className="px-2 sm:px-4 text-xs text-foreground/60 mt-1">
+        <div className="py-2 px-4 sm:px-6 text-xs text-foreground mt-1">
           {formatDate(selectedAttempt.timestamp)}
         </div>
 
         {/* Detail Content */}
-        <main className="flex-1 py-4 sm:py-6 flex items-center justify-center">
-          <div className="w-full">
+        <main className="flex-1 min-h-0 overflow-y-auto py-4 sm:py-6 px-4 sm:px-6">
+          <div className="w-full max-w-4xl mx-auto space-y-6">
             {/* Test Info */}
-            <div className="mb-6 pb-6 border-b border-secondary/35">
+            <div className="rounded-2xl border border-secondary bg-secondary/10 p-5">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <div className="text-xs text-foreground tracking-wider font-light">
@@ -115,7 +115,7 @@ export default function HistoryPage() {
             </div>
 
             {/* Performance Stats */}
-            <div className="mb-6">
+            <div className="mb-6 rounded-2xl border border-secondary bg-secondary/10 p-5">
               <h3 className="text-sm font-mono text-foreground mb-4 tracking-wider">
                 performance
               </h3>
@@ -156,7 +156,7 @@ export default function HistoryPage() {
             </div>
 
             {/* Character Stats */}
-            <div className="mb-6">
+            <div className="mb-6 rounded-2xl border border-secondary bg-secondary/10 p-5">
               <h3 className="text-sm font-mono text-foreground mb-4 tracking-wider">
                 character stats
               </h3>
@@ -218,19 +218,15 @@ export default function HistoryPage() {
 
   // Main history list view
   return (
-    <div className="bg-background text-foreground flex flex-col font-mono">
+    <div className="bg-background text-foreground flex-1 h-full min-h-0 flex flex-col font-mono">
       {/* Header */}
       <TopBar title="history" onBack={() => navigate("/")} />
-      <div className="px-2 sm:px-4 text-xs text-foreground/60 mt-1">
-        review your typing attempts
-      </div>
-
       {/* Content */}
-      <main className="flex-1 py-6 sm:py-7">
+      <main className="flex-1 min-h-0 overflow-y-auto py-6 sm:py-7 px-4 sm:px-6">
         {attempts.length > 0 ? (
-          <div className="w-full">
+          <>
             {/* Key Stats */}
-            <div className="mb-6 p-3 border border-secondary/35 rounded-full bg-secondary/8">
+            <div className="mb-6 p-4 border border-secondary rounded-2xl bg-secondary">
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                 <SummaryStatCard
                   label="best wpm"
@@ -251,7 +247,7 @@ export default function HistoryPage() {
             </div>
 
             {/* Error Stats */}
-            <div className="mb-6 p-3 border border-secondary/35 rounded-full bg-secondary/8">
+            <div className="mb-6 p-4 border border-secondary rounded-2xl bg-secondary">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <SummaryStatCard
                   label="avg accuracy"
@@ -353,7 +349,7 @@ export default function HistoryPage() {
                 ))}
               </div>
             </div>
-          </div>
+          </>
         ) : (
           <div className="flex items-center justify-center min-h-96">
             <p className="text-sm text-foreground text-center">
