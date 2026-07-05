@@ -25,16 +25,10 @@ export default function AIWordsModal({
   const [theme, setTheme] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [agreedToDisclaimer, setAgreedToDisclaimer] = useState(false);
 
   const handleGenerateWords = async () => {
     if (!theme.trim()) {
-      setError("Please enter a theme");
-      return;
-    }
-
-    if (!agreedToDisclaimer) {
-      setError("Please agree to the disclaimer");
+      setError("Please enter a prompt.");
       return;
     }
 
@@ -42,25 +36,22 @@ export default function AIWordsModal({
     setError(null);
 
     try {
-      const service: GeminiService | undefined = geminiService;
-
-      if (!service) {
-        setError("AI service is unavailable right now");
-        setLoading(false);
-        return;
+      if (!geminiService) {
+        throw new Error("AI service is unavailable.");
       }
 
-      const result = await service.generateWords({
-        theme,
+      const result = await geminiService.generateWords({
+        theme: theme.trim(),
         wordCount: targetWordCount,
       });
 
       onWordsGenerated(result.words, result.theme);
       setTheme("");
-      setAgreedToDisclaimer(false);
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "failed to generate words");
+      setError(
+        err instanceof Error ? err.message : "Failed to generate words.",
+      );
     } finally {
       setLoading(false);
     }
@@ -68,114 +59,85 @@ export default function AIWordsModal({
 
   if (!isOpen) return null;
 
-  const inputClass =
-    "w-full px-3 py-2.5 bg-background/60 border border-secondary/50 rounded-lg text-sm font-mono text-foreground placeholder-foreground/25 focus:outline-none focus:border-highlight/50 transition-colors disabled:opacity-40";
-
   return (
     <ModalBase
       isOpen={isOpen}
       onClose={onClose}
-      title="ai words"
+      title="generate with ai"
       maxWidth="max-w-lg"
     >
-      <div className="space-y-6">
-        {/* Theme */}
-        <div className="space-y-1.5">
-          <div className="flex justify-between items-baseline">
-            <label className="text-xs font-mono text-foreground/40 uppercase tracking-widest">
-              theme
-            </label>
-            <span className="text-xs font-mono text-foreground/25">
-              {theme.length}/100
-            </span>
-          </div>
-          <input
-            type="text"
+      <div className="space-y-5 font-mono">
+        <div>
+          <label className="mb-2 block text-xs text-foreground/50">
+            Prompt
+          </label>
+
+          <textarea
             value={theme}
             onChange={(e) => {
               setTheme(e.target.value);
               setError(null);
             }}
-            onKeyDown={(e) => e.key === "Enter" && handleGenerateWords()}
-            placeholder="animals, sci-fi, cooking..."
-            maxLength={100}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                handleGenerateWords();
+              }
+            }}
+            placeholder="e.g. space exploration, startups, ancient rome, cats..."
+            rows={4}
+            maxLength={200}
             disabled={loading}
             autoFocus
-            className={inputClass}
+            className="w-full resize-none rounded-lg border border-secondary/40 bg-background/60 px-3 py-3 text-sm outline-none transition-colors focus:border-highlight/60"
           />
-        </div>
 
-        {/* Mode-based Word Count */}
-        <div className="rounded-lg border border-secondary/40 bg-secondary/10 px-3 py-2.5">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-mono text-foreground/40 uppercase tracking-widest">
-              mode
-            </span>
-            <span className="text-xs font-mono text-foreground">{mode}</span>
-          </div>
-          <div className="mt-1 flex items-center justify-between">
-            <span className="text-xs font-mono text-foreground/40 uppercase tracking-widest">
-              words
-            </span>
-            <span className="text-sm font-mono text-highlight">
-              {targetWordCount}
-            </span>
-          </div>
-        </div>
-
-        {/* Privacy + Agree */}
-        <div className="space-y-2.5">
-          <div className="flex gap-2 items-start text-xs text-foreground/50">
-            <TbLock size={12} className="shrink-0 mt-0.5" />
+          <div className="mt-2 flex items-center justify-between text-xs text-foreground/40">
             <span>
-              Google may use your theme to{" "}
-              <a
-                href="https://ai.google.dev/gemini-api/terms"
-                className="text-highlight"
-              >
-                improve their AI models.
-              </a>{" "}
-              Don't submit personal info.
+              {mode} • {targetWordCount} words
             </span>
+
+            <span>{theme.length}/200</span>
           </div>
-          <label className="flex items-center gap-2 text-xs font-mono text-foreground/50 cursor-pointer select-none group">
-            <input
-              type="checkbox"
-              checked={agreedToDisclaimer}
-              onChange={(e) => setAgreedToDisclaimer(e.target.checked)}
-              disabled={loading}
-              className="accent-highlight"
-            />
-            <span className="group-hover:text-foreground transition-colors">
-              i understand
-            </span>
-          </label>
         </div>
 
-        {/* Error */}
-        {error && (
-          <p className="text-xs font-mono text-red-400/80 -mt-2">{error}</p>
-        )}
+        <div className="flex items-start gap-2 rounded-lg border border-secondary/30 bg-secondary/10 p-3 text-xs text-foreground/60">
+          <TbLock className="mt-0.5 shrink-0" size={14} />
 
-        {/* Actions */}
-        <div className="flex gap-2 pt-1">
+          <p>
+            Your prompt is sent to Google's Gemini API to generate the typing
+            test.
+            <a
+              href="https://ai.google.dev/gemini-api/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-1 text-highlight hover:underline"
+            >
+              Learn more
+            </a>
+          </p>
+        </div>
+
+        {error && <p className="text-xs text-red-400">{error}</p>}
+
+        <div className="flex justify-end gap-2">
+          <Button variant="secondary" onClick={onClose} disabled={loading}>
+            Cancel
+          </Button>
+
           <Button
-            onClick={handleGenerateWords}
             variant="primary"
-            disabled={loading || !agreedToDisclaimer}
-            className="flex-1 flex items-center justify-center gap-1.5"
+            onClick={handleGenerateWords}
+            disabled={loading || !theme.trim()}
+            className="min-w-28"
           >
             {loading ? (
-              <>
-                <span className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin" />
-                generating...
-              </>
+              <span className="flex items-center gap-2">
+                <span className="h-3 w-3 animate-spin rounded-full border border-current border-t-transparent" />
+                Generating
+              </span>
             ) : (
-              <>generate</>
+              "Generate"
             )}
-          </Button>
-          <Button onClick={onClose} variant="secondary" disabled={loading}>
-            cancel
           </Button>
         </div>
       </div>
