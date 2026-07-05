@@ -87,6 +87,17 @@ export default function useTypingEngine({
     [length, target],
   );
 
+  // Start of the word containing `fromIndex` — i.e. the index right after
+  // the previous space, or 0 if there isn't one before it.
+  const findWordStart = useCallback(
+    (fromIndex: number) => {
+      let i = fromIndex;
+      while (i > 0 && target[i - 1] !== " ") i--;
+      return i;
+    },
+    [target],
+  );
+
   const handleKey = useCallback(
     (e: { key: string }) => {
       if (isComplete) return;
@@ -109,8 +120,20 @@ export default function useTypingEngine({
         return;
       }
 
-      // Word-boundary resync
-      // If user presses space while misaligned, mark one error  and jump to next word.
+      // start on first keystroke (only if not already started) — moved above
+      // the space handling below so a space as the very first keystroke
+      // still starts the timer.
+      if (!timer.running && !runningFlag && !paused) {
+        timer.start();
+        setRunningFlag(true);
+      }
+
+      // Word-boundary resync.
+      // A space only skips the rest of the current word once at least its
+      // first character has actually been typed (cursor has moved past the
+      // word's start index). If nothing in the word has been typed yet, the
+      // space is scored as an ordinary keystroke against the expected
+      // character instead of jumping ahead.
       if (key === " ") {
         const idx = cursor;
 
@@ -122,19 +145,26 @@ export default function useTypingEngine({
           setCursor((c) => c + 1);
           return;
         }
-        // misaligned space: fail current word, resync to next
-        typedRef.current += 1;
-        setErrors((s) => s + 1);
-        errorSoundPlay();
-        setCursor(findNextWordStart(idx));
+
+        const wordStart = findWordStart(idx);
+        const hasTypedIntoWord = idx > wordStart;
+
+        if (hasTypedIntoWord) {
+          // misaligned space partway through a word: fail the rest, resync to next word
+          typedRef.current += 1;
+          setErrors((s) => s + 1);
+          errorSoundPlay();
+          setCursor(findNextWordStart(idx));
+          return;
+        }
+
+        // nothing typed into this word yet: ignore the space entirely.
+        // Don't mark anything wrong and don't move the cursor — only a
+        // real (non-space) keystroke should register against this
+        // character.
         return;
       }
 
-      // start on first keystroke (only if not already started)
-      if (!timer.running && !runningFlag && !paused) {
-        timer.start();
-        setRunningFlag(true);
-      }
       if (key.length === 1) {
         const idx = cursor;
         const expected = target[idx];
@@ -199,6 +229,7 @@ export default function useTypingEngine({
       keySound,
       errorSoundPlay,
       findNextWordStart,
+      findWordStart,
     ],
   );
   // external reset/start helpers
