@@ -51,6 +51,7 @@ export default function ButtonGroup<T extends string>({
                 }}
               />
             )}
+            {option.label}
           </button>
         ))}
       </div>

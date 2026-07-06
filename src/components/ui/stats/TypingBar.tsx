@@ -48,9 +48,7 @@ function MetricChip({
   return (
     <div className={wrapperClass}>
       <span className={cn(btnBaseClass, btnActiveClass)}>{label}</span>
-      <span className="flex items-center gap-1 px-2">
-        {value}
-      </span>
+      <span className="flex items-center gap-1 px-2">{value}</span>
     </div>
   );
 }
@@ -172,7 +170,11 @@ export default function TypingBar({
   isTypingRunning = false,
 }: TypingBarProps) {
   const remaining = Math.max(0, duration - elapsed);
-
+  // read persisted preference (synchronous read is fine here)
+  const statsDisplay =
+    typeof window !== "undefined"
+      ? localStorage.getItem("slangtype_statsDisplay") || "default"
+      : "default";
   return (
     <motion.div
       className="w-full flex flex-col sm:flex-row sm:items-center sm:justify-center gap-2 sm:gap-3 md:gap-4 font-mono"
@@ -181,7 +183,10 @@ export default function TypingBar({
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
       {isTypingRunning ? (
-        <LiveMetrics wpm={wpm} accuracy={accuracy} remaining={remaining} />
+        // only show the pill-style live metrics when user prefers "default"
+        statsDisplay === "default" ? (
+          <LiveMetrics wpm={wpm} accuracy={accuracy} remaining={remaining} />
+        ) : null
       ) : (
         <ControlsPanel
           language={language}

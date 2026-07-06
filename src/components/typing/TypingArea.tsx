@@ -201,6 +201,14 @@ export default function TypingArea({
     engine.paused || (!engine.running && engine.cursor === 0);
 
   if (engine.isComplete) return null;
+  // read persisted stats display preference
+  const statsDisplay =
+    typeof window !== "undefined"
+      ? localStorage.getItem("slangtype_statsDisplay") || "default"
+      : "default";
+  // Calculate remaining time from timer or mode
+  const duration = engine?.running ? parseInt(mode) : 0;
+  const remaining = Math.max(0, duration - engine.elapsed);
 
   return (
     <Fragment>
@@ -309,17 +317,16 @@ export default function TypingArea({
           </AnimatePresence>
         </motion.div>
 
-        {/* Debug Stats */}
-        {/* {import.meta.env.MODE === "development" && engine.running && ( */}
-        <div className="mt-12  text-foreground font-mono space-y-1 text-center tracking-wide">
-          <div className="text-8xl text-highlight font-bold">{engine.wpm}</div>
-          <div className="text-xs opacity-60">
-            acc: {Math.round(engine.accuracy)}% | errors: {engine.errors} |
-            cursor: {engine.cursor} | typed: {engine.totalTyped} | elapsed:{" "}
-            {engine.elapsed}s
+        {statsDisplay === "bold" && engine.running && (
+          <div className="mt-12 text-foreground font-mono space-y-1 text-center tracking-wide">
+            <div className="text-8xl text-highlight font-bold">
+              {engine.wpm} {Math.round(engine.accuracy)}% {remaining}s
+            </div>
+            <div className="text-xs">
+              errors: {engine.errors} | typed: {engine.totalTyped}
+            </div>
           </div>
-        </div>
-        {/* )} */}
+        )}
       </div>
     </Fragment>
   );
