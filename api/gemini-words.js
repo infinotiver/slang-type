@@ -1,14 +1,8 @@
-import { consumeDailyRequests } from "./_lib/aiQuota.js";
-import { parse } from "cookie";
-import { verifyToken } from "./_lib/auth.js";
 const MODEL = "gemini-2.5-flash-lite";
 const MAX_WORDS = 800;
 const MIN_WORDS = 5;
 const MAX_THEME_LENGTH = 100;
 
-const rateLimitStore = new Map();
-const RATE_LIMIT_WINDOW_MS = 60_000;
-const RATE_LIMIT_MAX_REQUESTS = 15;
 const UPSTREAM_TIMEOUT_MS = 12_000;
 
 function sanitizeTheme(theme) {
@@ -18,40 +12,6 @@ function sanitizeTheme(theme) {
         .replace(/[<>"'`;]/g, "");
 }
 
-function getClientKey(req) {
-    const forwarded = req.headers["x-forwarded-for"];
-    if (typeof forwarded === "string" && forwarded.length > 0) {
-        return forwarded.split(",")[0].trim();
-    }
-    return req.socket?.remoteAddress || "unknown";
-}
-
-function checkRateLimit(clientKey) {
-    const now = Date.now();
-
-    // Periodic cleanup to prevent unbounded memory growth
-    if (rateLimitStore.size > 10_000) {
-        for (const [key, timestamps] of rateLimitStore.entries()) {
-            const alive = timestamps.filter((ts) => now - ts < RATE_LIMIT_WINDOW_MS);
-            if (alive.length === 0) {
-                rateLimitStore.delete(key);
-            } else {
-                rateLimitStore.set(key, alive);
-            }
-        }
-    }
-
-    const existing = rateLimitStore.get(clientKey) || [];
-    const recent = existing.filter((ts) => now - ts < RATE_LIMIT_WINDOW_MS);
-
-    if (recent.length >= RATE_LIMIT_MAX_REQUESTS) {
-        return false;
-    }
-
-    recent.push(now);
-    rateLimitStore.set(clientKey, recent);
-    return true;
-}
 
 function json(res, status, payload) {
     res.statusCode = status;
@@ -86,11 +46,6 @@ export default async function handler(req, res) {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
         return json(res, 401, { error: "server_not_configured" });
-    }
-
-    const clientKey = getClientKey(req);
-    if (!checkRateLimit(clientKey)) {
-        return json(res, 429, { error: "rate_limited" });
     }
 
     const contentType = req.headers["content-type"] || "";
@@ -129,25 +84,7 @@ export default async function handler(req, res) {
         return json(res, 400, { error: "invalid_word_count" });
     }
 
-    const cookies = parse(req.headers.cookie || "");
-    const token = cookies.token;
-    if (!token) {
-        return json(res, 401, { error: "unauthorized" });
-    }
 
-    const payload = await verifyToken(token);
-    if (!payload?.userId) {
-        return json(res, 401, { error: "unauthorized" });
-    }
-
-    const quota = await consumeDailyRequests(payload.userId);
-    if (!quota.ok) {
-        return json(res, 429, {
-            error: "request_quota_exceeded",
-            remaining: 0,
-            limit: quota.limit,
-        });
-    }
     const systemPrompt = `You are a word generator for a typing test application. Generate exactly ${requestedCount} unique, common English words related to the theme: "${sanitizedTheme}".
 
 Requirements:
@@ -232,11 +169,8 @@ Response format:
         return json(res, 200, {
             words,
             theme: sanitizedTheme,
-            timestamp: Date.now(),
-            quota: {
-                remaining: quota.remaining,
-                limit: quota.limit,
-            },
+            timestamp: Date.now()
+
         });
     } catch {
         return json(res, 500, { error: "internal_error" });
