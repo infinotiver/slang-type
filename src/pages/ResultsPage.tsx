@@ -166,7 +166,7 @@ export default function ResultsPage() {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto bg-background text-foreground flex flex-col font-mono">
+    <div className="flex-1 overflow-y-auto bg-background text-foreground flex flex-col font-mono px-4 sm:px-6">
       <div className="w-full">
         <div className="mb-6 flex items-center gap-4">
           <button
@@ -205,14 +205,14 @@ export default function ResultsPage() {
           </div>
         </div>
         {rejectReason && (
-          <div className="px-4  text-xs text-red-400 font-mono bg-secondary rounded py-2 mb-4">
+          <div className="px-4 text-xs text-red-400 font-mono bg-secondary p-3 rounded-xl mb-4">
             {rejectReason}
           </div>
         )}
 
-        <div className="flex flex-col md:flex-row gap-6 flex-1">
-          <div className="lg:w-50 flex flex-col gap-6 shrink-0">
-            <div className="p-4 bg-highlight/10 rounded-xl flex flex-col justify-between min-h-55">
+        <div className="flex flex-col md:flex-row gap-6">
+          <div className="lg:w-48 flex flex-col gap-6 shrink-0">
+            <div className="p-6 bg-highlight/10 rounded-xl flex flex-col justify-between min-h-55">
               {/* Upper Stats */}
               <div className="space-y-4">
                 <section>
@@ -242,8 +242,8 @@ export default function ResultsPage() {
           </div>
         </div>
 
-        <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3 auto-rows-fr">
-          <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
+        <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr">
+          <div className="p-4 border border-secondary/30 rounded-xl bg-secondary flex flex-col">
             <div className="text-xs text-foreground/60">errors</div>
             <div className="text-2xl font-bold text-foreground mt-auto">
               {errors}
@@ -252,7 +252,7 @@ export default function ResultsPage() {
               {formatPercent(stats.errorRate, 1)} rate
             </div>
           </div>
-          <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
+          <div className="p-4 border border-secondary/30 rounded-xl bg-secondary flex flex-col">
             <div className="text-xs text-foreground/60">pace</div>
             <div className="text-2xl font-bold text-foreground mt-auto">
               {stats.charsPerSecond} c/s
@@ -261,13 +261,13 @@ export default function ResultsPage() {
               {stats.timePerChar}s / char
             </div>
           </div>
-          <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
+          <div className="p-4 border border-secondary/30 rounded-xl bg-secondary flex flex-col">
             <div className="text-xs text-foreground/60">consistency</div>
             <div className="text-2xl font-bold text-foreground mt-auto">
               {formatPercent(stats.consistency, 1)}
             </div>
           </div>
-          <div className="p-3 border border-secondary/30 rounded-lg bg-secondary/5 flex flex-col">
+          <div className="p-4 border border-secondary/30 rounded-xl bg-secondary flex flex-col">
             <div className="text-xs text-foreground/60">coverage</div>
             <div className="text-2xl font-bold text-foreground mt-auto">
               {stats.correctWords} / {stats.wordsTyped}

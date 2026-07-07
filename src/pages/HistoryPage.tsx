@@ -1,14 +1,12 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useHistoryStats } from "@hooks/useHistoryStats";
-import {
-  StatCard as SummaryStatCard,
-  ResultCard as BestResultCard,
-} from "@components/ui/stats";
+import { StatCard as SummaryStatCard } from "@components/ui/stats";
 import { ChartContainer } from "@components/ui/charts";
 import { AttemptListItem } from "@components/ui/lists";
 import type { TypingAttempt } from "@shared-types/index";
 import { Button, TopBar } from "@components/ui/common";
+import BestResultCard from "@/components/ui/stats/BestResultCard";
 export default function HistoryPage() {
   const navigate = useNavigate();
   const [selectedAttemptId, setSelectedAttemptId] = useState<string | null>(
@@ -92,7 +90,7 @@ export default function HistoryPage() {
         <main className="flex-1 min-h-0 overflow-y-auto py-4 sm:py-6 px-4 sm:px-6">
           <div className="w-full max-w-4xl mx-auto space-y-6">
             {/* Test Info */}
-            <div className="rounded-2xl border border-secondary bg-secondary/10 p-5">
+            <div className="rounded-xl border border-secondary bg-secondary/10 p-5">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <div className="text-xs text-foreground tracking-wider font-light">
@@ -115,7 +113,7 @@ export default function HistoryPage() {
             </div>
 
             {/* Performance Stats */}
-            <div className="mb-6 rounded-2xl border border-secondary bg-secondary/10 p-5">
+            <div className="mb-6 rounded-xl border border-secondary bg-secondary/10 p-5">
               <h3 className="text-sm font-mono text-foreground mb-4 tracking-wider">
                 performance
               </h3>
@@ -156,7 +154,7 @@ export default function HistoryPage() {
             </div>
 
             {/* Character Stats */}
-            <div className="mb-6 rounded-2xl border border-secondary bg-secondary/10 p-5">
+            <div className="mb-6 rounded-xl border border-secondary bg-secondary/10 p-5">
               <h3 className="text-sm font-mono text-foreground mb-4 tracking-wider">
                 character stats
               </h3>
@@ -226,7 +224,7 @@ export default function HistoryPage() {
         {attempts.length > 0 ? (
           <>
             {/* Key Stats */}
-            <div className="mb-6 p-4 border border-secondary rounded-2xl bg-secondary">
+            <div className="mb-6 p-4 border border-secondary rounded-xl bg-secondary">
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                 <SummaryStatCard
                   label="best wpm"
@@ -247,7 +245,7 @@ export default function HistoryPage() {
             </div>
 
             {/* Error Stats */}
-            <div className="mb-6 p-4 border border-secondary rounded-2xl bg-secondary">
+            <div className="mb-6 p-4 border border-secondary rounded-xl bg-secondary">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <SummaryStatCard
                   label="avg accuracy"

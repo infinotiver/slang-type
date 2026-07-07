@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { memo } from "react";
 import { formatPercent } from "@/utils/numberFormat";
 import { formatTime } from "@/utils/timeFormat";
 import type { StatsAndControlsProps } from "@shared-types/index";
@@ -31,14 +32,14 @@ const LANGUAGE_OPTIONS: SegmentedOption[] = toOptions([
   "code",
 ]);
 
-const wrapperClass = "flex items-center gap-1 rounded-full bg-secondary/60 p-1";
+const wrapperClass = "flex items-center gap-1 rounded-full bg-secondary p-1";
 const btnBaseClass =
   "px-4 py-2 rounded-full text-xs tracking-wide border border-transparent transition-colors duration-150";
 const btnActiveClass = "font-semibold bg-highlight text-background";
 const btnInactiveClass =
   "text-foreground bg-transparent hover:bg-secondary hover:text-highlight hover:border-secondary";
 
-function MetricChip({
+const MetricChip = memo(function MetricChip({
   label,
   value,
 }: {
@@ -51,10 +52,10 @@ function MetricChip({
       <span className="flex items-center gap-1 px-2">{value}</span>
     </div>
   );
-}
+});
 
 /** Select on mobile, pill buttons on larger screens. */
-function SegmentedGroup({
+const SegmentedGroup = memo(function SegmentedGroup({
   options,
   value,
   onChange,
@@ -102,9 +103,9 @@ function SegmentedGroup({
       </div>
     </div>
   );
-}
+});
 
-function LiveMetrics({
+const LiveMetrics = memo(function LiveMetrics({
   wpm,
   accuracy,
   remaining,
@@ -125,9 +126,9 @@ function LiveMetrics({
       <MetricChip label="time" value={formatTime(remaining)} />
     </motion.div>
   );
-}
+});
 
-function ControlsPanel({
+const ControlsPanel = memo(function ControlsPanel({
   language,
   mode,
   languageOptions,
@@ -156,7 +157,7 @@ function ControlsPanel({
       />
     </div>
   );
-}
+});
 
 export default function TypingBar({
   wpm = 0,
