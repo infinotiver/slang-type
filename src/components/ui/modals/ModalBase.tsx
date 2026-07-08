@@ -40,7 +40,7 @@ export default function ModalBase({
             transition={{ duration: 0.28, ease: "anticipate" }}
           >
             <div
-              className={`bg-secondary border border-secondary rounded-3xl p-6 sm:p-8 w-full ${maxWidth} shadow-2xl pointer-events-auto max-h-[40vh] sm:max-h-[60vh] overflow-y-auto custom-scroll`}
+              className={`bg-secondary border border-secondary rounded-3xl p-6 sm:p-8 w-full ${maxWidth} shadow-2xl pointer-events-auto max-h-[60vh] sm:max-h-[80vh] overflow-y-auto custom-scroll`}
               style={{ scrollbarWidth: "thin", scrollbarColor: "#888 #222" }}
             >
               <style>{`

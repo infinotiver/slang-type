@@ -16,12 +16,12 @@ export default function AttemptListItem({
   return (
     <button
       onClick={() => onSelect(attempt)}
-      className="w-full flex items-center justify-between p-2 my-2 bg-secondary rounded border border-secondary/30 hover:border-highlight hover:bg-highlight/30 transition-colors text-left text-xs font-mono"
+      className="flex items-center justify-between px-6 py-2 my-1 bg-secondary/40 rounded-full border border-secondary hover:bg-secondary transition-colors text-left text-xs font-mono"
     >
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 flex gap-4 items-center min-w-0">
         <div className="text-foreground">{formatDate(attempt.timestamp)}</div>
         <div className="text-foreground/50 text-xs">
-          {getLanguageLabel(attempt.language)} | {attempt.mode}
+          {attempt.mode} | {getLanguageLabel(attempt.language)}
           {attempt.aiGenerated ? " • AI" : ""}
         </div>
       </div>

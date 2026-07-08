@@ -10,29 +10,21 @@ export default function BestResultCard({
   label,
   attempt,
 }: BestResultCardProps) {
+  if (!attempt) return null;
+
   return (
-    <div className="p-2 border border-secondary/30 rounded bg-secondary hover:bg-highlight/30 hover:border-highlight transition-colors">
-      <div className="text-xs font-semibold text-foreground mb-2 capitalize">
+    <div className="flex items-center gap-2.5 p-1 rounded-full bg-secondary whitespace-nowrap text-xs">
+      <span className="px-4 py-2 rounded-full bg-highlight/15 text-highlight  font-bold capitalize">
         {label}
-      </div>
-      {attempt ? (
-        <div className="space-y-1">
-          <div className="flex items-baseline gap-1">
-            <span className="text-foreground/50 text-xs">wpm</span>
-            <span className="text-lg font-bold text-highlight">
-              {attempt.wpm}
-            </span>
-          </div>
-          <div className="flex items-baseline gap-1">
-            <span className="text-foreground/50 text-xs">acc</span>
-            <span className="text-sm font-semibold">
-              {formatPercent(attempt.accuracy)}
-            </span>
-          </div>
-        </div>
-      ) : (
-        <div className="text-foreground/30 text-xs">no attempts</div>
-      )}
+      </span>
+      <span className="text-xs font-bold text-highlight">
+        {attempt.wpm}{" "}
+        <span className="text-foreground/50 font-normal">wpm</span>
+      </span>
+      <span className="w-1 h-1 rounded-full bg-foreground/20" />
+      <span className="text-xs font-semibold text-foreground">
+        {formatPercent(attempt.accuracy)}
+      </span>
     </div>
   );
 }

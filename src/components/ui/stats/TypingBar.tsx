@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import { memo } from "react";
+import { motion, LayoutGroup } from "framer-motion";
+import { memo, useState } from "react";
 import { formatPercent } from "@/utils/numberFormat";
 import { formatTime } from "@/utils/timeFormat";
 import type { StatsAndControlsProps } from "@shared-types/index";
@@ -27,17 +27,16 @@ function toOptions(values: string[]): SegmentedOption[] {
 const MODE_OPTIONS = toOptions(["15s", "30s", "60s", "120s", "inf"]);
 const LANGUAGE_OPTIONS: SegmentedOption[] = toOptions([
   "slang",
-  "ai",
   "english",
+  "ai",
   "code",
 ]);
 
 const wrapperClass = "flex items-center gap-1 rounded-full bg-secondary p-1";
 const btnBaseClass =
-  "px-4 py-2 rounded-full text-xs tracking-wide border border-transparent transition-colors duration-150";
-const btnActiveClass = "font-semibold bg-highlight text-background";
-const btnInactiveClass =
-  "text-foreground bg-transparent hover:bg-secondary hover:text-highlight hover:border-secondary";
+  "relative px-4 py-2 rounded-full text-xs tracking-wide transition-colors duration-150";
+const activeTextClass = "font-semibold text-background";
+const inactiveTextClass = "text-foreground hover:text-highlight";
 
 const MetricChip = memo(function MetricChip({
   label,
@@ -48,13 +47,25 @@ const MetricChip = memo(function MetricChip({
 }) {
   return (
     <div className={wrapperClass}>
-      <span className={cn(btnBaseClass, btnActiveClass)}>{label}</span>
+      <span
+        className={cn(
+          btnBaseClass,
+          "bg-highlight text-background font-semibold",
+        )}
+      >
+        {label}
+      </span>
       <span className="flex items-center gap-1 px-2">{value}</span>
     </div>
   );
 });
 
-/** Select on mobile, pill buttons on larger screens. */
+/**
+ * Select on mobile, pill buttons on larger screens. The active button's
+ * highlight is one shared element (via layoutId) that framer-motion
+ * animates between buttons, instead of each button toggling its own
+ * background instantly.
+ */
 const SegmentedGroup = memo(function SegmentedGroup({
   options,
   value,
@@ -85,22 +96,34 @@ const SegmentedGroup = memo(function SegmentedGroup({
         ))}
       </select>
 
-      <div className="hidden sm:flex items-center gap-1.5">
-        {options.map((option) => (
-          <button
-            key={option.label}
-            type="button"
-            onClick={() => onChange(option.label)}
-            disabled={option.disabled}
-            className={cn(
-              btnBaseClass,
-              value === option.label ? btnActiveClass : btnInactiveClass,
-            )}
-          >
-            {option.label}
-          </button>
-        ))}
-      </div>
+      <LayoutGroup id={ariaLabel}>
+        <div className="hidden sm:flex items-center gap-1.5">
+          {options.map((option) => {
+            const active = value === option.label;
+            return (
+              <button
+                key={option.label}
+                type="button"
+                onClick={() => onChange(option.label)}
+                disabled={option.disabled}
+                className={cn(
+                  btnBaseClass,
+                  active ? activeTextClass : inactiveTextClass,
+                )}
+              >
+                {active && (
+                  <motion.span
+                    layoutId={`${ariaLabel}-highlight`}
+                    className="absolute inset-0 rounded-full bg-highlight"
+                    transition={{ type: "spring", stiffness: 500, damping: 34 }}
+                  />
+                )}
+                <span className="relative z-10">{option.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </LayoutGroup>
     </div>
   );
 });
@@ -159,6 +182,11 @@ const ControlsPanel = memo(function ControlsPanel({
   );
 });
 
+function readStatsDisplayPreference(): string {
+  if (typeof window === "undefined") return "default";
+  return localStorage.getItem("slangtype_statsDisplay") || "default";
+}
+
 export default function TypingBar({
   wpm = 0,
   accuracy = 0,
@@ -171,11 +199,8 @@ export default function TypingBar({
   isTypingRunning = false,
 }: TypingBarProps) {
   const remaining = Math.max(0, duration - elapsed);
-  // read persisted preference (synchronous read is fine here)
-  const statsDisplay =
-    typeof window !== "undefined"
-      ? localStorage.getItem("slangtype_statsDisplay") || "default"
-      : "default";
+  const [statsDisplay] = useState(readStatsDisplayPreference);
+
   return (
     <motion.div
       className="w-full flex flex-col sm:flex-row sm:items-center sm:justify-center gap-2 sm:gap-3 md:gap-4 font-mono"
@@ -184,10 +209,9 @@ export default function TypingBar({
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
       {isTypingRunning ? (
-        // only show the pill-style live metrics when user prefers "default"
-        statsDisplay === "default" ? (
+        statsDisplay === "default" && (
           <LiveMetrics wpm={wpm} accuracy={accuracy} remaining={remaining} />
-        ) : null
+        )
       ) : (
         <ControlsPanel
           language={language}
