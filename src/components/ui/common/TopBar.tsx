@@ -7,7 +7,7 @@ interface TopBarProps {
 
 export default function TopBar({ title, onBack }: TopBarProps) {
   return (
-    <header className="py-2 sm:py-3 border-b border-secondary">
+    <header className="py-1 sm:py-2 border-b border-secondary">
       <div className="flex items-center gap-4">
         <button
           onClick={onBack}
