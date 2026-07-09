@@ -1,21 +1,6 @@
 # slang-type
-## 0.4.2 (2026-07-08)
-### Refactor
-* **history**: show attempt details in list item itself, remove attempt view in history page ([4d19df1](https://github.com/infinotiver/slang-type/commit/4d19df1))
 
-### Styles
-* **TopBar**: adjust padding and remove unused exports in stats index ([23d1a87](https://github.com/infinotiver/slang-type/commit/23d1a87))
-* **history**: add pills design ([459a400](https://github.com/infinotiver/slang-type/commit/459a400))
-* **redesign**: extend redesign to history and results page ([dd61cec](https://github.com/infinotiver/slang-type/commit/dd61cec))
-
-### Chores
-* **cleanup**: remove unused files ([2d0e8ac](https://github.com/infinotiver/slang-type/commit/2d0e8ac))
-* **cleanup**: general cleanup ([73fae80](https://github.com/infinotiver/slang-type/commit/73fae80))
-
-### Documentation
-* **changelog**: add a note about recent changes ([a0f9df5](https://github.com/infinotiver/slang-type/commit/a0f9df5))
-
-## 0.4.1 (2026-07-06)
+## 0.4.1 (2026-07-08)
 
 ### Features
 * **typing**: add two live typing metrics display mode ([a40c8e0](https://github.com/infinotiver/slang-typecommit/a40c8e0))
@@ -25,6 +10,10 @@
 * **generation**: implement code phrase generation using external javascript snippets ([52cc5c5](https://github.com/infinotiver/slang-typecommit/52cc5c5))
 * **auth**: add username validation on signup ([e347379](https://github.com/infinotiver/slang-typecommit/e347379))
 * **cleanup**: remove backend for rewrite ([494dca6](https://github.com/infinotiver/slang-typecommit/494dca6))
+
+### Refactor
+* **history**: show attempt details in list item itself, remove attempt view in history page ([4d19df1](https://github.com/infinotiver/slang-type/commit/4d19df1))
+
 
 ### Fixes
 * **typing-area**: resolve broken auto-scroll and janky cursor animation ([d9a6bd7](https://github.com/infinotiver/slang-typecommit/d9a6bd7))
@@ -38,6 +27,8 @@
 * **layout**: reduce unnecessary nesting ([f1b8408](https://github.com/infinotiver/slang-typecommit/f1b8408))
 * **metrics**: update metrics to pill-shaped design ([f1c389](https://github.com/infinotiver/slang-typecommit/f1c389))
 * **themes**: add 'bold' theme with custom colors ([4fd326b](https://github.com/infinotiver/slang-typecommit/4fd326b))
+* **history**: add pills design ([459a400](https://github.com/infinotiver/slang-type/commit/459a400))
+* **redesign**: extend redesign to history and results page ([dd61cec](https://github.com/infinotiver/slang-type/commit/dd61cec))
 
 ### Refactor
 * **ui**: update ai words modal ([3c966ee](https://github.com/infinotiver/slang-typecommit/3c966ee))
