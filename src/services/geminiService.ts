@@ -71,7 +71,7 @@ export class GeminiService {
     const sanitizedTheme = this.sanitizeTheme(request.theme);
 
     try {
-      const response = await fetch("/api/gemini-words", {
+      const response = await fetch("/api/generate-words", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

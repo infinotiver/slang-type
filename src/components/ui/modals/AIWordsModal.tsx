@@ -104,16 +104,7 @@ export default function AIWordsModal({
           <TbLock className="mt-0.5 shrink-0" size={14} />
 
           <p>
-            Your prompt is sent to Google's Gemini API to generate the typing
-            test.
-            <a
-              href="https://ai.google.dev/gemini-api/terms"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="ml-1 text-highlight hover:underline"
-            >
-              Learn more
-            </a>
+            Your prompt is sent to external API (Groq) for generating words. Please avoid using sensitive or personal information in your prompt. 
           </p>
         </div>
 

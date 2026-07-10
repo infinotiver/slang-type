@@ -15,8 +15,6 @@ import type {
 import { Button } from "@components/ui/common";
 import { motion, AnimatePresence } from "framer-motion";
 
-// --- Interfaces ---
-
 interface Engine {
   cursor: number;
   status: Record<number, "pending" | "correct" | "incorrect">;
@@ -243,13 +241,6 @@ export default function TypingArea({
           transition={{ duration: 0.3, ease: "easeOut" }}
           onClick={() => inputRef.current?.focus()}
         >
-          {aiGenerated && (
-            <div className="absolute right-2 top-2 z-30">
-              <span className="px-3 py-1 text-xs uppercase rounded-full bg-highlight text-highlight border border-secondary">
-                AI generated
-              </span>
-            </div>
-          )}
           <div
             ref={scrollContainerRef}
             className="h-50 overflow-y-auto p-2 sm:p-4 scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
