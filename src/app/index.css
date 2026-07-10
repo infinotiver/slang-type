@@ -76,3 +76,11 @@
   --color-accent: #ffc703;
   --color-highlight: #D71921;
 }
+
+.theme-preview {
+  --preview-background: var(--color-background);
+  --preview-secondary: var(--color-secondary);
+  --preview-foreground: var(--color-foreground);
+  --preview-accent: var(--color-accent);
+  --preview-highlight: var(--color-highlight);
+}

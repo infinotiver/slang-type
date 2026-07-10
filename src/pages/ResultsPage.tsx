@@ -187,19 +187,15 @@ export default function ResultsPage() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            {results.aiGenerated && (
-              <span className="px-3 py-1 text-[11px] uppercase tracking-widest rounded-full bg-highlight/15 text-highlight border border-highlight/40 shadow-sm">
-                AI generated
-              </span>
-            )}
+            
             {isBaseline && (
               <div className="text-xs sm:text-sm text-foreground">
-                baseline established
+                welcome to slangtype!
               </div>
             )}
             {isNewHighScore && !isBaseline && (
               <div className="text-xs sm:text-sm text-foreground">
-                new high score
+                new high score!
               </div>
             )}
           </div>

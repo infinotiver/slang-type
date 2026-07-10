@@ -1,3 +1,7 @@
+import { CheckIcon } from "lucide-react";
+import { THEMES } from "@/types";
+import { ThemePreview } from "./ThemePreview";
+
 interface ButtonGroupOption<T> {
   label: string;
   value: T;
@@ -10,50 +14,65 @@ interface ButtonGroupProps<T> {
   label?: string;
 }
 
-const themeColors: Record<string, string> = {
-  dark: "#fff000",
-  light: "#fca311",
-  latte: "#dc8a78",
-  frappe: "#f4b8e4",
-  mocha: "#94e2d5",
-  nord: "#88c0d0",
-  gruvbox: "#fabd2f",
-  bold: "#D71921",
-};
-
 export default function ButtonGroup<T extends string>({
   options,
   value,
   onChange,
   label,
 }: ButtonGroupProps<T>) {
-  const isThemeGroup = label === "theme";
+  const isThemeGroup = label?.toLowerCase() === "theme";
 
   return (
-    <div>
+    <div className="space-y-3">
       {label && (
-        <label className="block text-sm font-mono text-foreground mb-2 tracking-wider">
+        <p className="text-xs uppercase tracking-wider text-foreground/50 font-mono">
           {label}
-        </label>
+        </p>
       )}
+
       <div className="flex flex-wrap gap-2">
-        {options.map((option) => (
-          <button
-            key={option.value}
-            onClick={() => onChange(option.value)}
-            className={value === option.value ? "opacity-100" : "opacity-20"}
-          >
-            {isThemeGroup && (
+        {options.map((option) => {
+          const selected = option.value === value;
+
+          const isTheme =
+            isThemeGroup &&
+            THEMES.includes(option.value as (typeof THEMES)[number]);
+
+          return (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => onChange(option.value)}
+              className={[
+                "inline-flex items-center gap-2 rounded-full px-4 py-2",
+                "border font-mono text-sm",
+                "transition-all duration-150",
+                selected
+                  ? "border-highlight bg-secondary shadow-[0_0_0_1px_var(--color-highlight)]"
+                  : "border-secondary bg-secondary hover:border-accent",
+              ].join(" ")}
+            >
               <span
-                className="inline-block w-12 h-12 rounded-full mr-2 align-middle"
-                style={{
-                  backgroundColor: themeColors[option.value] || "#fff000",
-                }}
-              />
-            )}
-            {option.label}
-          </button>
-        ))}
+                className={[
+                  "flex items-center justify-center transition-all",
+                  selected
+                    ? "opacity-100 w-4"
+                    : "opacity-0 w-0 overflow-hidden",
+                ].join(" ")}
+              >
+                <CheckIcon size={14} className="text-highlight" />
+              </span>
+
+              {isTheme && (
+                <div>
+                  <ThemePreview theme={option.value} />
+                </div>
+              )}
+
+              <span className="capitalize">{option.label}</span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
