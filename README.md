@@ -38,6 +38,15 @@ pnpm dev
 pnpm build
 ```
 
+## Gallery
+
+<table>
+  <tr>
+    <td width="50%"><img src="public/demo_attempt.png" alt="Homepage" /><br/><sub><b>Home page</b> — Clean, minimal and soft design</sub></td>
+    <td width="50%"><img src="public/demo_history.png" alt="History" /><br/><sub><b>History</b> — Everything is saved in your browser, no sign ups!</sub></td>
+  </tr>
+
+</table>
 
 ## Credits
 
