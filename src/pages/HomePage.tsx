@@ -116,8 +116,8 @@ export default function HomePage() {
   }, [isAIMode, aiWordsReady]);
 
   return (
-    <div className="flex h-full w-full flex-1 flex-col">
-      <section className="flex justify-center">
+    <div className="flex h-full w-full flex-1 flex-col items-center justify-start gap-2 md:justify-center md:gap-8">
+      <section className="flex shrink-0 justify-center">
         <TypingBar
           wpm={engine.wpm}
           accuracy={engine.accuracy}
@@ -133,13 +133,12 @@ export default function HomePage() {
       </section>
 
       {/* TYPING AREA */}
-      <section className="flex min-h-0 flex-1 flex-col items-center justify-center">
+      <section className="flex min-h-0 flex-1 w-full flex-col items-center justify-start md:justify-center">
         {isAIMode && !aiWordsReady ? (
           <div className="my-auto flex h-full w-full max-w-3xl flex-col items-center justify-center space-y-3 px-4 text-center">
             <p className="text-xs">
               ai mode requires you to enter a prompt to generate test words. ai
-              mode uses external llm api (google's gemini) (subject to google's
-              terms and condiitons).
+              mode uses external llm api
             </p>
             <Button onClick={openAIModal}>Generate with AI</Button>
           </div>
@@ -154,9 +153,8 @@ export default function HomePage() {
             highScore={highScore}
             aiGenerated={aiGenerated}
             onResultsComplete={(resultsPayload: ResultsPayload) => {
-              // Store results for high score update after navigation
               pendingResultsRef.current = resultsPayload;
-              // Navigate to results page with state
+
               navigate("/results", {
                 state: {
                   results: resultsPayload,

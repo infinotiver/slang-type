@@ -32,11 +32,13 @@ const LANGUAGE_OPTIONS: SegmentedOption[] = toOptions([
   "code",
 ]);
 
-const wrapperClass = "flex items-center gap-1 rounded-full bg-secondary p-1";
+const wrapperClass =
+  "flex items-center gap-1 rounded-full bg-secondary p-1 border border-accent/20";
 const btnBaseClass =
   "relative px-4 py-2 rounded-full text-xs tracking-wide transition-colors duration-150";
 const activeTextClass = "font-semibold text-background";
-const inactiveTextClass = "text-foreground hover:text-highlight";
+const inactiveTextClass =
+  "text-foreground hover:text-highlight";
 
 const MetricChip = memo(function MetricChip({
   label,
@@ -83,7 +85,7 @@ const SegmentedGroup = memo(function SegmentedGroup({
         aria-label={ariaLabel}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="sm:hidden w-auto px-2 py-1 text-sm font-mono text-foreground rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-highlight hover:bg-secondary transition-colors"
+        className="sm:hidden w-auto px-2 py-1 text-sm font-mono text-foreground rounded-full hover:bg-secondary transition-colors"
       >
         {options.map((option) => (
           <option

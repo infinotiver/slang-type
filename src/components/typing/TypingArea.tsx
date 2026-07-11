@@ -233,92 +233,92 @@ export default function TypingArea({
         autoFocus
       />
 
-      <div className="flex-1 w-full h-full flex flex-col items-center">
-        <motion.div
-          className="relative w-full"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-          onClick={() => inputRef.current?.focus()}
+      <motion.div
+        className="flex-1 flex flex-col items-center justify-center relative w-full"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        onClick={() => inputRef.current?.focus()}
+      >
+        <div
+          ref={scrollContainerRef}
+          // container height = (font size × line height multiplier + extra vertical spacing) × number of lines
+          // max-h-[calc((56px+2px)*3)] ~ 44
+          className="h-45 overflow-y-auto p-2 sm:p-4 scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
         >
-          <div
-            ref={scrollContainerRef}
-            className="h-50 overflow-y-auto p-2 sm:p-4 scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-          >
-            <div className="flex flex-wrap text-4xl font-mono leading-[1.8] text-justify">
-              {words.map((w, wordIdx) => (
-                <span key={wordIdx} className="inline-block mr-[0.25em]">
-                  {w.chars.map((c) => (
-                    <CharCell
-                      key={c.index}
-                      char={c.char}
-                      status={engine.status[c.index]}
-                      isCurrent={c.index === engine.cursor}
-                      charRef={(el) => {
-                        if (c.index === engine.cursor) {
-                          activeCharRef.current = el;
-                        }
-                      }}
-                    />
-                  ))}
-                  {w.spaceIndex !== null && (
-                    <CharCell
-                      key={w.spaceIndex}
-                      char=" "
-                      status={engine.status[w.spaceIndex]}
-                      isCurrent={w.spaceIndex === engine.cursor}
-                      charRef={(el) => {
-                        if (w.spaceIndex === engine.cursor) {
-                          activeCharRef.current = el;
-                        }
-                      }}
-                    />
-                  )}
-                </span>
-              ))}
-            </div>
+          <div className="flex flex-wrap text-4xl font-mono leading-14 text-justify">
+            {words.map((w, wordIdx) => (
+              <span key={wordIdx} className="inline-block mr-[0.25em]">
+                {w.chars.map((c) => (
+                  <CharCell
+                    key={c.index}
+                    char={c.char}
+                    status={engine.status[c.index]}
+                    isCurrent={c.index === engine.cursor}
+                    charRef={(el) => {
+                      if (c.index === engine.cursor) {
+                        activeCharRef.current = el;
+                      }
+                    }}
+                  />
+                ))}
+                {w.spaceIndex !== null && (
+                  <CharCell
+                    key={w.spaceIndex}
+                    char=" "
+                    status={engine.status[w.spaceIndex]}
+                    isCurrent={w.spaceIndex === engine.cursor}
+                    charRef={(el) => {
+                      if (w.spaceIndex === engine.cursor) {
+                        activeCharRef.current = el;
+                      }
+                    }}
+                  />
+                )}
+              </span>
+            ))}
           </div>
+        </div>
 
-          {/* Overlay - Start or Resume */}
-          <AnimatePresence>
-            {showStartOrResumeOverlay && (
+        {/* Overlay - Start or Resume */}
+        <AnimatePresence>
+          {showStartOrResumeOverlay && (
+            <motion.div
+              className="absolute inset-0 z-20 bg-background/80 flex items-center justify-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
+            >
               <motion.div
-                className="absolute inset-0 z-20 bg-background/80 flex items-center justify-center"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={{ scale: 0.98, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.98, opacity: 0 }}
                 transition={{ duration: 0.15, ease: "easeOut" }}
               >
-                <motion.div
-                  initial={{ scale: 0.98, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.98, opacity: 0 }}
-                  transition={{ duration: 0.15, ease: "easeOut" }}
+                <Button
+                  onClick={() =>
+                    engine.cursor > 0 ? engine.resume() : engine.start()
+                  }
                 >
-                  <Button
-                    onClick={() =>
-                      engine.cursor > 0 ? engine.resume() : engine.start()
-                    }
-                  >
-                    {engine.cursor > 0 ? "Resume" : "Start typing"}
-                  </Button>
-                </motion.div>
+                  {engine.cursor > 0 ? "Resume" : "Start typing"}
+                </Button>
               </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
 
-        {statsDisplay === "bold" && engine.running && (
-          <div className="mt-12 text-foreground font-mono space-y-1 text-center tracking-wide">
-            <div className="text-8xl text-highlight font-bold">
-              {engine.wpm} {Math.round(engine.accuracy)}% {remaining}s
-            </div>
-            <div className="text-xs">
-              errors: {engine.errors} | typed: {engine.totalTyped}
-            </div>
+      {statsDisplay === "bold" && engine.running && (
+        <div className="mt-12 text-foreground font-mono space-y-1 text-center tracking-wide">
+          <div className="text-8xl text-highlight font-bold">
+            {engine.wpm} {Math.round(engine.accuracy)}% {remaining}s
           </div>
-        )}
-      </div>
+          <div className="text-xs">
+            errors: {engine.errors} | typed: {engine.totalTyped}
+          </div>
+        </div>
+      )}
     </Fragment>
   );
 }

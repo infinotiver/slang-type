@@ -54,9 +54,9 @@ export default function ButtonGroup<T extends string>({
             >
               <span
                 className={[
-                  "flex items-center justify-center transition-all",
+                  "flex items-center justify-center transition-all p-1 rounded-full",
                   selected
-                    ? "opacity-100 w-4"
+                    ? "opacity-100 w-4 h-4 bg-accent"
                     : "opacity-0 w-0 overflow-hidden",
                 ].join(" ")}
               >
