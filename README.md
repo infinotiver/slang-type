@@ -1,33 +1,32 @@
 # SlangType
+[![Static Badge](https://img.shields.io/badge/try-slangtype.vercel.app-teal?style=flat)](https://slangtype.vercel.app)
+![GitHub License](https://img.shields.io/github/license/infinotiver/slang-type)
+![GitHub Repo stars](https://img.shields.io/github/stars/infinotiver/slang-type)
+
 
 ![poster](poster.png)
 
-A modern typing speed test with support for slang. Test your typing speed with slang, English, or code, across various time challenges and infinite mode.
+> A modern typing speed test with support for slang. Test your typing speed with slang, English, or code, across various time challenges and infinite mode.
 
 ## Features
 
 - **Multiple Languages**: Test with slang, English, or code snippets
 - **Various Modes**: 15s, 30s, 60s, 120s, and infinite mode
-- **Display Modes**: Normal, tape-word, and tape-char visualization styles
+- **Display Modes**: Default and bold display.
 - **Statistics Tracking**: WPM, accuracy, errors, and detailed performance metrics
 - **History**: View all typing attempts with detailed analytics
-- **Themes**: Dark, light, latte, frappe, mocha, nord, and gruvbox themes
+- **Themes**: Dark, light, latte, frappe, mocha, nord and more themes
 - **Responsive Design**: Fully optimized for mobile and desktop
 - **Local Persistence**: Your history and settings are saved locally
-- **Performance Charts**: Visual representation of WPM progression
 
-## Getting Started
+## Why Slangtype?
+Slangtype is inspired from [monkeytype.com](https://www.monkeytype.com/). I wanted to build a custom typing test and Monkeytype didn't support slang, so I made this specially for the slangs that (mostly) Gen Z uses. Also, the AI-powered custom word sets turned out to be a great addition for those who want a purely custom experience without having to find a word dataset themselves.
 
-### Prerequisites
-
-- Node.js 18+
-- pnpm (or npm/yarn)
-
-### Installation
+## Get Started
 
 ```bash
 # Clone the repository
-git clone infinotiver/slang-type
+git clone infinotiver/slang-type.git
 
 # Install dependencies
 pnpm install
@@ -39,42 +38,6 @@ pnpm dev
 pnpm build
 ```
 
-## Usage
-
-1. Select your preferred language (slang, English, or code)
-2. Choose a test mode (15s, 30s, 60s, 120s, or inf)
-3. Click "click here to start typing" to begin
-4. Type the displayed text as accurately and quickly as possible
-5. View your results including WPM, accuracy, and error rate
-6. Access your typing history from the header
-
-### Settings
-
-- **Theme**: Customize the color scheme
-- **Display Mode**: Choose how text is displayed (normal, tape-word, tape-char)
-- **Stats Display**: Toggle between normal and mini stats view
-
-## Technologies
-
-- **React 19** - UI library
-- **TypeScript** - Type-safe development
-- **Tailwind CSS** - Styling and responsive design
-- **Vite** - Build tool and dev server
-- **Tabler Icons** - Icon library
-- **Recharts** - Data visualization for performance charts
-
-
-## Development
-
-### Architecture
-
-The app uses a modular component structure with custom hooks for state management:
-
-- **useTypingEngine** - Core typing logic and character tracking
-- **useTimer** - Countdown timer for test modes
-- **useLocalStorage** - Persistent state management
-
-Modal components are built on the reusable **ModalBase** component to reduce code duplication.
 
 ## Credits
 
