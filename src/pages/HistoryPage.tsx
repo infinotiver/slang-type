@@ -7,6 +7,7 @@ import { TopBar } from "@components/ui/common";
 import BestResultCard from "@/components/ui/stats/BestResultCard";
 import { formatDate, formatDuration } from "@/utils/timeFormat";
 import SummaryStatCard from "@/components/ui/stats/SummaryStatCard";
+import { useMemo } from "react";
 const LANGUAGE_LABELS: Record<string, string> = {
   slang: "slang",
   english: "english",
@@ -147,15 +148,19 @@ function HistoryOverview({
 export default function HistoryPage() {
   const navigate = useNavigate();
 
-  const {
-    attempts,
-    allAttempts,
-    stats,
-    statsByLanguage,
-    statsByMode,
-    wpmProgressionData,
-  } = useHistoryStats();
+  const { attempts, stats, statsByLanguage, statsByMode, wpmProgressionData } =
+    useHistoryStats();
+  console.log(
+    "attempts",
+    attempts.map((a) => a.id),
+  );
 
+  const attemptsForList = useMemo(() => [...attempts].reverse(), [attempts]);
+
+  console.log(
+    "reversed",
+    attemptsForList.map((a) => a.id),
+  );
   return (
     <div className="bg-background text-foreground flex-1 h-full min-h-0 flex flex-col font-mono">
       <TopBar title="history" onBack={() => navigate("/")} />
@@ -167,7 +172,7 @@ export default function HistoryPage() {
             statsByLanguage={statsByLanguage}
             statsByMode={statsByMode}
             wpmProgressionData={wpmProgressionData}
-            allAttempts={allAttempts}
+            allAttempts={attemptsForList}
           />
         ) : (
           <div className="flex items-center justify-center min-h-96">

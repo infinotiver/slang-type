@@ -13,7 +13,6 @@ import type { TypingAttempt } from "../types";
 
 export interface UseHistoryStatsReturn {
   attempts: TypingAttempt[];
-  allAttempts: TypingAttempt[];
   stats: HistoryStats;
   statsByLanguage: StatsByLanguage;
   statsByMode: Record<string, TypingAttempt | null>;
@@ -21,13 +20,12 @@ export interface UseHistoryStatsReturn {
   addAttempt: (attempt: TypingAttempt) => void;
 }
 
+
 export function useHistoryStats(): UseHistoryStatsReturn {
   const [attempts, setAttempts] = useLocalStorage<TypingAttempt[]>(
     "slangtype_attempts",
     [],
   );
-
-  const allAttempts = useMemo(() => [...attempts].reverse(), [attempts]);
 
   // Single pass calculation for all stats
   const { stats, statsByLanguage, statsByMode } = useMemo(
@@ -49,7 +47,6 @@ export function useHistoryStats(): UseHistoryStatsReturn {
 
   return {
     attempts,
-    allAttempts,
     stats,
     statsByLanguage,
     statsByMode,

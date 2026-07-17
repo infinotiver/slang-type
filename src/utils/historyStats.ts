@@ -118,8 +118,7 @@ export function calculateAllStats(attempts: TypingAttempt[]): AllStatsResult {
 export function calculateWpmProgressionData(
   attempts: TypingAttempt[],
 ): WpmProgressionPoint[] {
-  const allAttempts = [...attempts].reverse();
-  return allAttempts.map((attempt, idx) => ({
+  return attempts.map((attempt, idx) => ({
     name: idx + 1,
     wpm: attempt.wpm,
     accuracy: Math.round(attempt.accuracy),
