@@ -1,4 +1,31 @@
 # slang-type
+## 0.4.2 (2026-07-17)
+
+### Features
+
+* **ai**: switch AI text generation backend to Groq API ([6fab20d](https://github.com/infinotiver/slang-type/commit/6fab20db8930024d4a95c0beda00e9173904a5f8))
+* **settings**: add live theme previews to theme selector ([e1d89e4](https://github.com/infinotiver/slang-type/commit/e1d89e4aa44f4a52737ec550bb1db14ec88843c1))
+
+### Fixes
+
+* **history**: fix ordering of history data so charts remain chronological while attempt lists display newest first ([4b50438](https://github.com/infinotiver/slang-type/commit/4b50438b749e9a152fb3515c0ccdfe972a82a0f3))
+
+### Styles
+
+* **settings**: simplify settings modal layout and organization ([becdfac](https://github.com/infinotiver/slang-type/commit/becdfac6d54b6dbdd71fb8fe4fbe270e0a915a5c))
+* **ui**: improve contrast and reorganize option chips into responsive grids ([9f81c26](https://github.com/infinotiver/slang-type/commit/9f81c262ce71850c0b78dde37302ff01787f3521))
+* **ui**: refresh styling across the application ([7a436b5](https://github.com/infinotiver/slang-type/commit/7a436b5e85c4a6533a20714038888b9f158e0c3d))
+
+### Documentation
+
+* **readme**: add demo gallery ([31efd31](https://github.com/infinotiver/slang-type/commit/31efd31959bc5c2ceb0a5bee05b1beebf3a547d3))
+* **readme**: update documentation and remove inappropriate words ([ad8f93f](https://github.com/infinotiver/slang-type/commit/ad8f93f3bd623885bd8a1b1dba56f1100687a597))
+* **docs**: general documentation cleanup ([47d4968](https://github.com/infinotiver/slang-type/commit/47d49683d834a683be95a8e2a30bf1d8b39e4305))
+
+### Chores
+
+* **license**: add project LICENSE ([0c35eb0](https://github.com/infinotiver/slang-type/commit/0c35eb0fe62eaf50a990c9ad1497ee21e71e66e5))
+
 
 ## 0.4.1 (2026-07-08)
 
