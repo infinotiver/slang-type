@@ -30,40 +30,40 @@
 ## 0.4.1 (2026-07-08)
 
 ### Features
-* **typing**: add two live typing metrics display mode ([a40c8e0](https://github.com/infinotiver/slang-typecommit/a40c8e0))
-* **history**: restore history page ([ac382e2](https://github.com/infinotiver/slang-typecommit/ac382e2))
-* **results**: add error statistics to history page and calculations ([35de158](https://github.com/infinotiver/slang-typecommit/35de158))
-* **effects**: add sound effects ([f8fc46a](https://github.com/infinotiver/slang-typecommit/f8fc46a))
-* **generation**: implement code phrase generation using external javascript snippets ([52cc5c5](https://github.com/infinotiver/slang-typecommit/52cc5c5))
-* **auth**: add username validation on signup ([e347379](https://github.com/infinotiver/slang-typecommit/e347379))
-* **cleanup**: remove backend for rewrite ([494dca6](https://github.com/infinotiver/slang-typecommit/494dca6))
+* **typing**: add two live typing metrics display mode ([a40c8e0](https://github.com/infinotiver/slang-type/commit/a40c8e0))
+* **history**: restore history page ([ac382e2](https://github.com/infinotiver/slang-type/commit/ac382e2))
+* **results**: add error statistics to history page and calculations ([35de158](https://github.com/infinotiver/slang-type/commit/35de158))
+* **effects**: add sound effects ([f8fc46a](https://github.com/infinotiver/slang-type/commit/f8fc46a))
+* **generation**: implement code phrase generation using external javascript snippets ([52cc5c5](https://github.com/infinotiver/slang-type/commit/52cc5c5))
+* **auth**: add username validation on signup ([e347379](https://github.com/infinotiver/slang-type/commit/e347379))
+* **cleanup**: remove backend for rewrite ([494dca6](https://github.com/infinotiver/slang-type/commit/494dca6))
 
 ### Refactor
 * **history**: show attempt details in list item itself, remove attempt view in history page ([4d19df1](https://github.com/infinotiver/slang-type/commit/4d19df1))
 
 
 ### Fixes
-* **typing-area**: resolve broken auto-scroll and janky cursor animation ([d9a6bd7](https://github.com/infinotiver/slang-typecommit/d9a6bd7))
-* **input**: fix typing space as first letter of word issue ([479d9e2](https://github.com/infinotiver/slang-typecommit/479d9e2))
-* **ui**: update modal backdrop styling for improved visibility ([bc0709b](https://github.com/infinotiver/slang-typecommit/bc0709b))
+* **typing-area**: resolve broken auto-scroll and janky cursor animation ([d9a6bd7](https://github.com/infinotiver/slang-type/commit/d9a6bd7))
+* **input**: fix typing space as first letter of word issue ([479d9e2](https://github.com/infinotiver/slang-type/commit/479d9e2))
+* **ui**: update modal backdrop styling for improved visibility ([bc0709b](https://github.com/infinotiver/slang-type/commit/bc0709b))
 
 ### Styles
-* **design**: redesign with fully rounded corners ([44cb067](https://github.com/infinotiver/slang-typecommit/44cb067))
-* **redesign**: extend redesign to UI components ([edf83a0](https://github.com/infinotiver/slang-typecommit/edf83a0))
-* **metrics**: update livemetrics to bold info ([e74a90b](https://github.com/infinotiver/slang-typecommit/e74a90b))
-* **layout**: reduce unnecessary nesting ([f1b8408](https://github.com/infinotiver/slang-typecommit/f1b8408))
-* **metrics**: update metrics to pill-shaped design ([f1c389](https://github.com/infinotiver/slang-typecommit/f1c389))
-* **themes**: add 'bold' theme with custom colors ([4fd326b](https://github.com/infinotiver/slang-typecommit/4fd326b))
+* **design**: redesign with fully rounded corners ([44cb067](https://github.com/infinotiver/slang-type/commit/44cb067))
+* **redesign**: extend redesign to UI components ([edf83a0](https://github.com/infinotiver/slang-type/commit/edf83a0))
+* **metrics**: update livemetrics to bold info ([e74a90b](https://github.com/infinotiver/slang-type/commit/e74a90b))
+* **layout**: reduce unnecessary nesting ([f1b8408](https://github.com/infinotiver/slang-type/commit/f1b8408))
+* **metrics**: update metrics to pill-shaped design ([f1c389](https://github.com/infinotiver/slang-type/commit/f1c389))
+* **themes**: add 'bold' theme with custom colors ([4fd326b](https://github.com/infinotiver/slang-type/commit/4fd326b))
 * **history**: add pills design ([459a400](https://github.com/infinotiver/slang-type/commit/459a400))
 * **redesign**: extend redesign to history and results page ([dd61cec](https://github.com/infinotiver/slang-type/commit/dd61cec))
 
 ### Refactor
-* **ui**: update ai words modal ([3c966ee](https://github.com/infinotiver/slang-typecommit/3c966ee))
-* **ui**: update credits modal ([a22c01e](https://github.com/infinotiver/slang-typecommit/a22c01e))
-* **stats**: streamline results statistics calculations ([48238e4](https://github.com/infinotiver/slang-typecommit/48238e4))
+* **ui**: update ai words modal ([3c966ee](https://github.com/infinotiver/slang-type/commit/3c966ee))
+* **ui**: update credits modal ([a22c01e](https://github.com/infinotiver/slang-type/commit/a22c01e))
+* **stats**: streamline results statistics calculations ([48238e4](https://github.com/infinotiver/slang-type/commit/48238e4))
 
 ### Chores
-* **deps**: add conventional-changelog ([098bc23](https://github.com/infinotiver/slang-typecommit/098bc23))
+* **deps**: add conventional-changelog ([098bc23](https://github.com/infinotiver/slang-type/commit/098bc23))
 
 ## 0.3.2 (2026-04-29)
 
