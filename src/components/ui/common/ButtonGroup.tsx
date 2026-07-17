@@ -1,7 +1,3 @@
-import { CheckIcon } from "lucide-react";
-import { THEMES } from "@/types";
-import { ThemePreview } from "./ThemePreview";
-
 interface ButtonGroupOption<T> {
   label: string;
   value: T;
@@ -20,7 +16,6 @@ export default function ButtonGroup<T extends string>({
   onChange,
   label,
 }: ButtonGroupProps<T>) {
-  const isThemeGroup = label?.toLowerCase() === "theme";
 
   return (
     <div className="space-y-3">
@@ -30,13 +25,9 @@ export default function ButtonGroup<T extends string>({
         </p>
       )}
 
-      <div className="flex flex-wrap gap-2">
+      <div className="grid gap-2 grid-cols-[repeat(auto-fit,minmax(10rem,1fr))]">
         {options.map((option) => {
           const selected = option.value === value;
-
-          const isTheme =
-            isThemeGroup &&
-            THEMES.includes(option.value as (typeof THEMES)[number]);
 
           return (
             <button
@@ -44,31 +35,12 @@ export default function ButtonGroup<T extends string>({
               type="button"
               onClick={() => onChange(option.value)}
               className={[
-                "inline-flex items-center gap-2 rounded-full px-4 py-2",
-                "border font-mono text-sm",
-                "transition-all duration-150",
+                "inline-flex items-center gap-2 rounded-lg border border-secondary/40 px-4 py-2 text-xs",
                 selected
-                  ? "border-highlight bg-secondary shadow-[0_0_0_1px_var(--color-highlight)]"
-                  : "border-secondary bg-secondary hover:border-accent",
+                  ? "border-highlight bg-background"
+                  : "bg-background/40",
               ].join(" ")}
             >
-              <span
-                className={[
-                  "flex items-center justify-center transition-all p-1 rounded-full",
-                  selected
-                    ? "opacity-100 w-4 h-4 bg-accent"
-                    : "opacity-0 w-0 overflow-hidden",
-                ].join(" ")}
-              >
-                <CheckIcon size={14} className="text-highlight" />
-              </span>
-
-              {isTheme && (
-                <div>
-                  <ThemePreview theme={option.value} />
-                </div>
-              )}
-
               <span className="capitalize">{option.label}</span>
             </button>
           );

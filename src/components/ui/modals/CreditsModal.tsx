@@ -47,7 +47,7 @@ export default function CreditsModal({ isOpen, onClose }: CreditsModalProps) {
             {technologies.map(({ label, Icon }) => (
               <div
                 key={label}
-                className="inline-flex items-center gap-2 rounded-lg border border-secondary/20 bg-background/40 px-3 py-1.5 text-xs"
+                className="inline-flex items-center gap-2 rounded-lg border border-secondary/40 bg-background/40 px-4 py-2 text-xs"
               >
                 <Icon size={16} />
                 <span>{label}</span>
