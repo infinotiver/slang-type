@@ -31,7 +31,7 @@ export default function ChartContainer({
       </h2>
       <div className="p-2">
         {data.length > 0 ? (
-          <ResponsiveContainer width="100%" height={190}>
+          <ResponsiveContainer height={240}>
             <LineChart data={data}>
               <CartesianGrid
                 strokeDasharray="3 3"
@@ -40,18 +40,18 @@ export default function ChartContainer({
               />
               <XAxis
                 dataKey="name"
-                stroke="rgb(107, 114, 128)"
+                stroke="var(--color-accent)"
                 style={{ fontSize: "11px" }}
               />
               <YAxis
-                stroke="rgb(107, 114, 128)"
+                stroke="var(--color-accent)"
                 style={{ fontSize: "11px" }}
                 domain={yAxisDomain}
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "rgb(31, 41, 55)",
-                  border: "1px solid rgb(75, 85, 99)",
+                  backgroundColor: "var(--color-secondary)",
+                  border: "var(--color-accent)",
                   borderRadius: "8px",
                   fontSize: "11px",
                 }}

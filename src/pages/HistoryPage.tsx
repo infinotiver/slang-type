@@ -45,15 +45,17 @@ function HistoryOverview({
   return (
     <>
       <div className="mb-6 p-4">
-        <div className="flex flex-wrap gap-2 mb-2">
-          <SummaryStatCard label="best wpm" value={stats.bestWpm} highlight />
-          <SummaryStatCard
-            label="best acc"
-            value={`${Math.round(stats.bestAccuracy)}%`}
-            highlight
-          />
-        </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:flex lg:flex-wrap">
+          <div className="contents lg:flex lg:w-full lg:gap-2">
+            <SummaryStatCard label="best wpm" value={stats.bestWpm} highlight />
+
+            <SummaryStatCard
+              label="best acc"
+              value={`${Math.round(stats.bestAccuracy)}%`}
+              highlight
+            />
+          </div>
+
           <SummaryStatCard label="avg wpm" value={stats.avgWpm} />
 
           <SummaryStatCard
@@ -150,17 +152,9 @@ export default function HistoryPage() {
 
   const { attempts, stats, statsByLanguage, statsByMode, wpmProgressionData } =
     useHistoryStats();
-  console.log(
-    "attempts",
-    attempts.map((a) => a.id),
-  );
 
   const attemptsForList = useMemo(() => [...attempts].reverse(), [attempts]);
 
-  console.log(
-    "reversed",
-    attemptsForList.map((a) => a.id),
-  );
   return (
     <div className="bg-background text-foreground flex-1 h-full min-h-0 flex flex-col font-mono">
       <TopBar title="history" onBack={() => navigate("/")} />

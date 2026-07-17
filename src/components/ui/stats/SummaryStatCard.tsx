@@ -10,7 +10,7 @@ export default function SummaryStatCard({
   highlight = false,
 }: SummaryStatCardProps) {
   return (
-    <div className="flex items-center gap-2.5 p-1 rounded-full bg-secondary whitespace-nowrap text-xs">
+    <div className="flex items-center gap-2.5 p-1 rounded-full bg-secondary whitespace-nowrap text-xs border border-accent/60 ">
       <div
         className={`px-4 py-2 rounded-full ${highlight ? "bg-highlight text-background" : "bg-accent/10 text-highlight"}  font-bold capitalize`}
       >

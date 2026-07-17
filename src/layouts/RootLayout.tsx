@@ -28,7 +28,7 @@ export default function RootLayout() {
     "inline-flex items-stretch overflow-hidden rounded-full border border-secondary bg-secondary";
   const footerActionButton =
     "rounded-none border-0 px-3 py-2 text-xs font-mono text-foreground";
-  const pageFrame = "w-full max-w-6xl py-2 mx-auto px-4 sm:px-8 md:px-12";
+  const pageFrame = "w-full max-w-8xl py-2 mx-auto px-4 sm:px-8 md:px-12";
 
   return (
     <div className="h-screen flex flex-col bg-background text-foreground font-mono overflow-hidden">

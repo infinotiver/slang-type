@@ -33,7 +33,7 @@ const LANGUAGE_OPTIONS: SegmentedOption[] = toOptions([
 ]);
 
 const wrapperClass =
-  "flex items-center gap-1 rounded-full bg-secondary p-1 border border-accent/20";
+  "flex items-center gap-1 rounded-full bg-secondary p-1 border border-accent/60";
 const btnBaseClass =
   "relative px-4 py-2 rounded-full text-xs tracking-wide transition-colors duration-150";
 const activeTextClass = "font-semibold text-background";

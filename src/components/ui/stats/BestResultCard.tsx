@@ -13,7 +13,7 @@ export default function BestResultCard({
   if (!attempt) return null;
 
   return (
-    <div className="flex items-center gap-2.5 p-1 rounded-full bg-secondary whitespace-nowrap text-xs">
+    <div className="flex items-center gap-2.5 p-1 rounded-full bg-secondary border border-accent/40 whitespace-nowrap text-xs">
       <span className="px-4 py-2 rounded-full bg-highlight/15 text-highlight  font-bold capitalize">
         {label}
       </span>

@@ -19,12 +19,12 @@ export default function Button({
   type = "button",
 }: ButtonProps) {
   const baseStyles =
-    "px-3 py-2 font-mono text-sm rounded-full transition-colors border";
+    "px-3 py-2 font-mono text-sm rounded-full transition-colors border border-accent/40";
 
   const variantStyles = {
-    primary: "border-highlight text-background bg-highlight",
+    primary: "text-background bg-highlight",
     secondary:
-      "border-secondary text-foreground bg-secondary hover:text-highlight",
+      "text-foreground bg-secondary hover:text-highlight",
   };
 
   const disabledStyles = disabled ? "opacity-50 cursor-not-allowed" : "";

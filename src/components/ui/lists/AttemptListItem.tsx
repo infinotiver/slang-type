@@ -41,10 +41,10 @@ export default function AttemptListItem({
   }, [attempt]);
 
   return (
-    <div className="rounded-4xl border border-secondary bg-secondary transition-colors my-1">
+    <div className="rounded-4xl border border-accent/40 bg-secondary transition-colors my-1">
       <button
         onClick={() => setExpanded((v) => !v)}
-        className="w-full px-5 py-3 text-left"
+        className="w-full px-6 py-2 text-left"
       >
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
@@ -74,7 +74,7 @@ export default function AttemptListItem({
 
       {expanded && (
         <div className="border-t border-secondary px-5 py-4">
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap gap-2">
             <SummaryStatCard
               label="adjusted wpm"
               value={adjustedWpm}
