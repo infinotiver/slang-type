@@ -8,6 +8,7 @@ import BestResultCard from "@/components/ui/stats/BestResultCard";
 import { formatDate, formatDuration } from "@/utils/timeFormat";
 import SummaryStatCard from "@/components/ui/stats/SummaryStatCard";
 import { useMemo } from "react";
+
 const LANGUAGE_LABELS: Record<string, string> = {
   slang: "slang",
   english: "english",
@@ -43,72 +44,54 @@ function HistoryOverview({
   );
 
   return (
-    <>
-      <div className="mb-6 p-4">
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:flex lg:flex-wrap">
-          <div className="contents lg:flex lg:w-full lg:gap-2">
-            <SummaryStatCard label="best wpm" value={stats.bestWpm} highlight />
-
-            <SummaryStatCard
-              label="best acc"
-              value={`${Math.round(stats.bestAccuracy)}%`}
-              highlight
-            />
-          </div>
-
-          <SummaryStatCard label="avg wpm" value={stats.avgWpm} />
-
-          <SummaryStatCard
-            label="avg accuracy"
-            value={`${stats.avgAccuracy}%`}
-          />
-
-          <SummaryStatCard
-            label="total time"
-            value={formatDuration(stats.totalTime)}
-          />
-
-          <SummaryStatCard label="attempts" value={stats.totalAttempts} />
-
-          <SummaryStatCard label="correct chars" value={stats.totalCorrect} />
-        </div>
+    <div className="flex flex-col gap-6 sm:gap-8">
+      <div className="flex flex-wrap sm:grid  sm:grid-cols-3 lg:flex lg:flex-wrap gap-2 sm:gap-3">
+        <SummaryStatCard label="best wpm" value={stats.bestWpm} highlight />
+        <SummaryStatCard
+          label="best acc"
+          value={`${Math.round(stats.bestAccuracy)}%`}
+          highlight
+        />
+        <SummaryStatCard label="avg wpm" value={stats.avgWpm} />
+        <SummaryStatCard label="avg accuracy" value={`${stats.avgAccuracy}%`} />
+        <SummaryStatCard
+          label="total time"
+          value={formatDuration(stats.totalTime)}
+        />
+        <SummaryStatCard label="attempts" value={stats.totalAttempts} />
+        <SummaryStatCard label="correct chars" value={stats.totalCorrect} />
       </div>
 
-      <div className="mb-6 flex flex-col lg:flex-row gap-6">
-        <div className="flex-1 min-w-0">
-          <ChartContainer
-            title="wpm progression"
-            data={wpmProgressionData}
-            dataKey="wpm"
-            stroke="#10b981"
-          />
-        </div>
-        <div className="flex-1 min-w-0">
-          <ChartContainer
-            title="accuracy trend"
-            data={wpmProgressionData}
-            dataKey="accuracy"
-            stroke="#f59e0b"
-            yAxisDomain={[0, 100]}
-          />
-        </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        <ChartContainer
+          title="wpm progression"
+          data={wpmProgressionData}
+          dataKey="wpm"
+          stroke="#10b981"
+        />
+        <ChartContainer
+          title="accuracy trend"
+          data={wpmProgressionData}
+          dataKey="accuracy"
+          stroke="#f59e0b"
+          yAxisDomain={[0, 100]}
+        />
       </div>
-
-      <div className="mb-6 flex flex-col lg:flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
         <div className="flex-1 min-w-0">
           <h2 className="text-xs font-mono text-foreground mb-2 tracking-wider uppercase">
             by language
           </h2>
-          <div className="flex flex-col flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2">
             {Object.entries(statsByLanguage)
               .filter(([, attempt]) => attempt !== null)
               .map(([lang, attempt]) => (
-                <div key={lang} className="flex-1 min-w-36">
-                  <BestResultCard
-                    label={getLanguageLabel(lang)}
-                    attempt={attempt!}
-                  />
-                </div>
+                <BestResultCard
+                  key={lang}
+                  label={getLanguageLabel(lang)}
+                  attempt={attempt!}
+                  className="flex-1 min-w-[8rem]"
+                />
               ))}
           </div>
         </div>
@@ -117,22 +100,24 @@ function HistoryOverview({
           <h2 className="text-xs font-mono text-foreground mb-2 tracking-wider uppercase">
             by mode
           </h2>
-          <div className="flex flex-col flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2">
             {sortedModes.map(([mode, attempt]) => (
-              <div key={mode} className="flex-1 min-w-36">
-                <BestResultCard label={mode} attempt={attempt} />
-              </div>
+              <BestResultCard
+                key={mode}
+                label={mode}
+                attempt={attempt}
+                className="flex-1 min-w-[8rem]"
+              />
             ))}
           </div>
         </div>
       </div>
 
-      {/* All attempts */}
       <div className="flex flex-col gap-2">
         <h2 className="text-xs font-mono text-foreground tracking-wider uppercase">
           attempts ({allAttempts.length})
         </h2>
-        <div className="flex flex-col gap-0.5">
+        <div className="flex flex-col gap-1">
           {allAttempts.map((attempt) => (
             <AttemptListItem
               key={attempt.id}
@@ -143,7 +128,7 @@ function HistoryOverview({
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -159,7 +144,7 @@ export default function HistoryPage() {
     <div className="bg-background text-foreground flex-1 h-full min-h-0 flex flex-col font-mono">
       <TopBar title="history" onBack={() => navigate("/")} />
 
-      <main className="flex-1 min-h-0 overflow-y-auto py-6 sm:py-7 px-4 sm:px-6">
+      <main className="flex-1 min-h-0 overflow-y-auto py-6 sm:py-8 px-4 sm:px-6">
         {attempts.length > 0 ? (
           <HistoryOverview
             stats={stats}

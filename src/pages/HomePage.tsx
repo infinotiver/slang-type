@@ -16,6 +16,7 @@ import useTypingEngine from "@hooks/useTypingEngine";
 import useTimer from "@hooks/useTimer";
 import useLocalStorage from "@hooks/useLocalStorage";
 import { createGeminiService } from "@/services/geminiService";
+import { useGlobalUsage } from "@/hooks/useGlobalStats";
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -114,7 +115,7 @@ export default function HomePage() {
       setTimeout(() => setIsAIModalOpen(true), 0);
     }
   }, [isAIMode, aiWordsReady]);
-
+  const { recordCompletion } = useGlobalUsage();
   return (
     <div className="flex h-full w-full flex-1 flex-col items-center justify-start gap-2 md:justify-center md:gap-8">
       <section className="flex shrink-0 justify-center">
@@ -154,7 +155,7 @@ export default function HomePage() {
             aiGenerated={aiGenerated}
             onResultsComplete={(resultsPayload: ResultsPayload) => {
               pendingResultsRef.current = resultsPayload;
-
+              recordCompletion(resultsPayload.elapsed);
               navigate("/results", {
                 state: {
                   results: resultsPayload,

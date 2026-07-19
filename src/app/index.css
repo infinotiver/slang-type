@@ -10,6 +10,15 @@
   --font-display: "Space Mono", monospace;
 }
 
+@utility chip-inner {
+  @apply px-2 py-1 md:px-4 md:py-2 rounded-full font-bold capitalize;
+  @apply bg-accent/40 text-highlight;
+
+  &[data-variant="true"] {
+    @apply bg-highlight text-background;
+  }
+}
+
 [data-theme="light"] {
   --color-background: #f5f5f5;
   --color-secondary: #e5e5e5;

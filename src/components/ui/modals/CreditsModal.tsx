@@ -1,5 +1,5 @@
+import { useGlobalUsage } from "@/hooks/useGlobalStats";
 import ModalBase from "./ModalBase";
-import { Heart } from "lucide-react";
 import {
   SiGithub,
   SiReact,
@@ -23,6 +23,10 @@ const technologies = [
 ];
 
 export default function CreditsModal({ isOpen, onClose }: CreditsModalProps) {
+  // gated on isOpen: fetches fresh the moment the modal opens, and stops
+  // polling entirely while it's closed instead of running for the whole session
+  const { usage } = useGlobalUsage({ enabled: isOpen });
+
   return (
     <ModalBase isOpen={isOpen} onClose={onClose} title="credits">
       <div className="space-y-4 font-mono">
@@ -57,8 +61,12 @@ export default function CreditsModal({ isOpen, onClose }: CreditsModalProps) {
         </section>
 
         <div className="flex items-center justify-center gap-1 border-t border-secondary/30 pt-4 text-xs text-foreground/50">
-          made with{" "}
-          <Heart size={12} className="text-pink-600 fill-pink-600" />
+          {usage && (
+            <p className="text-xs text-foreground/50">
+              {usage.testsCount.toLocaleString()} tests ·{" "}
+              {Math.round(usage.totalTypedSeconds / 3600)}h typed globally
+            </p>
+          )}
         </div>
       </div>
     </ModalBase>
